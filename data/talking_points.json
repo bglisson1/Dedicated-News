@@ -1,36 +1,47 @@
 {
-  "generated_at": "2026-09-28T12:15:41-04:00",
+  "generated_at": "2026-09-28T16:36:40-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Iran denies involvement in suspected plot targeting US air base in England",
-    "Trump says he approved new fuel economy standards ending Biden-era electric vehicle mandate",
-    "Why S&P 500 stock valuations are falling",
-    "SpaceX launches its massive Starship rocket into orbit for the first time",
-    "Meta, Google, Amazon, Microsoft draw Sen. Warren questions about AI tax subsidies",
-    "Trump's economy polls terribly. It's also surging."
+    "Treasury yields rise as march to multiyear highs continues",
+    "Trump-Iran Tensions Trigger Fresh Wall Street Selloff",
+    "Update: US Equity Indexes Fall as Iran Talks Stall, Fed Governor Points to Higher Rates, Inflation",
+    "Senate tees up college sports bill aimed at regulating NIL deals",
+    "Fed's Cook says AI demand 'broadening' to increase inflation",
+    "Fetterman joins Democrats in warning Mullin, DHS about election interference"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing about a bomb plot that was stopped near a U.S. air base in England, and that Iran is denying any role in it.",
-      "why": "Stories like this can feel scary because they touch on war and security, and that uncertainty is part of why oil and stocks can wobble a bit this week.",
-      "but": "But headlines like this have happened before, and markets have a long track record of digesting scary news without it changing your long-term plan.",
-      "story": "Picture checking a storm forecast for a city far from home. You watch it, you note it, but you do not cancel your own week because of weather somewhere else. Distant events get watched, not overreacted to.",
+      "hearing": "You may hear that tensions with Iran are back in the headlines, and that stocks slipped today along with some worry about oil.",
+      "why": "When there's conflict overseas, oil can get more expensive to move around the world, and that can eventually show up at the gas pump or in shipping costs on things we buy.",
+      "but": "But markets have lived through geopolitical flare-ups before, and a rough day tied to overseas tension is not the same as a reason to change a long-term plan.",
+      "story": "Picture a ship captain who changes the whole voyage every time there's a storm cloud on the horizon. Most of those clouds pass. The captain who stays the course, adjusting sails but not the destination, is the one who actually gets there.",
       "say": [
-        "We see the headline, we are not changing your plan because of it.",
-        "Geopolitical scares happen. Your plan is built to ride through them."
+        "We saw this kind of headline before, and the plan held up.",
+        "We stay on course. We don't steer the whole ship because of one cloud."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may be hearing that the government just approved new mileage rules for cars, ending the old electric vehicle requirement from a few years back.",
-      "why": "That matters because it can change what new cars cost and which models get built, so it can shape your next trip to the dealership.",
-      "but": "But the plan we built for you doesn't ride on which cars roll off the line or how many miles they squeeze from a gallon.",
-      "story": "Picture two neighbors. One keeps redoing their household budget every time a new car rule comes out. The other just gets an oil change, waits for their car to actually need replacing, and moves on with their week.",
+      "hearing": "You may hear that interest rates ticked higher again, and that a Fed official said inflation pressures are broadening because of things like AI-related demand.",
+      "why": "Higher interest rates can mean a bigger bill on things like a mortgage, a car loan, or a credit card, so when rates move, people feel it in daily life.",
+      "but": "But rates moving up on one day, even a notable one, doesn't tell us where they'll be next month or next year, and your plan was built to handle rate ups and downs.",
+      "story": "Think of interest rates like the weather on a long road trip. Some stretches are windy, some are calm. A good driver adjusts speed a bit, but doesn't turn around and go home over one gusty patch.",
       "say": [
-        "We built your plan to handle policy changes like this one.",
-        "A new mileage rule doesn't rewrite your long-term plan."
+        "Rates move. Your plan is built with room for that.",
+        "We watch it, we don't panic over it."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may hear that stocks had a softer day today, closing out the week on a down note across the board.",
+      "why": "A wobble in stocks can feel unsettling to hear about, especially when it's paired with other headlines in the news.",
+      "but": "But a soft day, even a noticeably soft one, is part of the normal rhythm of investing, not a signal to abandon a long-term plan.",
+      "story": "Picture a garden after a windy afternoon. Some leaves get knocked around, a few branches bend. The gardener doesn't dig up the whole yard. They know the roots are what matter, and those didn't move.",
+      "say": [
+        "A rough day doesn't change your roots, meaning your plan.",
+        "We let the wind pass. The plan stays planted."
       ]
     }
   ]
