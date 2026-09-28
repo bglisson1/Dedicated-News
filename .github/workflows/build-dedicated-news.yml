@@ -28,6 +28,11 @@ on:
     - cron: "0 13 * * 0,6"   # 8:00 AM EST Saturday and Sunday
 
   workflow_dispatch:
+    inputs:
+      refresh_talking_points:
+        description: Regenerate talking points with the model
+        type: boolean
+        default: true
 
   push:
     branches:
@@ -133,14 +138,16 @@ jobs:
           # Optional. OpenRouter is used first when its secret is set.
           # The other keys are backups. With no key, the page uses prompts/topics.yml.
           # The model runs on the 6:00 AM, 8:45 AM, and 12:00 PM weekday
-          # clocks and the weekend clock. Other runs reuse data/talking_points.json
-          # unless the top headlines changed a lot. See the README.
+          # clocks and the weekend clock. Other runs reuse a model cache.
+          # A template cache, or one with no source, is called again.
+          # A manual run refreshes unless that box is turned off.
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           EVENT_NAME: ${{ github.event_name }}
           EVENT_SCHEDULE: ${{ github.event.schedule }}
+          REFRESH_TALKING_POINTS: ${{ github.event.inputs.refresh_talking_points }}
         run: python build.py
 
       - name: Save talking points for the next run
