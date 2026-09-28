@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-27T23:25:31-04:00",
+  "generated_at": "2026-09-27T23:35:01-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
@@ -13,35 +13,35 @@
   "cards": [
     {
       "topic": "model",
-      "hearing": "You're probably hearing about tension overseas, with reports that talks over an important oil shipping route in the Middle East broke down over the weekend.",
-      "why": "That matters in daily life because that route carries a lot of the world's oil, and when it's at risk, it can nudge gas and diesel prices, which touches everything from your commute to the truck that delivers groceries.",
-      "but": "But stocks actually rose today, and the early read before the next open is just a touch softer, which is normal noise around a loud weekend headline.",
-      "story": "Picture hearing there might be a storm forming somewhere far down the road on a trip you haven't started yet. You note it, you don't turn the car around before you've even left the driveway.",
+      "hearing": "You may hear that tensions in the Middle East just got louder, with talk of a key oil route and a rejected deal over the weekend.",
+      "why": "That route matters because a lot of the world's oil moves through it, and oil is part of what gets pumped into trucks and cars, which can nudge the cost of getting goods to stores.",
+      "but": "But a headline about a shipping lane is not the same as a change to your household's plan.",
+      "story": "Picture a family road trip where one detour sign pops up on the map. You slow down, you check the route, but you do not turn around and go home. The destination did not change, just the traffic report.",
       "say": [
-        "We watch it, we don't overreact to it.",
-        "One weekend headline doesn't get to rewrite a plan built for years."
+        "We see the headline, and we keep driving the plan.",
+        "One weekend's news is a detour sign, not a new destination."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You're probably hearing that the Fed, which sets short-term interest rates, just raised rates again.",
-      "why": "That can matter for daily life, because it often shows up in the cost of a credit card, a car loan, or a new mortgage.",
-      "but": "But moves like this are part of a normal, ongoing cycle, not a surprise that should shake a plan built for years, not headlines.",
-      "story": "Think of a thermostat in a house. Someone adjusts it up or down depending on the season, but the house still keeps running the same way it always has.",
+      "hearing": "You may hear that the Fed, which sets short-term interest rates, just raised rates for the first time in years.",
+      "why": "That can nudge up the cost of things like car loans, credit cards, and a mortgage, so borrowing money gets a little more expensive.",
+      "but": "But rates have moved up and down many times over the years, and a long-term plan is built to ride through all of it.",
+      "story": "Think of it like a thermostat. Sometimes the house runs a little warmer, sometimes cooler, but you don't tear down the whole house every time it adjusts.",
       "say": [
-        "We build your plan expecting rates to move both ways.",
-        "One adjustment doesn't change the long-term plan we already set."
+        "We build your plan to handle rate moves in both directions.",
+        "This is a normal part of the cycle, not a reason to change course."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may also hear that the US and China agreed on a list of goods that will get lower tariffs between the two countries.",
-      "why": "That matters at home because tariffs can affect the price of everyday things like electronics, clothing, or parts for the car.",
-      "but": "But trade rules shift often, and a long-term plan is built to handle those shifts, not chase every new list.",
-      "story": "It's a bit like a grocery store changing which aisle has the sale each week. Smart shoppers don't redo their whole budget, they just keep shopping the way they planned.",
+      "hearing": "You may hear that the U.S. and China just released details of a deal to cut tariffs on some goods each country buys from the other.",
+      "why": "Tariffs work like a tax on imported goods, so when they come down on certain products, it can mean a little relief on some prices at the store.",
+      "but": "But trade headlines come and go, and one deal on a slice of goods is not something to build a whole portfolio decision around.",
+      "story": "It is a bit like a store running a sale on a few aisles. Nice if you needed those items, but you still shop your whole list the same way.",
       "say": [
-        "Trade headlines come and go, and your plan is built for that.",
-        "We don't chase tariff news, we stick with the plan."
+        "We watch these headlines, but we don't chase them.",
+        "One trade deal doesn't change the plan we already built for you."
       ]
     }
   ]
