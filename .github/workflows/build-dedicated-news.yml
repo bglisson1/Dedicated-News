@@ -1,0 +1,204 @@
+# Rebuilds Dedicated News and publishes it to GitHub Pages.
+# One broken quote or news feed does not fail this workflow. build.py
+# skips that source and keeps going. A broken feeds.yml fails the run
+# on purpose, so a typo is visible in the Actions log.
+
+name: Build dedicated news
+
+on:
+  schedule:
+    # GitHub runs these clocks in UTC and does not shift for daylight saving.
+    # The job "Decide if this clock should build" keeps only the set that
+    # matches the current Eastern offset, so a weekday slot runs once.
+    #
+    # Eastern Daylight Time (EDT, March–November) is UTC-4.
+    - cron: "0 10 * * 1-5"   # 6:00 AM EDT
+    - cron: "30 11 * * 1-5"  # 7:30 AM EDT
+    - cron: "45 12 * * 1-5"  # 8:45 AM EDT
+    - cron: "0 16 * * 1-5"   # 12:00 PM EDT
+    - cron: "30 20 * * 1-5"  # 4:30 PM EDT
+    - cron: "0 12 * * 0,6"   # 8:00 AM EDT Saturday and Sunday
+    #
+    # Eastern Standard Time (EST, November–March) is UTC-5.
+    - cron: "0 11 * * 1-5"   # 6:00 AM EST
+    - cron: "30 12 * * 1-5"  # 7:30 AM EST
+    - cron: "45 13 * * 1-5"  # 8:45 AM EST
+    - cron: "0 17 * * 1-5"   # 12:00 PM EST
+    - cron: "30 21 * * 1-5"  # 4:30 PM EST
+    - cron: "0 13 * * 0,6"   # 8:00 AM EST Saturday and Sunday
+
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  # Lets the build call GitHub Models with the built-in token.
+  # If that call fails, build.py uses the templated talking points.
+  models: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    name: Decide if this clock should build
+    runs-on: ubuntu-latest
+    outputs:
+      proceed: ${{ steps.check.outputs.proceed }}
+    steps:
+      - name: Skip the duplicate daylight-saving clock
+        id: check
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          python3 - << 'PY'
+          import os
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          event = os.environ.get("EVENT_NAME", "")
+          schedule = " ".join(os.environ.get("EVENT_SCHEDULE", "").split())
+          # Push and the manual Run workflow button always build.
+          if event != "schedule":
+              proceed = True
+              reason = f"{event} always builds"
+          else:
+              offset = datetime.now(ZoneInfo("America/New_York")).strftime("%z")
+              edt = {
+                  "0 10 * * 1-5",
+                  "30 11 * * 1-5",
+                  "45 12 * * 1-5",
+                  "0 16 * * 1-5",
+                  "30 20 * * 1-5",
+                  "0 12 * * 0,6",
+              }
+              est = {
+                  "0 11 * * 1-5",
+                  "30 12 * * 1-5",
+                  "45 13 * * 1-5",
+                  "0 17 * * 1-5",
+                  "30 21 * * 1-5",
+                  "0 13 * * 0,6",
+              }
+              if not schedule:
+                  proceed = True
+                  reason = "schedule event did not name a cron; building anyway"
+              elif offset == "-0400":
+                  proceed = schedule in edt
+                  reason = f"EDT ({offset}); cron {schedule}"
+              elif offset == "-0500":
+                  proceed = schedule in est
+                  reason = f"EST ({offset}); cron {schedule}"
+              else:
+                  proceed = True
+                  reason = f"unexpected offset {offset}; building anyway"
+          print(reason)
+          print(f"proceed={proceed}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+              handle.write(f"proceed={'true' if proceed else 'false'}\n")
+          PY
+
+  build:
+    needs: gate
+    if: needs.gate.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build the page
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python build.py
+
+      - name: Stage the page for GitHub Pages
+        run: |
+          mkdir -p _site
+          cp index.html _site/index.html
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # GitHub turns off scheduled workflows on a public repository after 60 days
+  # with no commit. This job keeps the schedule switched on. It uses the
+  # built-in GITHUB_TOKEN only. A news feed being down does not affect it,
+  # and a problem here does not block the page deploy above.
+  keepalive:
+    name: Keep the schedule turned on
+    needs: build
+    if: always() && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Keep scheduled updates enabled
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          # Ask GitHub to mark this workflow active. Safe to call when it
+          # already is. This is the same switch as Actions → Enable workflow.
+          gh api -X PUT \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${GITHUB_REPOSITORY}/actions/workflows/build-dedicated-news.yml/enable"
+          echo "Schedule switch is on."
+
+          # A commit is what GitHub counts as activity. Skip it while the
+          # repository is fresh, so ordinary news updates stay out of the
+          # history. 45 days is inside the 60-day cutoff.
+          last="$(git log -1 --format=%ct)"
+          now="$(date +%s)"
+          age_days="$(( (now - last) / 86400 ))"
+          echo "Last commit was ${age_days} days ago."
+          if [ "${age_days}" -lt 45 ]; then
+            echo "No keepalive commit needed."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B main
+          cat > .keepalive << EOF
+          # Touched automatically so GitHub does not turn off the scheduled update.
+          # You can ignore this file.
+          $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          EOF
+          git add .keepalive
+          git commit -m "Keep scheduled updates enabled"
+          git push origin HEAD:main
+          echo "Saved .keepalive so the schedule stays on."
