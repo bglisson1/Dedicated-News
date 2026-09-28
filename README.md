@@ -2,7 +2,7 @@
 
 A morning briefing for a team of financial advisors in Tampa Bay. It is a single page: market figures, a client talking-points script, and the headlines that matter before the open. No ads. No accounts. Each headline opens the original story in a new tab.
 
-The page is rebuilt from free public sources. You change sources, keywords, and market symbols in `feeds.yml`. You change the client stories in `prompts/stories.yml`, and the voice of an optional model in `prompts/talking_points.md`. You do not need to write code.
+The page is rebuilt from free public sources. You change sources, keywords, and market symbols in `feeds.yml`. You change the headline cards in `prompts/topics.yml`, the story samples in `prompts/stories.yml`, and the voice of an optional model in `prompts/talking_points.md`. You do not need to write code.
 
 **The site:** https://bglisson1.github.io/Dedicated-News/
 
@@ -54,21 +54,23 @@ Refresh the site in a minute or two.
 The date and the "last updated" time are Eastern.
 
 1. **At a glance.** Four cards: S&P 500, Dow, Russell 2000 (previous close, change, and arrow), and the Freddie Mac 30-year mortgage rate with the week-over-week change. On a phone those four sit in a two-by-two grid. When it fits on one line, the S&P and Dow cards also show a short futures percent.
-2. **Client talking points.** One short piece in plain language for a client who does not follow markets: what is going on, a simple story, and a line or two the advisor can say. It does not promise returns or tell anyone what to buy or sell.
+2. **Talking points.** Two or three cards, each built around a headline clients are actually seeing. Each card says what they are hearing, why it matters, the "but" that brings it back to the long-term plan, a short story, and a line or two the advisor can say. It does not promise returns or tell anyone what to buy or sell.
 3. **Top 3 Financial News.** Business and markets stories, one line each. The same story in several outlets is shown once, and the stories the most outlets are carrying are listed first.
 4. **Top 3 Political News.** Washington, policy, the Fed, taxes, trade, and elections.
 5. **More markets.** Nasdaq, 10-year and 2-year Treasuries, the futures cards, oil, gold, the 10-year market yield, VIX, and Bitcoin. A missing quote is a dash. Each card says whether the figure is a previous close, a weekly rate, or a premarket / live price.
-6. **More Market & Economy.** About a dozen further market links.
-7. **Industry News.** Wealth management and advisor trade press. Those sites publish more slowly, so this section keeps about two weeks of headlines.
+6. **More Market & Economy.** Three to five further market links. Thin or old ones are left off instead of padding the list.
+7. **Industry News.** Wealth management and advisor trade press, including AdvisorHub. Those sites publish more slowly, so the build looks back about two weeks, then shows the three to five strongest items. Fresh AdvisorHub stories are boosted.
 8. **Footer.** "For internal team prep only. Not investment advice." Plus where the figures came from.
 
 Sports and celebrity headlines are left out. A story is not repeated in a second section.
 
 ## The client script
 
-Every build writes the talking points from `prompts/stories.yml`. That file holds short stories and closing lines. Each story is tagged with the kind of day it fits: stocks up, stocks down, a flat day, rates up, rates down, a big news day, record highs, or a volatile day. The build picks one story from the tags that match today's figures. The pick is tied to the date, so the same conditions keep walking through the list and a story does not come back for about two weeks. The opening lines are written from the real figures, in plain words such as "stocks rose a bit." No model is required for this.
+The talking points are two or three cards. Each card follows one headline from the top financial and political stories, preferring the ones the most outlets are carrying and the ones regular people actually see: a war or fuel prices, an election, the Fed, inflation, jobs, tariffs, or a big move in stocks.
 
-You can edit the stories. Keep each one to two or three sentences, keep the `conditions` list, and do not put statistics in a story.
+Without a model key, the build matches those headlines to `prompts/topics.yml`. Each topic has a plain explanation, a "but," a short story, and lines an advisor can say. If a headline does not match a topic, it is skipped. If nothing matches, the page uses the general market card. A second card is added when only one headline matches, so the section is not a single note. Stories inside a topic rotate by the date.
+
+`prompts/stories.yml` is the voice sample the optional model sees. You can edit either file. Keep the language plain, and do not put statistics in a story.
 
 ### Optional: use your own model key
 
@@ -80,7 +82,7 @@ GitHub Models is no longer available, so the build does not call it. If you want
 | `ANTHROPIC_API_KEY` | `claude-haiku-4-5` |
 | `XAI_API_KEY` | `grok-3-mini` |
 
-The model names are in `feeds.yml` if you want a different small model. The instructions the model follows are in `prompts/talking_points.md`. Keep the request for a JSON object with `headline`, `passage`, and `say`. The build also hands the model two or three stories from the library as voice samples. If the call fails, or the writing is not usable, the page uses the story library.
+The model names are in `feeds.yml` if you want a different small model. The instructions the model follows are in `prompts/talking_points.md`. Keep the request for a JSON object with `cards`, and on each card `hearing`, `why`, `but`, `story`, and `say`. The build hands the model the top headlines, a short summary when the feed has one, the market figures in plain words, and two or three stories from `prompts/stories.yml` as voice samples. If the call fails, or the writing is not usable, the page uses the topic file.
 
 To add a key:
 
@@ -131,6 +133,7 @@ These were checked live. A dead feed is skipped and the rest of the page still b
 | Yahoo Finance chart | Used for index closes, futures, oil, gold, VIX, Bitcoin, and the market 10-year. | `query1` and, if needed, `query2` `finance.yahoo.com/v8/finance/chart`. |
 | InvestmentNews, ThinkAdvisor, Financial Planning, FA Magazine, Citywire RIA, Financial Advisor IQ | The direct RSS addresses returned "not found," "forbidden," or an empty file. | Google News feeds limited to each site. Citywire is limited to the RIA path. |
 | Barron's Advisor | `barrons.com` RSS returns "unauthorized," and a news search was general Barron's, not the advisor desk. | Left off (`enabled: no`) so those stories do not crowd the industry section. |
+| AdvisorHub | `advisorhub.com/feed` returns a Cloudflare challenge (HTTP 403). A Feedburner address named advisorhub is a different site. | A Google News feed limited to advisorhub.com. Fresh items are boosted in Industry News. |
 | WealthManagement.com and PlanAdviser | Direct feeds answer. | Used as-is. PlanAdviser is an extra retirement-industry source. Turn it off in `feeds.yml` if you do not want it. |
 
 Headlines older than 60 hours are left off on a normal weekday. On Saturday, Sunday, and Monday morning the window is 96 hours, so Friday's news is still there Monday before the open. Industry headlines are kept for 14 days. Both windows are in `feeds.yml`.
