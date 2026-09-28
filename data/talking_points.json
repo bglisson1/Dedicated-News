@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-27T23:17:50-04:00",
+  "generated_at": "2026-09-27T23:25:31-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
@@ -13,24 +13,35 @@
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing that the Fed, which sets short-term interest rates, just raised them again.",
-      "why": "That can nudge up costs like mortgages and car loans, so borrowing money for a house or a big purchase can feel a little more expensive for a while.",
-      "but": "But rates moving is normal, and your plan already expected that rates would not sit still forever.",
-      "story": "Think of a thermostat in a house. Someone bumps it up a notch and the family does not call a moving truck. The rooms are the same. It is an adjustment, not a new house.",
+      "hearing": "You're probably hearing about tension overseas, with reports that talks over an important oil shipping route in the Middle East broke down over the weekend.",
+      "why": "That matters in daily life because that route carries a lot of the world's oil, and when it's at risk, it can nudge gas and diesel prices, which touches everything from your commute to the truck that delivers groceries.",
+      "but": "But stocks actually rose today, and the early read before the next open is just a touch softer, which is normal noise around a loud weekend headline.",
+      "story": "Picture hearing there might be a storm forming somewhere far down the road on a trip you haven't started yet. You note it, you don't turn the car around before you've even left the driveway.",
       "say": [
-        "Interest rates can move and your plan can stay put.",
-        "We built this plan knowing rates would shift. This is not a reason to rebuild the house."
+        "We watch it, we don't overreact to it.",
+        "One weekend headline doesn't get to rewrite a plan built for years."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may be hearing mixed signals, stocks were up a bit heading into the weekend, but the early read this morning looks a touch softer.",
-      "why": "That kind of back and forth is just markets digesting news over the weekend, it does not mean much for your day to day life or your long-term goals.",
-      "but": "But small wobbles like this happen all the time, and reacting to every one of them is not a strategy, it is a distraction.",
-      "story": "Picture checking the weather every hour before a trip that is still three weeks away. The forecast changes, but the trip date does not move. Your plan works the same way, it is not rebuilt every morning.",
+      "hearing": "You're probably hearing that the Fed, which sets short-term interest rates, just raised rates again.",
+      "why": "That can matter for daily life, because it often shows up in the cost of a credit card, a car loan, or a new mortgage.",
+      "but": "But moves like this are part of a normal, ongoing cycle, not a surprise that should shake a plan built for years, not headlines.",
+      "story": "Think of a thermostat in a house. Someone adjusts it up or down depending on the season, but the house still keeps running the same way it always has.",
       "say": [
-        "A soft morning does not change a long-term plan.",
-        "We stay focused on the trip, not the hourly forecast."
+        "We build your plan expecting rates to move both ways.",
+        "One adjustment doesn't change the long-term plan we already set."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may also hear that the US and China agreed on a list of goods that will get lower tariffs between the two countries.",
+      "why": "That matters at home because tariffs can affect the price of everyday things like electronics, clothing, or parts for the car.",
+      "but": "But trade rules shift often, and a long-term plan is built to handle those shifts, not chase every new list.",
+      "story": "It's a bit like a grocery store changing which aisle has the sale each week. Smart shoppers don't redo their whole budget, they just keep shopping the way they planned.",
+      "say": [
+        "Trade headlines come and go, and your plan is built for that.",
+        "We don't chase tariff news, we stick with the plan."
       ]
     }
   ]
