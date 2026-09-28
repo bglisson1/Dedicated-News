@@ -1,47 +1,36 @@
 {
-  "generated_at": "2026-09-28T08:57:23-04:00",
+  "generated_at": "2026-09-28T12:15:41-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Fed raises rates for first time in years: What it means for your wallet",
-    "Stock futures drop to start the week as oil prices and Treasury yields rise: Live updates",
-    "Police 'investigate Iran link' to suspected bomb plot at UK air base used by U.S.",
-    "Treasury Secretary Scott Bessent hires Wall Street economist David Zervos",
+    "Iran denies involvement in suspected plot targeting US air base in England",
+    "Trump says he approved new fuel economy standards ending Biden-era electric vehicle mandate",
+    "Why S&P 500 stock valuations are falling",
+    "SpaceX launches its massive Starship rocket into orbit for the first time",
     "Meta, Google, Amazon, Microsoft draw Sen. Warren questions about AI tax subsidies",
-    "Good economy, bad vibes"
+    "Trump's economy polls terribly. It's also surging."
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that the Fed just raised interest rates, the first move like this in a while.",
-      "why": "The Fed sets short-term interest rates, and that ripples into things like credit cards, car loans, and mortgages, so borrowing can cost a little more for a while.",
-      "but": "But rate moves are part of a normal cycle, not a reason to rewrite a plan built for many years.",
-      "story": "Picture adjusting the thermostat a notch because the weather shifted. You do not renovate the whole house over one degree. You just dress for it and keep living your life.",
+      "hearing": "You may be hearing about a bomb plot that was stopped near a U.S. air base in England, and that Iran is denying any role in it.",
+      "why": "Stories like this can feel scary because they touch on war and security, and that uncertainty is part of why oil and stocks can wobble a bit this week.",
+      "but": "But headlines like this have happened before, and markets have a long track record of digesting scary news without it changing your long-term plan.",
+      "story": "Picture checking a storm forecast for a city far from home. You watch it, you note it, but you do not cancel your own week because of weather somewhere else. Distant events get watched, not overreacted to.",
       "say": [
-        "We expected the Fed to move eventually, and your plan already accounts for that.",
-        "One rate decision does not change the years ahead of you."
+        "We see the headline, we are not changing your plan because of it.",
+        "Geopolitical scares happen. Your plan is built to ride through them."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that oil prices jumped this morning, tied to a security scare involving a UK air base.",
-      "why": "Oil feeds into gas and diesel, so a jump like this can eventually show up at the pump and in what it costs to ship groceries and goods.",
-      "but": "But headlines about overseas tension come and go, and a single morning's oil move is not a forecast for the year.",
-      "story": "Think of a driver who sees one red light and decides the whole road trip is ruined. One light does not cancel the trip. You slow down, then keep going.",
+      "hearing": "You may be hearing that the government just approved new mileage rules for cars, ending the old electric vehicle requirement from a few years back.",
+      "why": "That matters because it can change what new cars cost and which models get built, so it can shape your next trip to the dealership.",
+      "but": "But the plan we built for you doesn't ride on which cars roll off the line or how many miles they squeeze from a gallon.",
+      "story": "Picture two neighbors. One keeps redoing their household budget every time a new car rule comes out. The other just gets an oil change, waits for their car to actually need replacing, and moves on with their week.",
       "say": [
-        "We watch headlines like this without letting them steer the whole plan.",
-        "A jump in oil this morning is noise we expect to see from time to time."
-      ]
-    },
-    {
-      "topic": "model",
-      "hearing": "You may hear that stock futures are a little softer this morning after stocks rose on Friday.",
-      "why": "A quieter, choppier morning like this can feel unsettling, especially right after a good week, but it is a completely normal part of investing.",
-      "but": "But this kind of back-and-forth is exactly why we build plans for years, not for any single morning.",
-      "story": "Picture a hiker checking the trail app every five minutes. The trail does not change because you keep refreshing. You look up, keep walking, and you get where you are going.",
-      "say": [
-        "Stocks rose on Friday, and this morning is just a little quieter. That is normal.",
-        "We do not chase every morning move. We stick with your plan."
+        "We built your plan to handle policy changes like this one.",
+        "A new mileage rule doesn't rewrite your long-term plan."
       ]
     }
   ]
