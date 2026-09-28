@@ -124,7 +124,7 @@ def test_drop_bad_card_keep_the_good_one():
     assert briefing is not None, log
     assert len(briefing.cards) == 1
     assert "fuel prices" in briefing.cards[0].hearing
-    assert "dropped card 1: forbidden language" in log
+    assert 'dropped card 1: forbidden language ("You should buy")' in log
     assert "FAILED" not in log
 
 
@@ -245,6 +245,135 @@ def test_json_mode_falls_back_when_the_model_rejects_it():
     assert "response_format" not in calls[1]
     assert "does not accept json mode" in log.getvalue()
     assert SECRET not in log.getvalue()
+
+
+def test_everyday_words_are_not_advice():
+    samples = [
+        WHY + " People keep buying groceries.",
+        WHY + " A sell-off in the morning does not redo the plan.",
+        WHY + " There is no guarantee the week stays quiet.",
+        WHY + " We buy the groceries either way.",
+    ]
+    for why in samples:
+        briefing, log = parse(json.dumps({"cards": [card(why=why)]}))
+        assert briefing is not None, log
+        assert "forbidden language" not in log
+
+
+def test_real_advice_logs_the_phrase():
+    for phrase in ("guaranteed return", "will go up", "you should sell"):
+        why = WHY + f" Someone says the market has a {phrase} ahead."
+        if phrase == "you should sell":
+            why = WHY + " Then they say you should sell."
+        briefing, log = parse(json.dumps({"cards": [card(why=why)]}))
+        assert briefing is None, phrase
+        assert f'forbidden language ("{phrase}")' in log or 'forbidden language ("You should sell")' in log
+
+
+def test_one_retry_fills_the_missing_card():
+    calls = []
+    first = card()
+    second = card(hearing="You may hear that the Fed, which sets short-term interest rates, raised them.")
+    third = card(hearing="You may hear that hiring slowed and people are asking what that means for work.")
+    bad = card(say=["You should buy stocks now and ignore the plan."])
+    replies = [
+        json.dumps({"cards": [bad, first, second]}),
+        json.dumps({"cards": [third]}),
+    ]
+
+    def fake_post(name, key, endpoint, model, system, user, temperature=0.4, max_tokens=1400):
+        calls.append(user)
+        return replies.pop(0)
+
+    original = build.post_provider
+    build.post_provider = fake_post
+    try:
+        briefing = build.call_openrouter(
+            {},
+            "secret-key",
+            "system",
+            "full facts",
+            CONTEXT,
+            [
+                "Brent tops $106 after Trump rejects Iran proposal",
+                "Fed raises rates",
+                "Hiring slowed last month",
+                "Niche software firm buys a rival",
+            ],
+        )
+    finally:
+        build.post_provider = original
+    assert briefing is not None
+    assert len(briefing.cards) == 3
+    assert len(calls) == 2
+    assert "Write only 1 card" in calls[1]
+    assert 'Do not use this phrasing: "You should buy"' in calls[1]
+    assert "gas and diesel" in calls[1]
+    assert "Brent tops $106" in calls[1]
+    assert "secret-key" not in calls[1]
+
+
+def test_no_retry_when_three_cards_survive():
+    calls = []
+
+    def fake_post(name, key, endpoint, model, system, user, temperature=0.4, max_tokens=1400):
+        calls.append(user)
+        return json.dumps(
+            {
+                "cards": [
+                    card(),
+                    card(hearing="You may hear that hiring slowed and work feels less certain."),
+                    card(hearing="You may hear that an election is close and people are talking about it."),
+                ]
+            }
+        )
+
+    original = build.post_provider
+    build.post_provider = fake_post
+    try:
+        briefing = build.call_openrouter(
+            {},
+            "secret-key",
+            "system",
+            "facts",
+            CONTEXT,
+            ["One", "Two", "Three", "Four"],
+        )
+    finally:
+        build.post_provider = original
+    assert briefing is not None
+    assert len(briefing.cards) == 3
+    assert len(calls) == 1
+    assert build.missing_card_count(2, 2) == 0
+    assert build.missing_card_count(2, 3) == 1
+    assert build.missing_card_count(3, 6) == 0
+
+
+def test_failed_retry_keeps_the_cards_already_accepted():
+    replies = [
+        json.dumps({"cards": [card(say=["You should buy stocks now."]), card()]}),
+        None,
+    ]
+
+    def fake_post(name, key, endpoint, model, system, user, temperature=0.4, max_tokens=1400):
+        return replies.pop(0)
+
+    original = build.post_provider
+    build.post_provider = fake_post
+    try:
+        briefing = build.call_openrouter(
+            {},
+            "secret-key",
+            "system",
+            "facts",
+            CONTEXT,
+            ["Brent tops $106", "Fed raises rates", "Hiring slowed"],
+        )
+    finally:
+        build.post_provider = original
+    assert briefing is not None
+    assert len(briefing.cards) == 1
+    assert "fuel prices" in briefing.cards[0].hearing
 
 
 def main():

@@ -63,17 +63,20 @@ STOPWORDS = {
     "latest", "updates", "update", "live",
 }
 
-BANNED_COPY = (
-    r"\bguarante",
+# Advice or a promise. Everyday words such as "buying groceries", "sell-off",
+# and "no guarantee" are not advice and must not match.
+ADVICE_PHRASES = (
     r"\byou should buy\b",
     r"\byou should sell\b",
-    r"\bbuy the\b",
-    r"\bsell the\b",
+    r"\bbuy now\b",
     r"\bsell now\b",
-    r"\bprice target\b",
+    r"\bguaranteed returns?\b",
+    r"\bwill go up\b",
+    r"\bwill rise\b",
     r"\bwill rally\b",
     r"\bwill crash\b",
     r"\bwill soar\b",
+    r"\bprice targets?\b",
 )
 
 
@@ -137,6 +140,7 @@ class Briefing:
     origin: str
     source: str = ""
     generated_at: datetime | None = None
+    avoid_phrases: list[str] = field(default_factory=list)
 
 
 def main() -> int:
@@ -1688,7 +1692,14 @@ def call_provider(config: dict, facts: dict, library: dict) -> Briefing | None:
     user = provider_user_message(facts, library)
     openrouter = (os.environ.get("OPENROUTER_API_KEY") or "").strip()
     if openrouter:
-        return call_openrouter(talking, openrouter, system, user, facts["context"])
+        return call_openrouter(
+            talking,
+            openrouter,
+            system,
+            user,
+            facts["context"],
+            fact_headlines(facts),
+        )
     providers = (
         (
             "openai",
@@ -1728,7 +1739,14 @@ def call_provider(config: dict, facts: dict, library: dict) -> Briefing | None:
     return None
 
 
-def call_openrouter(talking: dict, key: str, system: str, user: str, context: str) -> Briefing | None:
+def call_openrouter(
+    talking: dict,
+    key: str,
+    system: str,
+    user: str,
+    context: str,
+    headlines: list[str] | None = None,
+) -> Briefing | None:
     primary = str(talking.get("llm_model") or "anthropic/claude-sonnet-5").strip()
     fallback = str(talking.get("llm_fallback_model") or "openai/gpt-6-luna").strip()
     try:
@@ -1760,6 +1778,17 @@ def call_openrouter(talking: dict, key: str, system: str, user: str, context: st
         briefing = parse_briefing(content, context, "openrouter", secret=key)
         if briefing is None:
             continue
+        briefing = fill_missing_cards(
+            briefing,
+            headlines or [],
+            context,
+            key,
+            endpoint,
+            model,
+            system,
+            temperature,
+            max_tokens,
+        )
         print("  talking points: openrouter OK")
         briefing.origin = f"openrouter:{model}"
         briefing.source = model
@@ -1787,6 +1816,11 @@ def provider_user_message(facts: dict, library: dict) -> str:
     plain = plain_english_facts(facts)
     return (
         "Write 2 or 3 talking-point cards from these facts only. "
+        "Prioritize headlines everyday people are most likely hearing about: "
+        "war and geopolitics, gas and diesel prices, elections, the Fed, "
+        "inflation, jobs, tariffs, and big market moves. "
+        "Give each card a different headline. "
+        "Prefer those over niche corporate stories.\n"
         "Do not invent any number or event. Do not copy a sample.\n\n"
         "STYLE SAMPLES (voice only):\n"
         f"{sample_text}\n\n"
@@ -2077,7 +2111,9 @@ def parse_briefing(
     if not cards:
         reject_reply(provider, "; ".join(reasons) or "no usable cards", content, secret)
         return None
-    return Briefing(cards, "provider")
+    briefing = Briefing(cards, "provider")
+    briefing.avoid_phrases = phrases_to_avoid(reasons)
+    return briefing
 
 
 def card_from_model(raw: dict, context: str) -> tuple[TalkCard | None, str]:
@@ -2094,14 +2130,133 @@ def card_from_model(raw: dict, context: str) -> tuple[TalkCard | None, str]:
         reality = "But " + reality[0].lower() + reality[1:]
     card = TalkCard(hearing, why, reality, story, say, "model")
     blob = card_text(card)
-    if any(re.search(pattern, blob, flags=re.I) for pattern in BANNED_COPY):
-        return None, "forbidden language"
+    phrase = advice_phrase(blob)
+    if phrase:
+        return None, f'forbidden language ("{phrase}")'
     if not numbers_are_grounded(blob, context):
         return None, "number not in the facts"
     words = word_count(blob)
     if words < MIN_CARD_WORDS or words > MAX_CARD_WORDS:
         return None, f"word count {words}"
     return card, ""
+
+
+def advice_phrase(text: str) -> str:
+    """The advice or promise phrase in the card, or '' when the wording is fine."""
+    for pattern in ADVICE_PHRASES:
+        found = re.search(pattern, text, flags=re.I)
+        if found:
+            return found.group(0)
+    return ""
+
+
+def phrases_to_avoid(reasons: list[str]) -> list[str]:
+    phrases = []
+    for reason in reasons:
+        found = re.search(r'\("([^"]*)"\)', reason)
+        if found and found.group(1) and found.group(1) not in phrases:
+            phrases.append(found.group(1))
+    return phrases
+
+
+def fact_headlines(facts: dict) -> list[str]:
+    titles = []
+    for key in ("financial", "political"):
+        for cluster in facts.get(key) or []:
+            if cluster:
+                titles.append(choose_representative(cluster).title)
+    return titles
+
+
+def missing_card_count(card_count: int, headline_count: int) -> int:
+    """How many cards to ask for when the page still has room and headlines left."""
+    if card_count >= 3 or headline_count < 3 or headline_count <= card_count:
+        return 0
+    return min(3, headline_count) - card_count
+
+
+def retry_user_message(
+    briefing: Briefing,
+    headlines: list[str],
+    missing: int,
+    context: str,
+) -> str:
+    used = "\n".join(f"- {card.hearing}" for card in briefing.cards) or "- none"
+    heads = "\n".join(f"- {title}" for title in headlines)
+    count = "1 card" if missing == 1 else f"{missing} cards"
+    avoid = ""
+    if briefing.avoid_phrases:
+        quoted = ", ".join(f'"{phrase}"' for phrase in briefing.avoid_phrases)
+        avoid = (
+            f"Do not use this phrasing: {quoted}. "
+            "It reads as advice or a promise.\n"
+        )
+    return (
+        f"Write only {count}. "
+        "Each card needs a different headline from the list, "
+        "and not a headline you already used. "
+        "Prioritize what everyday people are hearing: war and geopolitics, "
+        "gas and diesel prices, elections, the Fed, inflation, jobs, tariffs, "
+        "and big market moves. Prefer those over niche corporate stories.\n"
+        f"{avoid}\n"
+        "HEADLINES:\n"
+        f"{heads}\n\n"
+        "ALREADY WRITTEN (do not repeat):\n"
+        f"{used}\n\n"
+        "FACTS:\n"
+        f"{context}"
+    )
+
+
+def hearing_is_new(card: TalkCard, cards: list[TalkCard]) -> bool:
+    fresh = normalize_title(card.hearing)
+    if not fresh:
+        return False
+    for previous in cards:
+        if titles_match(fresh, normalize_title(previous.hearing)):
+            return False
+    return True
+
+
+def fill_missing_cards(
+    briefing: Briefing,
+    headlines: list[str],
+    context: str,
+    key: str,
+    endpoint: str,
+    model: str,
+    system: str,
+    temperature: float,
+    max_tokens: int,
+) -> Briefing:
+    """One extra call when a dropped card left a mainstream headline unused."""
+    missing = missing_card_count(len(briefing.cards), len(headlines))
+    if missing <= 0:
+        return briefing
+    print(f"  talking points: retrying openrouter model {model} for {missing} missing card(s)")
+    content = post_provider(
+        "openrouter",
+        key,
+        endpoint,
+        model,
+        system,
+        retry_user_message(briefing, headlines, missing, context),
+        temperature=temperature,
+        max_tokens=max_tokens,
+    )
+    if not content:
+        return briefing
+    extra = parse_briefing(content, context, "openrouter", secret=key)
+    if extra is None:
+        return briefing
+    merged = list(briefing.cards)
+    for card in extra.cards:
+        if len(merged) >= 3:
+            break
+        if hearing_is_new(card, merged):
+            merged.append(card)
+    briefing.cards = merged
+    return briefing
 
 
 def numbers_are_grounded(text: str, context: str) -> bool:
