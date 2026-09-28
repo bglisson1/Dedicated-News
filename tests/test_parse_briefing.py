@@ -376,6 +376,65 @@ def test_failed_retry_keeps_the_cards_already_accepted():
     assert "fuel prices" in briefing.cards[0].hearing
 
 
+def test_sunday_night_does_not_call_friday_today():
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    eastern = ZoneInfo("America/New_York")
+    sunday = datetime(2026, 9, 27, 22, 48, tzinfo=eastern)
+    friday = datetime(2026, 9, 25, 16, 0, tzinfo=eastern)
+    assert build.market_status(sunday) == "closed/weekend"
+    assert "10:48 PM ET" in build.format_clock(sunday)
+    assert "Sunday, September 27, 2026" in build.format_clock(sunday)
+    wording = build.session_instruction(sunday, friday)
+    assert "on Friday" in wording
+    assert 'Do not say "today"' in wording
+    quotes = [
+        build.Quote(
+            "S&P 500",
+            "^GSPC",
+            "previous_close",
+            ok=True,
+            price=7743.41,
+            pct=0.51,
+            as_of=friday,
+        )
+    ]
+    config = {
+        "site": {"big_move_percent": 1.5, "big_day_headline_hours": 20},
+        "big_day_phrases": [],
+    }
+    facts = build.fact_sheet(
+        config,
+        sunday,
+        quotes,
+        [],
+        {"financial": [], "political": []},
+        [],
+    )
+    assert "MARKET: closed/weekend" in facts["context"]
+    assert "LAST CLOSE: Friday, September 25, 2026" in facts["context"]
+    assert 'Do not say "today"' in facts["context"]
+    plain = build.plain_english_facts(facts)
+    assert "on Friday" in plain
+    assert "closed/weekend" in plain
+
+    monday_open = datetime(2026, 9, 28, 10, 0, tzinfo=eastern)
+    assert build.market_status(monday_open) == "open"
+    assert 'Do not say "today"' in build.session_instruction(monday_open, friday)
+    monday_morning = datetime(2026, 9, 28, 8, 0, tzinfo=eastern)
+    assert build.market_status(monday_morning) == "premarket"
+    monday_close = datetime(2026, 9, 28, 16, 0, tzinfo=eastern)
+    after_close = datetime(2026, 9, 28, 17, 0, tzinfo=eastern)
+    assert build.market_status(after_close) == "closed/weekend"
+    assert 'You may say "today"' in build.session_instruction(after_close, monday_close)
+    tuesday = datetime(2026, 9, 29, 7, 0, tzinfo=eastern)
+    yesterday = build.session_instruction(tuesday, monday_close)
+    assert "yesterday" in yesterday
+    assert "Monday" in yesterday
+    assert 'Do not say "today."' in yesterday
+
+
 def main():
     tests = [value for name, value in globals().items() if name.startswith("test_")]
     for test in tests:

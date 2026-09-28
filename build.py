@@ -431,6 +431,30 @@ def live_vs_prior(bars, live, now: datetime):
     return price, change, change / base * 100.0, as_of, in_progress
 
 
+def market_status(now: datetime) -> str:
+    """Cash stocks: open, premarket, or closed/weekend. Weekends stay closed."""
+    local = now.astimezone(EASTERN)
+    if local.weekday() >= 5:
+        return "closed/weekend"
+    minutes = local.hour * 60 + local.minute
+    if minutes < 9 * 60 + 30:
+        return "premarket"
+    if minutes < 16 * 60:
+        return "open"
+    return "closed/weekend"
+
+
+def format_clock(now: datetime) -> str:
+    local = now.astimezone(EASTERN)
+    hour = local.strftime("%I").lstrip("0") or "12"
+    return f"{local.strftime('%A, %B')} {local.day}, {local.year}, {hour}:{local.strftime('%M %p')} ET"
+
+
+def format_session_day(stamp: datetime) -> str:
+    local = stamp.astimezone(EASTERN)
+    return f"{local.strftime('%A, %B')} {local.day}, {local.year}"
+
+
 def futures_session_label(now: datetime) -> str:
     minutes = now.hour * 60 + now.minute
     if now.weekday() == 6 and minutes >= 18 * 60:
@@ -1577,7 +1601,19 @@ def fact_sheet(config, now, quotes, rates, picked, items) -> dict:
             "Talk about this week and the long-term plan, not about today."
         )
 
-    lines = [f"TIMEFRAME: {timeframe}", f"NOTE: {reason}", "", "MARKET FIGURES:"]
+    close = last_cash_close(quotes)
+    close_text = format_session_day(close) if close is not None else "unknown"
+    lines = [
+        f"NOW: {format_clock(now)}",
+        f"MARKET: {market_status(now)}",
+        f"LAST CLOSE: {close_text}",
+        f"SESSION: {session_instruction(now, close)}",
+        "",
+        f"TIMEFRAME: {timeframe}",
+        f"NOTE: {reason}",
+        "",
+        "MARKET FIGURES:",
+    ]
     for quote in quotes:
         lines.append(describe_quote_fact(quote))
     lines.append("")
@@ -2718,12 +2754,47 @@ def early_sentence(quote: Quote | None, big: bool) -> str | None:
     return f"{lead} {tone}."
 
 
+def last_cash_close(quotes: list[Quote]) -> datetime | None:
+    preferred = quote_by(quotes, "^GSPC")
+    if preferred is not None and preferred.as_of is not None:
+        return preferred.as_of
+    for quote in quotes:
+        if quote.group == "previous_close" and quote.as_of is not None:
+            return quote.as_of
+    return None
+
+
+def session_instruction(now: datetime, last_close: datetime | None) -> str:
+    """How to name the last stock session. 'today' only if that session was today."""
+    if last_close is None:
+        return "The last stock session date is unknown. Do not say stocks moved today."
+    local = now.astimezone(EASTERN)
+    close = last_close.astimezone(EASTERN)
+    day = close.strftime("%A")
+    if close.date() == local.date():
+        return f"The last stock session was today, {day}. You may say \"today\" for that session."
+    if close.date() == local.date() - timedelta(days=1):
+        return (
+            f"The last stock session was yesterday, {day}. "
+            f"Say \"yesterday\" or \"on {day}.\" Do not say \"today.\""
+        )
+    return (
+        f"The last stock session was on {day}. "
+        f"Say \"on {day}.\" Do not say \"today\" or \"yesterday.\""
+    )
+
+
 def plain_english_facts(facts: dict) -> str:
+    now = facts["now"]
+    close = last_cash_close(facts["quotes"])
+    close_text = format_session_day(close) if close is not None else "unknown"
     spx = quote_by(facts["quotes"], "^GSPC")
     es = quote_by(facts["quotes"], "ES=F")
     ten = quote_by(facts["rates"], "DGS10")
     mortgage = quote_by(facts["rates"], "MORTGAGE30US")
     lines = [
+        f"- Clock: {format_clock(now)}. The market is {market_status(now)}.",
+        f"- Last close: {close_text}. {session_instruction(now, close)}",
         f"- Time frame: {facts.get('timeframe')}",
         f"- Stocks: {stock_phrase(spx.pct if spx is not None else None)}",
     ]
