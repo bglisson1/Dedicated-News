@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-09-27T23:35:01-04:00",
+  "generated_at": "2026-09-28T06:18:15-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Dow, S&P 500, Nasdaq Futures Fall As Brent Tops $106 After Trump Rejects Iran Proposal: MU, SLV, QNT, META In Focus",
     "Fed raises rates for first time in years: What it means for your wallet",
-    "Northern Star shares pop as Australian gold miner rejects $27 billion takeover proposal",
-    "Anthropic CEO Dario Amodei to have private White House dinner with Trump",
-    "Trump says he approved new fuel economy standards, rolling back Biden-era rules",
-    "US Releases Product Lists for $30 Billion China Tariff Deal"
+    "The 10-year Treasury yield is at its highest in nearly two decades. How we got here",
+    "Police 'investigate Iran link' to suspected bomb plot at UK air base used by U.S.",
+    "Shifting Senate Map Is Fueling Most Expensive US Election Ever",
+    "Streeting Declines to Link US-Iran War With RAF Fairford Arrests",
+    "\u2018Love letter\u2019: California AG takes aim at Trump\u2019s links to Big Oil"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that tensions in the Middle East just got louder, with talk of a key oil route and a rejected deal over the weekend.",
-      "why": "That route matters because a lot of the world's oil moves through it, and oil is part of what gets pumped into trucks and cars, which can nudge the cost of getting goods to stores.",
-      "but": "But a headline about a shipping lane is not the same as a change to your household's plan.",
-      "story": "Picture a family road trip where one detour sign pops up on the map. You slow down, you check the route, but you do not turn around and go home. The destination did not change, just the traffic report.",
+      "hearing": "You may be hearing that the Fed, which sets short-term interest rates, just raised rates for the first time in years.",
+      "why": "That can nudge up the cost of things like a car loan, a credit card balance, or a new mortgage, since borrowing tends to cost a little more when rates go up.",
+      "but": "But rates moving up and down is exactly the kind of thing your plan was built to handle.",
+      "story": "Picture a thermostat in a house. Sometimes it clicks up, sometimes down, and the family still eats dinner and goes to bed at the same time every night. Rate moves are the thermostat. Your routine, the plan, stays the same.",
       "say": [
-        "We see the headline, and we keep driving the plan.",
-        "One weekend's news is a detour sign, not a new destination."
+        "We built your plan expecting rates to move in both directions.",
+        "This is normal weather, not a reason to redo the plan."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that the Fed, which sets short-term interest rates, just raised rates for the first time in years.",
-      "why": "That can nudge up the cost of things like car loans, credit cards, and a mortgage, so borrowing money gets a little more expensive.",
-      "but": "But rates have moved up and down many times over the years, and a long-term plan is built to ride through all of it.",
-      "story": "Think of it like a thermostat. Sometimes the house runs a little warmer, sometimes cooler, but you don't tear down the whole house every time it adjusts.",
+      "hearing": "You may be hearing about rising tension overseas, with reports of a bomb plot tied to Iran at a UK air base used by U.S. forces, as the U.S.-Iran conflict continues to make headlines.",
+      "why": "This matters because tension between countries can push oil prices higher, and oil prices flow into the cost of gas, diesel, and eventually the shipping costs baked into groceries and everyday goods.",
+      "but": "But a scary overseas headline moving markets for a morning is not a reason to rewrite a plan built for years, not days.",
+      "story": "Think of a sudden thunderstorm on a long road trip. You slow down, you stay alert, but you don't turn the car around and cancel the whole trip. The destination hasn't changed.",
       "say": [
-        "We build your plan to handle rate moves in both directions.",
-        "This is a normal part of the cycle, not a reason to change course."
+        "We watch headlines like this closely, but we don't drive your plan off them.",
+        "One stormy morning doesn't cancel a trip we planned for years."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that the U.S. and China just released details of a deal to cut tariffs on some goods each country buys from the other.",
-      "why": "Tariffs work like a tax on imported goods, so when they come down on certain products, it can mean a little relief on some prices at the store.",
-      "but": "But trade headlines come and go, and one deal on a slice of goods is not something to build a whole portfolio decision around.",
-      "story": "It is a bit like a store running a sale on a few aisles. Nice if you needed those items, but you still shop your whole list the same way.",
+      "hearing": "You may be hearing that a major interest rate, the one that influences mortgages, car loans, and business borrowing, has climbed to its highest level in nearly two decades.",
+      "why": "This matters because higher rates can mean pricier mortgages, car payments, and credit card bills for a lot of households.",
+      "but": "But a rate hitting a new high on a chart is not something you have to react to personally, especially if your plan already expected some bumps along the way.",
+      "story": "Imagine your neighborhood raising the toll on the highway you rarely use. It changes the drive for some people, but it doesn't touch the route you've already mapped out for your own trip.",
       "say": [
-        "We watch these headlines, but we don't chase them.",
-        "One trade deal doesn't change the plan we already built for you."
+        "Higher rates get headlines, but your plan was built to handle stretches like this.",
+        "We don't chase every rate move, we stick with the road we already mapped."
       ]
     }
   ]
