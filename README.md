@@ -72,9 +72,28 @@ Without a model key, the build matches those headlines to `prompts/topics.yml`. 
 
 `prompts/stories.yml` is the voice sample the optional model sees. You can edit either file. Keep the language plain, and do not put statistics in a story.
 
-### Optional: use your own model key
+### Use OpenRouter for the cards
 
-GitHub Models is no longer available, so the build does not call it. If you want a model to write the piece instead of the story library, add one repository secret. The build checks three names, in this order, and uses the first one it finds:
+GitHub Models is no longer available, so the build does not call it. The writer is OpenRouter. Add one repository secret named `OPENROUTER_API_KEY`.
+
+To add the key:
+
+1. Open [github.com/bglisson1/Dedicated-News](https://github.com/bglisson1/Dedicated-News).
+2. Click **Settings** in the top menu of the repository.
+3. In the left sidebar, click **Secrets and variables**.
+4. Click **Actions**.
+5. Click **New repository secret**.
+6. In **Name**, enter `OPENROUTER_API_KEY`.
+7. Paste the key into **Secret**.
+8. Click **Add secret**.
+
+You do not put the key in `feeds.yml` or in the page.
+
+The model name is `llm_model` in `feeds.yml`. It starts as `anthropic/claude-sonnet-5`. If that call fails, the build tries `llm_fallback_model`, which starts as `openai/gpt-6-luna`. Change either line to switch models. The instructions the model follows are in `prompts/talking_points.md`. Keep the request for a JSON object with `cards`, and on each card `hearing`, `why`, `but`, `story`, and `say`. The build hands the model the top headlines, a short summary when the feed has one, the market figures in plain words, and two or three stories from `prompts/stories.yml` as voice samples. If both models fail, or the writing is not usable, the page uses `prompts/topics.yml`.
+
+The model runs on three weekday clocks and the weekend clock, Eastern time: 6:00 AM, 8:45 AM, and 12:00 PM on weekdays, and 8:00 AM on Saturday and Sunday. The 7:30 AM and 4:30 PM weekday runs reuse the cards from the last run. Those cards are saved in `data/talking_points.json` and copied onto the site. A run still calls the model outside those clocks when the top headlines have changed a lot. A commit that only saves the cache does not build the page a second time.
+
+If OpenRouter is not set, the build can use one of these instead. It uses the first secret it finds:
 
 | Secret name | Model |
 | --- | --- |
@@ -82,20 +101,7 @@ GitHub Models is no longer available, so the build does not call it. If you want
 | `ANTHROPIC_API_KEY` | `claude-haiku-4-5` |
 | `XAI_API_KEY` | `grok-3-mini` |
 
-The model names are in `feeds.yml` if you want a different small model. The instructions the model follows are in `prompts/talking_points.md`. Keep the request for a JSON object with `cards`, and on each card `hearing`, `why`, `but`, `story`, and `say`. The build hands the model the top headlines, a short summary when the feed has one, the market figures in plain words, and two or three stories from `prompts/stories.yml` as voice samples. If the call fails, or the writing is not usable, the page uses the topic file.
-
-To add a key:
-
-1. Open [github.com/bglisson1/Dedicated-News](https://github.com/bglisson1/Dedicated-News).
-2. Click **Settings** in the top menu of the repository.
-3. In the left sidebar, click **Secrets and variables**.
-4. Click **Actions**.
-5. Click **New repository secret**.
-6. In **Name**, enter `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY`, or `XAI_API_KEY`.
-7. Paste the key into **Secret**.
-8. Click **Add secret**.
-
-The next build on `main` will use it. You do not put the key in `feeds.yml` or in the page.
+Add one the same way as the OpenRouter key: **Settings > Secrets and variables > Actions > New repository secret**. The same clocks and cache apply. With no key at all, every run uses the topic file.
 
 On an ordinary day the script talks about this week and the long-term plan. It talks about today only when something large is actually in the data: a move of about 1.5% or more in the S&P, Dow, Nasdaq, or their futures, or a fresh headline about a Fed decision, a jobs report, or an inflation report. You can change that bar and those phrases in `feeds.yml` (`big_move_percent`, `big_day_phrases`).
 

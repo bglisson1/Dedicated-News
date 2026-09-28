@@ -1276,20 +1276,181 @@ def arrange(items: list[Item], clusters: list[list[Item]], config: dict, now: da
     }
 
 
+CACHE_PATH = ROOT / "data" / "talking_points.json"
+LIVE_CACHE_URL = "https://bglisson1.github.io/Dedicated-News/talking_points.json"
+# Weekday 6:00 AM, 8:45 AM, and 12:00 PM, plus the weekend 8:00 AM run.
+# Both daylight and standard offsets are listed. The gate already skips the
+# offset that is not in effect, so each of these fires once.
+LLM_SLOT_CRONS = {
+    "0 10 * * 1-5",   # 6:00 AM EDT
+    "0 11 * * 1-5",   # 6:00 AM EST
+    "45 12 * * 1-5",  # 8:45 AM EDT
+    "45 13 * * 1-5",  # 8:45 AM EST
+    "0 16 * * 1-5",   # 12:00 PM EDT
+    "0 17 * * 1-5",   # 12:00 PM EST
+    "0 12 * * 0,6",   # 8:00 AM EDT Saturday and Sunday
+    "0 13 * * 0,6",   # 8:00 AM EST Saturday and Sunday
+}
+
+
 def build_talking_points(config, now, quotes, rates, picked, items) -> tuple[Briefing, str]:
     facts = fact_sheet(config, now, quotes, rates, picked, items)
     library = load_story_library(config)
+    headlines = talk_headlines(picked)
+    cache = load_talk_cache()
+    slot = is_llm_slot()
+    changed = headlines_changed_a_lot((cache or {}).get("headlines") or [], headlines)
+    has_provider = provider_configured()
+    # A model call happens on the morning and midday clocks, and also when
+    # the top headlines moved a lot. Other clocks keep the saved cards.
+    # With no key, the topic templates run every time, so the cards follow
+    # the news without a cache getting in the way.
+    should_call = has_provider and (slot or changed)
+    reuse = cache is not None and has_provider and not slot and not changed
+    if reuse:
+        cached = briefing_from_cache(cache)
+        if cached is not None:
+            if not CACHE_PATH.exists():
+                write_talk_cache(cache)
+            print("  reusing cached talking points")
+            return cached, f"cached ({cached.origin})"
     try:
-        briefing = call_provider(config, facts, library)
+        briefing = call_provider(config, facts, library) if should_call else None
         if briefing is None:
             briefing = template_briefing(config, facts)
-            return briefing, briefing.origin
+        save_talk_cache(briefing, headlines, now)
         return briefing, briefing.origin
     except Exception as exc:
         traceback.print_exc(file=sys.stderr)
         briefing = template_briefing(config, facts)
         briefing.origin = f"{briefing.origin}; provider error: {exc}"
+        save_talk_cache(briefing, headlines, now)
         return briefing, briefing.origin
+
+
+def is_llm_slot() -> bool:
+    event = (os.environ.get("EVENT_NAME") or "").strip()
+    schedule = " ".join((os.environ.get("EVENT_SCHEDULE") or "").split())
+    if event != "schedule":
+        return False
+    return schedule in LLM_SLOT_CRONS
+
+
+def provider_configured() -> bool:
+    names = ("OPENROUTER_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "XAI_API_KEY")
+    return any((os.environ.get(name) or "").strip() for name in names)
+
+
+def talk_headlines(picked: dict) -> list[str]:
+    titles = []
+    for key in ("financial", "political"):
+        for cluster in picked.get(key) or []:
+            titles.append(choose_representative(cluster).title)
+    return titles
+
+
+def headlines_changed_a_lot(cached: list, current: list[str]) -> bool:
+    """True when fewer than half of today's top headlines were in the cache."""
+    old = [str(title) for title in cached if str(title).strip()]
+    new = [title for title in current if title.strip()]
+    if not old or not new:
+        return False
+    matched = 0
+    for title in new:
+        left = normalize_title(title)
+        for previous in old:
+            if titles_match(left, normalize_title(previous)):
+                matched += 1
+                break
+    return matched * 2 < len(new)
+
+
+def load_talk_cache() -> dict | None:
+    local = read_talk_cache(CACHE_PATH)
+    if local is not None:
+        return local
+    return fetch_live_talk_cache()
+
+
+def read_talk_cache(path: Path) -> dict | None:
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"  talking-points cache could not be read: {exc}")
+        return None
+    if not isinstance(data, dict) or not data.get("cards"):
+        return None
+    return data
+
+
+def fetch_live_talk_cache() -> dict | None:
+    request = urllib.request.Request(
+        LIVE_CACHE_URL,
+        headers={"User-Agent": UA_FEED, "Accept": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=8) as response:
+            payload = response.read(MAX_BYTES)
+        data = json.loads(payload.decode("utf-8"))
+    except Exception as exc:
+        print(f"  live talking-points cache unavailable: {exc}")
+        return None
+    if not isinstance(data, dict) or not data.get("cards"):
+        return None
+    print("  loaded talking points from the live site")
+    return data
+
+
+def briefing_from_cache(data: dict) -> Briefing | None:
+    cards: list[TalkCard] = []
+    for raw in data.get("cards") or []:
+        if not isinstance(raw, dict):
+            continue
+        hearing = clean_text(str(raw.get("hearing") or ""))
+        why = clean_text(str(raw.get("why") or ""))
+        reality = clean_text(str(raw.get("but") or raw.get("reality") or ""))
+        story = clean_text(str(raw.get("story") or ""))
+        say_raw = raw.get("say") or []
+        if isinstance(say_raw, str):
+            say_raw = [say_raw]
+        say = [clean_text(str(line)) for line in say_raw if clean_text(str(line))][:2]
+        if not hearing or not why or not reality or not story or not say:
+            continue
+        cards.append(TalkCard(hearing, why, reality, story, say, str(raw.get("topic") or "cached")))
+    if not cards:
+        return None
+    origin = clean_text(str(data.get("origin") or "cache"))
+    return Briefing(cards, origin)
+
+
+def write_talk_cache(payload: dict) -> None:
+    try:
+        CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        CACHE_PATH.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    except OSError as exc:
+        print(f"  could not save talking-points cache: {exc}")
+
+
+def save_talk_cache(briefing: Briefing, headlines: list[str], now: datetime) -> None:
+    payload = {
+        "generated_at": now.isoformat(timespec="seconds"),
+        "origin": briefing.origin,
+        "headlines": headlines,
+        "cards": [
+            {
+                "topic": card.topic,
+                "hearing": card.hearing,
+                "why": card.why,
+                "but": card.reality,
+                "story": card.story,
+                "say": list(card.say),
+            }
+            for card in briefing.cards
+        ],
+    }
+    write_talk_cache(payload)
 
 
 def fact_sheet(config, now, quotes, rates, picked, items) -> dict:
@@ -1445,9 +1606,17 @@ def load_story_library(config: dict) -> dict:
 
 
 def call_provider(config: dict, facts: dict, library: dict) -> Briefing | None:
-    """Use a small model when a repository secret is set. Otherwise skip."""
+    """Use a model when a repository secret is set. Otherwise skip."""
     talking = config.get("talking_points") or {}
     prompt_path = ROOT / str(talking.get("prompt_file") or "prompts/talking_points.md")
+    if not prompt_path.exists():
+        print(f"  provider skipped: missing {prompt_path.name}")
+        return None
+    system = prompt_path.read_text(encoding="utf-8")
+    user = provider_user_message(facts, library)
+    openrouter = (os.environ.get("OPENROUTER_API_KEY") or "").strip()
+    if openrouter:
+        return call_openrouter(talking, openrouter, system, user, facts["context"])
     providers = (
         (
             "openai",
@@ -1468,31 +1637,61 @@ def call_provider(config: dict, facts: dict, library: dict) -> Briefing | None:
             str(talking.get("xai_model") or "grok-3-mini"),
         ),
     )
-    chosen = None
     for name, env_name, endpoint, model in providers:
         key = (os.environ.get(env_name) or "").strip()
-        if key:
-            chosen = (name, key, endpoint, model)
-            break
-    if chosen is None:
-        print("  no provider key set; using the headline templates")
-        return None
-    if not prompt_path.exists():
-        print(f"  provider skipped: missing {prompt_path.name}")
-        return None
-    name, key, endpoint, model = chosen
-    system = prompt_path.read_text(encoding="utf-8")
-    user = provider_user_message(facts, library)
-    print(f"  asking {name} ({model})")
-    content = post_provider(name, key, endpoint, model, system, user)
-    if not content:
-        return None
-    briefing = parse_briefing(content, facts["context"])
-    if briefing is None:
-        print("  provider text rejected; using the headline templates")
-        return None
-    briefing.origin = f"{name}:{model}"
-    return briefing
+        if not key:
+            continue
+        print(f"  asking {name} ({model})")
+        content = post_provider(name, key, endpoint, model, system, user)
+        if not content:
+            return None
+        briefing = parse_briefing(content, facts["context"])
+        if briefing is None:
+            print("  provider text rejected; using the headline templates")
+            return None
+        briefing.origin = f"{name}:{model}"
+        return briefing
+    print("  no provider key set; using the headline templates")
+    return None
+
+
+def call_openrouter(talking: dict, key: str, system: str, user: str, context: str) -> Briefing | None:
+    primary = str(talking.get("llm_model") or "anthropic/claude-sonnet-5").strip()
+    fallback = str(talking.get("llm_fallback_model") or "openai/gpt-6-luna").strip()
+    try:
+        temperature = float(talking.get("llm_temperature", 0.7))
+    except (TypeError, ValueError):
+        temperature = 0.7
+    try:
+        max_tokens = int(talking.get("llm_max_tokens", 1200))
+    except (TypeError, ValueError):
+        max_tokens = 1200
+    endpoint = "https://openrouter.ai/api/v1/chat/completions"
+    models = [primary]
+    if fallback and fallback != primary:
+        models.append(fallback)
+    for model in models:
+        print(f"  asking openrouter ({model})")
+        content = post_provider(
+            "openrouter",
+            key,
+            endpoint,
+            model,
+            system,
+            user,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+        if not content:
+            continue
+        briefing = parse_briefing(content, context)
+        if briefing is None:
+            print(f"  {model} text rejected")
+            continue
+        briefing.origin = f"openrouter:{model}"
+        return briefing
+    print("  OpenRouter did not return usable cards; using the headline templates")
+    return None
 
 
 def provider_user_message(facts: dict, library: dict) -> str:
@@ -1544,12 +1743,21 @@ def style_samples(stories: list[dict], when: datetime, skip_id: str, count: int 
     return picked
 
 
-def post_provider(name: str, key: str, endpoint: str, model: str, system: str, user: str) -> str | None:
+def post_provider(
+    name: str,
+    key: str,
+    endpoint: str,
+    model: str,
+    system: str,
+    user: str,
+    temperature: float = 0.4,
+    max_tokens: int = 1400,
+) -> str | None:
     if name == "anthropic":
         body = {
             "model": model,
-            "max_tokens": 1400,
-            "temperature": 0.4,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
             "system": system,
             "messages": [{"role": "user", "content": user}],
         }
@@ -1561,7 +1769,8 @@ def post_provider(name: str, key: str, endpoint: str, model: str, system: str, u
     else:
         body = {
             "model": model,
-            "temperature": 0.4,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
@@ -1571,6 +1780,9 @@ def post_provider(name: str, key: str, endpoint: str, model: str, system: str, u
             "Authorization": f"Bearer {key}",
             "Content-Type": "application/json",
         }
+        if name == "openrouter":
+            headers["HTTP-Referer"] = "https://bglisson1.github.io/Dedicated-News/"
+            headers["X-Title"] = "Dedicated News"
     request = urllib.request.Request(
         endpoint,
         data=json.dumps(body).encode("utf-8"),

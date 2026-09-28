@@ -26,8 +26,9 @@
 # Keep the quotes around web addresses. Keep the indentation.
 #
 # The talking-points voice lives in prompts/talking_points.md.
-# The stories and closing lines live in prompts/stories.yml.
-# A model is used only when a repository secret is set. See the README.
+# Headline cards without a model live in prompts/topics.yml.
+# Stories for the model live in prompts/stories.yml.
+# OpenRouter is used when OPENROUTER_API_KEY is set. See the README.
 # =============================================================================
 
 site:
@@ -54,8 +55,14 @@ talking_points:
   stories_file: "prompts/stories.yml"
   topics_file: "prompts/topics.yml"
   prompt_file: "prompts/talking_points.md"
-  # Used only when the matching repository secret is set.
-  # If more than one key is present, OpenAI is tried first, then Anthropic, then xAI.
+  # OpenRouter is used when the OPENROUTER_API_KEY secret is set.
+  # llm_model is the writer. If that call fails, llm_fallback_model is tried.
+  llm_model: "anthropic/claude-sonnet-5"
+  llm_fallback_model: "openai/gpt-6-luna"
+  llm_temperature: 0.7
+  llm_max_tokens: 1200
+  # Used only when OpenRouter is not set and that provider's own secret is.
+  # OpenAI is tried first, then Anthropic, then xAI.
   openai_model: "gpt-4.1-mini"
   anthropic_model: "claude-haiku-4-5"
   xai_model: "grok-3-mini"
