@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Build Dedicated News.
 
-You do not need to edit this file. Change feeds.yml, or the talking-points
-voice in prompts/talking_points.md, then run:
+You do not need to edit this file. Change feeds.yml, the stories in
+prompts/stories.yml, or the talking-points voice in prompts/talking_points.md,
+then run:
 
     python build.py
 
@@ -121,9 +122,8 @@ class FeedReport:
 @dataclass
 class Briefing:
     headline: str
-    explanation: list[str]
-    openers: list[str]
-    takeaway: str
+    paragraphs: list[str]
+    say: list[str]
     origin: str
 
 
@@ -165,6 +165,15 @@ def main() -> int:
         f"industry {len(picked['industry'])}"
     )
     print(f"Talking points: {talk_log}")
+    print("--- client talking points ---")
+    print(briefing.headline)
+    print()
+    for paragraph in briefing.paragraphs:
+        print(paragraph)
+        print()
+    for line in briefing.say:
+        print(f"SAY: {line}")
+    print(f"({word_count(briefing_text(briefing))} words)")
     if failed:
         print(f"{failed} feed(s) skipped. The page was still built.", file=sys.stderr)
     return 0
@@ -1144,18 +1153,18 @@ def arrange(items: list[Item], clusters: list[list[Item]], config: dict, now: da
 
 
 def build_talking_points(config, now, quotes, rates, picked, items) -> tuple[Briefing, str]:
+    facts = fact_sheet(config, now, quotes, rates, picked, items)
+    library = load_story_library(config)
     try:
-        facts = fact_sheet(config, now, quotes, rates, picked, items)
-        briefing = call_model(config, facts)
+        briefing = call_provider(config, facts, library)
         if briefing is None:
-            briefing = fallback_briefing(facts)
-            return briefing, f"fallback ({briefing.origin})"
-        return briefing, f"model {config.get('talking_points', {}).get('model', '')}"
+            briefing = library_briefing(facts, library)
+            return briefing, briefing.origin
+        return briefing, briefing.origin
     except Exception as exc:
         traceback.print_exc(file=sys.stderr)
-        facts = fact_sheet(config, now, quotes, rates, picked, items)
-        briefing = fallback_briefing(facts)
-        briefing.origin = f"fallback after error: {exc}"
+        briefing = library_briefing(facts, library)
+        briefing.origin = f"{briefing.origin}; provider error: {exc}"
         return briefing, briefing.origin
 
 
@@ -1271,43 +1280,155 @@ def describe_rate_fact(quote: Quote) -> str:
     return f"- {quote.label} ({quote.symbol}): {quote.price:.2f} percent, {move}, {source}, as of {when}"
 
 
-def call_model(config: dict, facts: dict) -> Briefing | None:
-    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
-    if not token:
-        print("  model skipped: GITHUB_TOKEN is not set")
-        return None
+def load_story_library(config: dict) -> dict:
+    talking = config.get("talking_points") or {}
+    path = ROOT / str(talking.get("stories_file") or "prompts/stories.yml")
+    if not path.exists():
+        print(f"  story library missing: {path.name}")
+        return {"stories": [], "closers": []}
+    with path.open(encoding="utf-8") as handle:
+        data = yaml.safe_load(handle) or {}
+    stories = [
+        item for item in (data.get("stories") or [])
+        if isinstance(item, dict) and str(item.get("text") or "").strip()
+    ]
+    closers = [
+        item for item in (data.get("closers") or [])
+        if isinstance(item, dict) and str(item.get("line") or "").strip()
+    ]
+    return {"stories": stories, "closers": closers}
+
+
+def call_provider(config: dict, facts: dict, library: dict) -> Briefing | None:
+    """Use a small model when a repository secret is set. Otherwise skip."""
     talking = config.get("talking_points") or {}
     prompt_path = ROOT / str(talking.get("prompt_file") or "prompts/talking_points.md")
-    if not prompt_path.exists():
-        print(f"  model skipped: missing {prompt_path.name}")
+    providers = (
+        (
+            "openai",
+            "OPENAI_API_KEY",
+            "https://api.openai.com/v1/chat/completions",
+            str(talking.get("openai_model") or "gpt-4.1-mini"),
+        ),
+        (
+            "anthropic",
+            "ANTHROPIC_API_KEY",
+            "https://api.anthropic.com/v1/messages",
+            str(talking.get("anthropic_model") or "claude-haiku-4-5"),
+        ),
+        (
+            "xai",
+            "XAI_API_KEY",
+            "https://api.x.ai/v1/chat/completions",
+            str(talking.get("xai_model") or "grok-3-mini"),
+        ),
+    )
+    chosen = None
+    for name, env_name, endpoint, model in providers:
+        key = (os.environ.get(env_name) or "").strip()
+        if key:
+            chosen = (name, key, endpoint, model)
+            break
+    if chosen is None:
+        print("  no provider key set; using the story library")
         return None
+    if not prompt_path.exists():
+        print(f"  provider skipped: missing {prompt_path.name}")
+        return None
+    name, key, endpoint, model = chosen
     system = prompt_path.read_text(encoding="utf-8")
-    model = str(talking.get("model") or "openai/gpt-4.1-mini")
-    endpoint = str(talking.get("endpoint") or "https://models.github.ai/inference/chat/completions")
-    body = {
-        "model": model,
-        "temperature": 0.4,
-        "messages": [
-            {"role": "system", "content": system},
-            {
-                "role": "user",
-                "content": (
-                    "Write the client talking points from these facts only. "
-                    "Do not invent any number or event.\n\n"
-                    + facts["context"]
-                ),
-            },
-        ],
-    }
+    user = provider_user_message(facts, library)
+    print(f"  asking {name} ({model})")
+    content = post_provider(name, key, endpoint, model, system, user)
+    if not content:
+        return None
+    briefing = parse_briefing(content, facts["context"])
+    if briefing is None:
+        print("  provider text rejected; using the story library")
+        return None
+    briefing.origin = f"{name}:{model}"
+    return briefing
+
+
+def provider_user_message(facts: dict, library: dict) -> str:
+    primary, _tags = market_conditions(facts)
+    today = pick_rotating(library.get("stories") or [], primary, facts["now"])
+    skip = str((today or {}).get("id") or "")
+    samples = style_samples(library.get("stories") or [], facts["now"], skip_id=skip)
+    blocks = []
+    for index, story in enumerate(samples, start=1):
+        blocks.append(
+            f"SAMPLE {index}\n"
+            f"principle: {story.get('principle', '')}\n"
+            f"headline: {story.get('headline', '')}\n"
+            f"passage: {story.get('text', '')} {story.get('tie', '')}\n"
+            f"say: {story.get('say', '')}"
+        )
+    sample_text = "\n\n".join(blocks) if blocks else "No samples were available."
+    plain = plain_english_facts(facts)
+    return (
+        "Write the client talking points from these facts only. "
+        "Do not invent any number or event. Do not copy a sample.\n\n"
+        "STYLE SAMPLES (voice only):\n"
+        f"{sample_text}\n\n"
+        "PLAIN ENGLISH (use these size words, not the figures):\n"
+        f"{plain}\n\n"
+        "FACTS:\n"
+        f"{facts['context']}"
+    )
+
+
+def style_samples(stories: list[dict], when: datetime, skip_id: str, count: int = 3) -> list[dict]:
+    pool = [story for story in stories if str(story.get("id") or "") != skip_id]
+    pool.sort(key=lambda story: str(story.get("id") or ""))
+    if not pool:
+        return []
+    start = when.astimezone(EASTERN).date().toordinal()
+    picked: list[dict] = []
+    seen: set[str] = set()
+    for step in range(count * 3):
+        story = pool[(start + step * 5) % len(pool)]
+        ident = str(story.get("id") or "")
+        if ident in seen:
+            continue
+        seen.add(ident)
+        picked.append(story)
+        if len(picked) == count:
+            break
+    return picked
+
+
+def post_provider(name: str, key: str, endpoint: str, model: str, system: str, user: str) -> str | None:
+    if name == "anthropic":
+        body = {
+            "model": model,
+            "max_tokens": 700,
+            "temperature": 0.4,
+            "system": system,
+            "messages": [{"role": "user", "content": user}],
+        }
+        headers = {
+            "x-api-key": key,
+            "anthropic-version": "2023-06-01",
+            "content-type": "application/json",
+        }
+    else:
+        body = {
+            "model": model,
+            "temperature": 0.4,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+        }
+        headers = {
+            "Authorization": f"Bearer {key}",
+            "Content-Type": "application/json",
+        }
     request = urllib.request.Request(
         endpoint,
         data=json.dumps(body).encode("utf-8"),
-        headers={
-            "Accept": "application/vnd.github+json",
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-            "X-GitHub-Api-Version": "2022-11-28",
-        },
+        headers=headers,
         method="POST",
     )
     try:
@@ -1315,23 +1436,25 @@ def call_model(config: dict, facts: dict) -> Briefing | None:
             payload = response.read(MAX_BYTES)
     except urllib.error.HTTPError as exc:
         detail = exc.read(500).decode("utf-8", "replace")
-        print(f"  model HTTP {exc.code}: {detail[:300]}")
+        print(f"  {name} HTTP {exc.code}: {detail[:300]}")
         return None
     except Exception as exc:
-        print(f"  model failed: {exc}")
+        print(f"  {name} failed: {exc}")
         return None
     try:
         data = json.loads(payload.decode("utf-8"))
-        content = data["choices"][0]["message"]["content"]
+        if name == "anthropic":
+            return str(data["content"][0]["text"])
+        return str(data["choices"][0]["message"]["content"])
     except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
-        print(f"  model response could not be read: {exc}")
+        print(f"  {name} response could not be read: {exc}")
         return None
-    briefing = parse_briefing(str(content), facts["context"])
-    if briefing is None:
-        print("  model text rejected; using the template")
-        return None
-    briefing.origin = "model"
-    return briefing
+
+
+JARGON = re.compile(
+    r"\b(basis points?|bps|S&P|Nasdaq|Russell|futures|VIX|Dow|yields?|tickers?|premarket|indexes?|indices)\b",
+    re.I,
+)
 
 
 def parse_briefing(content: str, context: str) -> Briefing | None:
@@ -1351,34 +1474,50 @@ def parse_briefing(content: str, context: str) -> Briefing | None:
     if not isinstance(data, dict):
         return None
     headline = clean_text(str(data.get("headline") or ""))
-    explanation_raw = data.get("explanation") or ""
-    if isinstance(explanation_raw, list):
-        explanation = [clean_text(str(part)) for part in explanation_raw if clean_text(str(part))]
-    else:
-        explanation = [
+    passage = str(data.get("passage") or "").strip()
+    paragraphs = [
+        clean_text(part)
+        for part in re.split(r"\n\s*\n", passage)
+        if clean_text(part)
+    ]
+    if len(paragraphs) == 1 and paragraphs[0]:
+        sentences = [
             clean_text(part)
-            for part in re.split(r"(?<=[.!?])\s+", str(explanation_raw))
+            for part in re.split(r"(?<=[.!?])\s+", paragraphs[0])
             if clean_text(part)
         ]
-    openers_raw = data.get("openers") or data.get("say") or []
-    if isinstance(openers_raw, str):
-        openers_raw = [openers_raw]
-    openers = [clean_text(str(part)) for part in openers_raw if clean_text(str(part))]
-    takeaway = clean_text(str(data.get("takeaway") or ""))
-    if not headline or not explanation or not openers or not takeaway:
+        if len(sentences) > 3:
+            paragraphs = [
+                " ".join(sentences[:2]),
+                " ".join(sentences[2:-1]) if len(sentences) > 3 else sentences[2],
+                sentences[-1] if len(sentences) > 3 else "",
+            ]
+            paragraphs = [part for part in paragraphs if part]
+    say_raw = data.get("say") or []
+    if isinstance(say_raw, str):
+        say_raw = [say_raw]
+    say = [clean_text(str(part)) for part in say_raw if clean_text(str(part))][:2]
+    if not headline or not paragraphs or not say:
+        print("  provider text was missing a headline, a passage, or a say line")
         return None
-    blob = " ".join([headline, *explanation, *openers, takeaway])
+    blob = " ".join([headline, *paragraphs, *say])
     if any(re.search(pattern, blob, flags=re.I) for pattern in BANNED_COPY):
-        print("  model text included a recommendation or a promise")
+        print("  provider text included a recommendation or a promise")
+        return None
+    if JARGON.search(blob):
+        print("  provider text used market jargon")
+        return None
+    if re.search(r"\d", blob):
+        print("  provider text included a figure")
         return None
     if not numbers_are_grounded(blob, context):
-        print("  model text included a number that was not in the facts")
+        print("  provider text included a number that was not in the facts")
         return None
     words = word_count(blob)
-    if words < 100 or words > 210:
-        print(f"  model text was {words} words")
+    if words < 120 or words > 200:
+        print(f"  provider text was {words} words")
         return None
-    return Briefing(headline, explanation[:4], openers[:2], takeaway, "model")
+    return Briefing(headline, paragraphs, say, "provider")
 
 
 def numbers_are_grounded(text: str, context: str) -> bool:
@@ -1410,234 +1549,313 @@ def numbers_are_grounded(text: str, context: str) -> bool:
     return True
 
 
-def fallback_briefing(facts: dict) -> Briefing:
-    quotes = [quote for quote in facts["quotes"] if quote.ok and quote.price is not None]
-    closes = [quote for quote in quotes if quote.group == "previous_close"]
-    futures = [quote for quote in quotes if quote.group == "futures"]
-    rates = [quote for quote in facts["rates"] if quote.ok and quote.price is not None]
-    spx = next((quote for quote in closes if quote.symbol == "^GSPC"), closes[0] if closes else None)
-    es = next((quote for quote in futures if quote.symbol == "ES=F"), futures[0] if futures else None)
-    ten_year = next((quote for quote in rates if quote.symbol == "DGS10"), None)
-    mortgage = next((quote for quote in rates if quote.symbol == "MORTGAGE30US"), None)
-    matched = facts["matched"]
-    big_moves = facts["big_moves"]
-
-    others = [quote for quote in closes if quote is not spx]
-    also = others_clause(others) if others else ""
-    sentences: list[str] = []
-    if spx is not None:
-        sentences.append(close_sentence(spx, also))
-    elif closes:
-        sentences.append(close_sentence(closes[0], also))
+def library_briefing(facts: dict, library: dict) -> Briefing:
+    """One flowing client piece from the story library and today's figures."""
+    primary, tags = market_conditions(facts)
+    when = facts["now"]
+    story = pick_rotating(library.get("stories") or [], primary, when)
+    closer = pick_closer(library.get("closers") or [], primary, when, story)
+    paragraphs = opener_paragraphs(facts, tags)
+    opener_count = len(paragraphs)
+    say: list[str] = []
+    if story:
+        headline = clean_text(str(story.get("headline") or "Your plan still leads"))
+        paragraphs.append(clean_text(str(story.get("text") or "")))
+        tie = clean_text(str(story.get("tie") or ""))
+        if tie:
+            paragraphs.append(tie)
+        line = clean_text(str(story.get("say") or ""))
+        if line:
+            say.append(line)
+        origin = f"library:{story.get('id')}:{primary}"
     else:
-        sentences.append(
-            "A full set of index closes did not come through, and the plan does not depend on one missing quote."
+        headline = "Your plan still leads"
+        paragraphs.append(
+            "Picture a client who already has a map for the year, and then checks a noisy headline to see if the map still counts. It does. The headline is weather. The plan is the route."
         )
+        paragraphs.append("We stay with the route you already chose.")
+        say.append("We are staying with your plan. A loud week does not get to rewrite it.")
+        origin = f"library:backup:{primary}"
+    if closer:
+        say.append(closer)
+    paragraphs = [part for part in paragraphs if part]
+    briefing = Briefing(headline, paragraphs, say[:2], origin)
+    return fit_library_length(briefing, opener_count)
 
-    if matched:
-        sentences.append(event_sentence(matched[0]))
-    elif big_moves:
-        sentences.append(move_sentence(big_moves[0]))
 
-    if es is not None and es.pct is not None:
-        sentences.append(futures_sentence(es, policy=bool(matched)))
-    elif ten_year is not None and ten_year.bp is not None:
-        sentences.append(yield_sentence(ten_year))
-
-    if not matched and not big_moves and ten_year is not None and ten_year.bp is not None and es is not None:
-        sentences.append(yield_sentence(ten_year))
-    elif not matched and mortgage is not None and mortgage.bp is not None and len(sentences) < 3:
-        sentences.append(mortgage_sentence(mortgage))
-
-    if facts["big_day"]:
-        sentences.append(
-            "A day like this is already inside a long-term plan, and the plan is what your client hired you to protect."
-        )
-        headline = "A loud headline, and the plan still comes first"
-        when_word = "today" if facts["now"].weekday() < 5 else "before the open"
-        openers = [
-            f"You may hear a big market headline {when_word}. Your plan was built for weeks like this, and we are staying with it.",
-            "We do not need a new strategy because of one decision. Staying invested is how the long-term plan does its job.",
-        ]
-    else:
-        sentences.append(
-            "Here is the simple version: a move like this sits inside a long-term plan, and that plan is what your client hired you to protect."
-        )
-        direction = spx and direction_of(spx)
-        if direction == "down":
-            headline = "A softer market, and the long-term plan still leads"
-        elif direction == "up":
-            headline = "A decent finish, and the plan is still the point"
-        else:
-            headline = "A quiet market, and quiet is fine for the plan"
-        openers = [
-            "The market gave us an ordinary move, and your long-term plan is still what we follow.",
-            "We are staying invested, because one session does not rewrite a plan built for years.",
-        ]
-    # Keep the reassuring line, and stay inside four sentences.
-    if len(sentences) > 4:
-        perspective = sentences[-1]
-        sentences = sentences[:3] + [perspective]
-    takeaway = (
-        "Keep the conversation on the plan, the time horizon, and the discipline of staying invested."
+def fit_library_length(briefing: Briefing, opener_count: int) -> Briefing:
+    pad = (
+        "You do not have to follow the market to stay on track. "
+        "The plan is there so one week does not turn into a decision."
     )
-    briefing = Briefing(headline, sentences, openers, takeaway, "template from the figures on this page")
-    briefing = fit_word_count(briefing, None)
-    return briefing
-
-
-def fit_word_count(briefing: Briefing, mortgage: Quote | None) -> Briefing:
-    extra_lines = [
-        "Nothing in these figures asks a client to walk away from a plan built for the long run.",
-        "You can say that calmly, and then stop. Clients trust the steady version.",
-    ]
-    if mortgage is not None and mortgage.ok and mortgage.price is not None and mortgage.bp is not None:
-        extra_lines.insert(0, mortgage_sentence(mortgage))
-    extras = list(extra_lines)
-    while word_count(briefing_text(briefing)) < 120 and extras and len(briefing.explanation) < 4:
-        briefing.explanation.append(extras.pop(0))
-    while word_count(briefing_text(briefing)) < 120 and extras:
-        # The explanation is already at four sentences. Lengthen the takeaway
-        # with a second calm line rather than inventing a fifth explanation sentence.
-        briefing.takeaway = briefing.takeaway.rstrip(".") + ". " + extras.pop(0)
-    while word_count(briefing_text(briefing)) > 180 and len(briefing.explanation) > 2:
-        # Drop a middle sentence. The last sentence is the long-term takeaway.
-        briefing.explanation.pop(-2)
+    if word_count(briefing_text(briefing)) < 130:
+        briefing.paragraphs.append(pad)
+    while word_count(briefing_text(briefing)) > 190 and len(briefing.say) > 1:
+        briefing.say.pop()
+    while word_count(briefing_text(briefing)) > 190 and opener_count > 1 and len(briefing.paragraphs) > 1:
+        briefing.paragraphs.pop(1)
+        opener_count -= 1
+    if (
+        word_count(briefing_text(briefing)) > 190
+        and briefing.paragraphs
+        and briefing.paragraphs[-1] == pad
+    ):
+        briefing.paragraphs.pop()
     return briefing
 
 
 def briefing_text(briefing: Briefing) -> str:
-    return " ".join([briefing.headline, *briefing.explanation, *briefing.openers, briefing.takeaway])
+    return " ".join([briefing.headline, *briefing.paragraphs, *briefing.say])
 
 
-def close_sentence(quote: Quote, also: str = "") -> str:
-    day = weekday_name(quote.as_of)
-    when = f" closed {day}" if day else " last closed"
-    level = format_price(quote)
-    extra = f", and {also}" if also else ""
-    if quote.change is None or quote.pct is None or abs(quote.pct) < 0.005:
-        return (
-            f"The {quote.label}{when} at {level}, essentially unchanged from the session before{extra}."
-        )
-    word = "up" if quote.change > 0 else "down"
-    points = format_abs_number(quote.change, 2)
-    return (
-        f"The {quote.label}{when} at {level}, {word} {points} points, "
-        f"or {abs(quote.pct):.2f} percent{extra}."
-    )
-
-
-def others_clause(quotes: list[Quote]) -> str:
-    ups = [the_name(quote.label) for quote in quotes if direction_of(quote) == "up"]
-    downs = [the_name(quote.label) for quote in quotes if direction_of(quote) == "down"]
-    flats = [the_name(quote.label) for quote in quotes if direction_of(quote) == "flat"]
-    parts = []
-    if ups:
-        parts.append(human_join(ups) + " finished higher too")
-    if downs:
-        parts.append(human_join(downs) + " finished lower")
-    if flats:
-        parts.append(human_join(flats) + " finished flat")
-    return human_join(parts)
-
-
-def the_name(label: str) -> str:
-    if label.lower().startswith("the "):
-        return label
-    return "the " + label
-
-
-def futures_sentence(quote: Quote, policy: bool = False) -> str:
-    if quote.pct is None:
-        return f"{quote.label} futures did not print a change this run."
-    word = "up" if quote.pct > 0 else "down" if quote.pct < 0 else "flat"
-    label = quote.session_label.lower()
-    if label == "premarket":
-        lead = f"Before the next open, {quote.label} futures were {word}"
-    elif label == "live":
-        lead = f"{quote.label} futures were {word}"
+def market_conditions(facts: dict) -> tuple[str, set[str]]:
+    tags: set[str] = set()
+    spx = quote_by(facts["quotes"], "^GSPC")
+    pct = spx.pct if spx is not None else None
+    if pct is None or abs(pct) < 0.20:
+        tags.add("flat")
+        stock = "flat"
+    elif pct > 0:
+        tags.add("stocks_up")
+        stock = "stocks_up"
     else:
-        lead = f"{quote.label} futures last printed {word}"
-    if word == "flat":
-        return f"{lead}, little changed from the prior settle."
-    size = "a small move" if abs(quote.pct) < 0.6 else "a noticeable move"
-    tail = " next to that headline" if policy else ""
-    return f"{lead} {abs(quote.pct):.2f} percent from the prior settle, {size}{tail}."
+        tags.add("stocks_down")
+        stock = "stocks_down"
+    if facts.get("big_day"):
+        tags.add("big_news")
+    vix = quote_by(facts["quotes"], "^VIX")
+    if vix is not None and vix.price is not None and vix.price >= 20:
+        tags.add("volatility")
+    elif pct is not None and abs(pct) >= 1.5:
+        tags.add("volatility")
+    ten = quote_by(facts["rates"], "DGS10")
+    if ten is not None and ten.bp is not None:
+        if ten.bp >= 3:
+            tags.add("rates_up")
+        elif ten.bp <= -3:
+            tags.add("rates_down")
+    mortgage = quote_by(facts["rates"], "MORTGAGE30US")
+    if mortgage is not None and mortgage.bp is not None:
+        if mortgage.bp >= 5:
+            tags.add("rates_up")
+        elif mortgage.bp <= -5:
+            tags.add("rates_down")
+    for name in ("big_news", "volatility", "stocks_down", "stocks_up", "flat", "rates_up", "rates_down"):
+        if name in tags:
+            return name, tags
+    return stock, tags
 
 
-def event_sentence(title: str) -> str:
-    low = title.lower()
-    fed = "fed" in low or "federal reserve" in low or "fomc" in low
-    if fed and any(piece in low for piece in ("raise", "hike", "cut")):
-        verb = "cut" if " cut " in f" {low} " or "cuts " in low else "raised"
-        years = ""
-        if "first time in years" in low or "first increase" in low:
-            years = ", and the headline calls it the first move in years"
-        return (
-            "Headlines say the Federal Reserve "
-            f"{verb} interest rates, the rate that influences what people pay to borrow"
-            f"{years}."
+def quote_by(quotes: list[Quote], symbol: str) -> Quote | None:
+    for quote in quotes:
+        if quote.symbol == symbol and quote.ok:
+            return quote
+    return None
+
+
+def pick_rotating(items: list[dict], primary: str, when: datetime, salt: int = 0) -> dict | None:
+    eligible = [item for item in items if primary in (item.get("conditions") or [])]
+    if len(eligible) < 8:
+        widened = [
+            item for item in items
+            if primary in (item.get("conditions") or []) or "flat" in (item.get("conditions") or [])
+        ]
+        if len(widened) > len(eligible):
+            eligible = widened
+    if not eligible:
+        eligible = list(items)
+    eligible.sort(key=lambda item: str(item.get("id") or ""))
+    if not eligible:
+        return None
+    ordinal = when.astimezone(EASTERN).date().toordinal() + salt
+    return eligible[ordinal % len(eligible)]
+
+
+def pick_closer(closers: list[dict], primary: str, when: datetime, story: dict | None) -> str:
+    say = clean_text(str((story or {}).get("say") or ""))
+    ordinal = when.astimezone(EASTERN).date().toordinal()
+    eligible = [item for item in closers if primary in (item.get("conditions") or [])]
+    if not eligible:
+        eligible = list(closers)
+    eligible.sort(key=lambda item: str(item.get("id") or ""))
+    if not eligible:
+        return ""
+    for step in range(len(eligible)):
+        item = eligible[(ordinal + 7 + step) % len(eligible)]
+        line = clean_text(str(item.get("line") or ""))
+        if not line or line == say:
+            continue
+        if say and SequenceMatcher(None, say.lower(), line.lower()).ratio() > 0.72:
+            continue
+        return line
+    return ""
+
+
+def opener_paragraphs(facts: dict, tags: set[str]) -> list[str]:
+    spx = quote_by(facts["quotes"], "^GSPC")
+    es = quote_by(facts["quotes"], "ES=F")
+    ten = quote_by(facts["rates"], "DGS10")
+    mortgage = quote_by(facts["rates"], "MORTGAGE30US")
+    event = plain_event(facts.get("matched") or [])
+    stock = stock_phrase(spx.pct if spx is not None else None)
+    stock_in_session = session_phrase(stock)
+    sentences: list[str] = []
+    big = bool(facts.get("big_day"))
+
+    if event == "fed_up":
+        sentences.append(
+            "You may hear that the Fed, which sets short-term interest rates, "
+            f"raised them, and {stock_in_session}."
         )
-    if any(piece in low for piece in ("jobs report", "payroll", "nonfarm")):
-        return (
-            "A jobs report is in the headlines, which is the monthly count of how many people are working, "
-            "and we do not need to guess the next number."
+    elif event == "fed_down":
+        sentences.append(
+            "You may hear that the Fed, which sets short-term interest rates, "
+            f"cut them, and {stock_in_session}."
         )
-    if "cpi" in low or "consumer price" in low or "inflation report" in low:
-        return (
-            "An inflation report is in the headlines, which is the measure of how fast prices are rising, "
-            "and one report does not rewrite a long-term plan."
+    elif event == "jobs":
+        sentences.append(
+            "A jobs report is in the news. That is simply the monthly count of people working, "
+            f"and {stock_in_session}."
         )
-    short = title.split(":")[0].strip().rstrip(".")
-    return (
-        f"The headline in front of us is that {short[0].lower() + short[1:] if short else 'something big is moving'}, "
-        "and a headline is not a reason to leave a long-term plan."
-    )
-
-
-def move_sentence(quote: Quote) -> str:
-    word = "higher" if (quote.pct or 0) > 0 else "lower"
-    kind = "futures" if quote.group == "futures" else "the last session"
-    return (
-        f"{quote.label} moved {abs(quote.pct or 0):.2f} percent {word} in {kind}, "
-        "a swing that feels loud and still sits inside a long-term plan."
-    )
-
-
-def bp_words(bp: int) -> str:
-    if bp == 0:
-        return "unchanged"
-    unit = "basis point" if abs(bp) == 1 else "basis points"
-    word = "up" if bp > 0 else "down"
-    return f"{word} {abs(bp)} {unit}"
-
-
-def yield_sentence(quote: Quote) -> str:
-    change = bp_words(quote.bp or 0)
-    tiny = ""
-    if quote.bp is not None and abs(quote.bp) <= 3:
-        tiny = ", and a basis point is just one hundredth of a percent"
-    return (
-        "The 10-year Treasury yield, the interest rate on a 10-year government bond, "
-        f"was {quote.price:.2f} percent, {change}{tiny}."
-    )
-
-
-def mortgage_sentence(quote: Quote) -> str:
-    if quote.bp is None:
-        change = "with the weekly change unavailable"
-    elif quote.bp == 0:
-        change = "unchanged from the prior week"
+    elif event == "inflation":
+        sentences.append(
+            "An inflation report is in the news, which is a read on how fast everyday prices are rising, "
+            f"and {stock_in_session}."
+        )
+    elif big and event == "other":
+        sentences.append(
+            f"You may hear a loud headline, and {stock_in_session}. "
+            "A loud day is still just one day inside a long-term plan."
+        )
+    elif big:
+        sentences.append(
+            f"It was a louder session than usual, and {stock}. "
+            "A swing like that can feel big, and it still fits inside a long-term plan."
+        )
     else:
-        word = "up" if quote.bp > 0 else "down"
-        change = (
-            f"{word} {abs(quote.bp)} basis points from the prior week, "
-            f"which is {abs(quote.bp) / 100:.2f} percentage points"
-        )
-    return (
-        f"The average 30-year fixed mortgage rate, from Freddie Mac's weekly survey, "
-        f"was {quote.price:.2f} percent, {change}."
-    )
+        rate = ordinary_rate_clause(ten, mortgage)
+        lead = stock[0].upper() + stock[1:]
+        if rate:
+            sentences.append(f"{session_sentence(lead)}, and {rate}.")
+        else:
+            sentences.append(f"{session_sentence(lead)}.")
+
+    early = early_sentence(es, big)
+    if early and (big or "volatility" in tags):
+        sentences.append(early)
+    elif early and not big:
+        # Keep the opener to one or two sentences. A quiet week can mention
+        # the early read only when rates were not already the second clause.
+        if len(sentences) == 1 and " and " not in sentences[0]:
+            sentences.append(early)
+    return sentences
+
+
+def plain_event(titles: list[str]) -> str | None:
+    for title in titles:
+        low = f" {title.lower()} "
+        fed = "fed" in low or "federal reserve" in low or "fomc" in low
+        if fed and any(piece in low for piece in (" raise", " raises", " raised", " hike", " hikes")):
+            return "fed_up"
+        if fed and any(piece in low for piece in (" cut", " cuts", " lower")):
+            return "fed_down"
+        if any(piece in low for piece in ("jobs report", "payroll", "nonfarm", "jobs numbers")):
+            return "jobs"
+        if any(piece in low for piece in ("cpi", "consumer price", "inflation report", "inflation data")):
+            return "inflation"
+    if titles:
+        return "other"
+    return None
+
+
+def stock_phrase(pct: float | None) -> str:
+    if pct is None or abs(pct) < 0.20:
+        return "stocks were quiet"
+    up = pct > 0
+    size = abs(pct)
+    if size < 0.45:
+        return "stocks rose a little" if up else "stocks slipped a little"
+    if size < 0.90:
+        return "stocks rose a bit" if up else "stocks slipped"
+    if size < 1.50:
+        return "stocks had a strong session" if up else "stocks had a soft session"
+    return "stocks had a big up day" if up else "stocks had a rough day"
+
+
+def session_phrase(phrase: str) -> str:
+    if "session" in phrase or "day" in phrase:
+        return phrase
+    return phrase + " in the last session"
+
+
+def session_sentence(lead: str) -> str:
+    if "session" in lead or "day" in lead:
+        return lead
+    return lead + " in the last session"
+
+
+def ordinary_rate_clause(ten: Quote | None, mortgage: Quote | None) -> str | None:
+    if ten is not None and ten.bp is not None and abs(ten.bp) >= 3:
+        if ten.bp > 0:
+            return "interest rates ticked higher" if ten.bp < 10 else "interest rates moved up"
+        return "interest rates eased a little" if ten.bp > -10 else "interest rates moved lower"
+    if mortgage is not None and mortgage.bp is not None and abs(mortgage.bp) >= 5:
+        if mortgage.bp > 0:
+            return "the rate on a 30-year mortgage is a little higher than last week"
+        return "the rate on a 30-year mortgage is a little lower than last week"
+    if ten is not None and ten.bp is not None:
+        return "interest rates barely moved"
+    return None
+
+
+def early_sentence(quote: Quote | None, big: bool) -> str | None:
+    if quote is None or quote.pct is None or abs(quote.pct) < 0.15:
+        return None
+    size = abs(quote.pct)
+    if quote.pct > 0:
+        tone = "firmer" if size >= 0.75 else "a little firmer"
+    else:
+        tone = "softer" if size >= 0.75 else "a little softer"
+    label = (quote.session_label or "").lower()
+    if "premarket" in label or label == "live":
+        lead = "The early read before the next open is"
+    else:
+        lead = "The latest read before the next open is"
+    if big:
+        return f"{lead} {tone}, which is normal noise around a loud headline."
+    return f"{lead} {tone}."
+
+
+def plain_english_facts(facts: dict) -> str:
+    spx = quote_by(facts["quotes"], "^GSPC")
+    es = quote_by(facts["quotes"], "ES=F")
+    ten = quote_by(facts["rates"], "DGS10")
+    mortgage = quote_by(facts["rates"], "MORTGAGE30US")
+    lines = [
+        f"- Time frame: {facts.get('timeframe')}",
+        f"- Stocks: {stock_phrase(spx.pct if spx is not None else None)}",
+    ]
+    early = early_sentence(es, bool(facts.get("big_day")))
+    if early:
+        lines.append(f"- Next session: {early}")
+    rate = ordinary_rate_clause(ten, mortgage)
+    if rate:
+        lines.append(f"- Rates: {rate}")
+    event = plain_event(facts.get("matched") or [])
+    if event == "fed_up":
+        lines.append("- News: the Fed, which sets short-term interest rates, raised them")
+    elif event == "fed_down":
+        lines.append("- News: the Fed, which sets short-term interest rates, cut them")
+    elif event == "jobs":
+        lines.append("- News: a jobs report, the monthly count of people working")
+    elif event == "inflation":
+        lines.append("- News: an inflation report, a read on how fast everyday prices are rising")
+    elif event == "other":
+        lines.append("- News: a loud headline is in the facts below. Describe it without jargon or figures.")
+    else:
+        lines.append("- News: nothing in the facts is large enough to make this about today")
+    return "\n".join(lines)
+
 
 
 def direction_of(quote: Quote) -> str:
@@ -1725,58 +1943,42 @@ def move_display(quote: Quote) -> tuple[str, str]:
     return direction, percent
 
 
+HERO_FUTURES = {"^GSPC": "ES=F", "^DJI": "YM=F"}
+HERO_INDEXES = ("^GSPC", "^DJI", "^RUT")
+
+
+def futures_heading(quotes: list[Quote]) -> str:
+    futures = [quote for quote in quotes if quote.group == "futures"]
+    labels = {quote.session_label for quote in futures if quote.ok}
+    if labels == {"Premarket"}:
+        return "Futures · premarket"
+    if labels == {"Live"}:
+        return "Futures · live"
+    if labels == {"After hours"}:
+        return "Futures · after hours"
+    if labels == {"Last"}:
+        return "Futures · last price"
+    return "Futures · premarket / live"
+
+
 def render_page(config, now, quotes, rates, picked, briefing: Briefing) -> str:
     site = config["site"]
     title = str(site.get("title") or "Dedicated News")
     eyebrow = str(site.get("eyebrow") or "Morning prep")
     date_line = f"{now.strftime('%A')}, {now.strftime('%B')} {now.day}, {now.year}"
     clock = now.strftime("%I:%M %p").lstrip("0")
-    futures = [quote for quote in quotes if quote.group == "futures"]
-    futures_title = "Futures · premarket / live"
-    if futures:
-        labels = {quote.session_label for quote in futures if quote.ok}
-        if labels == {"Premarket"}:
-            futures_title = "Futures · premarket"
-        elif labels == {"Live"}:
-            futures_title = "Futures · live"
-        elif labels == {"After hours"}:
-            futures_title = "Futures · after hours"
-        elif labels == {"Last"}:
-            futures_title = "Futures · last price"
-    groups = [
-        (
-            "id-previous",
-            "Previous close",
-            "Last completed regular session. Level, point change, and percent change versus the session before. Not a live price.",
-            [quote for quote in quotes if quote.group == "previous_close"],
-        ),
-        (
-            "id-rates",
-            "Rates",
-            "Treasury yields versus the prior close, in basis points. One basis point is 0.01 percentage points. The mortgage rate is the Freddie Mac weekly 30-year fixed, versus the prior week.",
-            rates,
-        ),
-        (
-            "id-futures",
-            futures_title,
-            "S&P, Dow, and Nasdaq futures (ES, YM, NQ). Percent change versus the prior settle.",
-            futures,
-        ),
-        (
-            "id-extras",
-            "Also moving",
-            "Oil, gold, the 10-year market yield, VIX, and Bitcoin. Live when that market is trading. Otherwise the last print.",
-            [quote for quote in quotes if quote.group == "extras"],
-        ),
-    ]
-    market_html = []
-    for anchor, heading, note, rows in groups:
-        cards = "".join(render_quote(quote) for quote in rows)
-        market_html.append(
-            f'<section class="group" id="{anchor}">'
-            f'<div class="group-head"><h3>{esc(heading)}</h3><p>{esc(note)}</p></div>'
-            f'<div class="quote-grid">{cards}</div></section>'
-        )
+    by_symbol = {quote.symbol: quote for quote in quotes}
+    hero_cards = []
+    for symbol in HERO_INDEXES:
+        quote = by_symbol.get(symbol)
+        if quote is None:
+            continue
+        hero_cards.append(render_hero_card(quote, by_symbol.get(HERO_FUTURES.get(symbol, ""))))
+    mortgage = next((quote for quote in rates if quote.symbol == "MORTGAGE30US"), None)
+    if mortgage is not None:
+        hero_cards.append(render_hero_card(mortgage, None))
+    hero_html = "".join(hero_cards)
+    more_html = render_more_markets(quotes, rates)
     source_line = rate_source_line(rates)
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -1813,15 +2015,21 @@ def render_page(config, now, quotes, rates, picked, briefing: Briefing) -> str:
     <a href="#talking">Talking points</a>
     <a href="#financial">Financial</a>
     <a href="#political">Political</a>
-    <a href="#more">More</a>
+    <a href="#more-markets">More markets</a>
+    <a href="#more">More news</a>
     <a href="#industry">Industry</a>
   </nav>
   <section id="markets" class="markets">
-    {''.join(market_html)}
+    <div class="group-head hero-head">
+      <h3>At a glance</h3>
+      <p>Last stock close and this week's mortgage rate. A one-line futures percent shows when it fits.</p>
+    </div>
+    <div class="hero-grid">{hero_html}</div>
   </section>
   {render_briefing(briefing)}
   {render_top("financial", "Top 3 Financial News", "The stories the most outlets are carrying, with a lift for the newest.", picked["financial"])}
   {render_top("political", "Top 3 Political News", "Washington, policy, the Fed, taxes, trade, and elections, ahead of the rest.", picked["political"])}
+  {more_html}
   {render_list("more", "More Market & Economy", "The next set of market headlines, without repeating the top three.", picked["more"])}
   {render_list("industry", "Industry News", "Wealth management and financial advisors. Trade journals update more slowly than the wires.", picked["industry"])}
   <footer class="footer">
@@ -1885,19 +2093,113 @@ def render_quote(quote: Quote) -> str:
     )
 
 
+def render_more_markets(quotes: list[Quote], rates: list[Quote]) -> str:
+    nasdaq = [quote for quote in quotes if quote.group == "previous_close" and quote.symbol == "^IXIC"]
+    futures = [quote for quote in quotes if quote.group == "futures"]
+    treasuries = [quote for quote in rates if quote.symbol != "MORTGAGE30US"]
+    extras = [quote for quote in quotes if quote.group == "extras"]
+    groups = [
+        (
+            "Nasdaq",
+            "Last completed session. Level, point change, and percent change.",
+            nasdaq,
+        ),
+        (
+            futures_heading(quotes),
+            "S&P, Dow, and Nasdaq futures (ES, YM, NQ). Percent change versus the prior settle.",
+            futures,
+        ),
+        (
+            "Treasuries",
+            "10-year and 2-year yields versus the prior close, in basis points. One basis point is 0.01 percentage points.",
+            treasuries,
+        ),
+        (
+            "Also moving",
+            "Oil, gold, the 10-year market yield, VIX, and Bitcoin. Live when that market is trading. Otherwise the last print.",
+            extras,
+        ),
+    ]
+    blocks = []
+    for heading, note, rows in groups:
+        if not rows:
+            continue
+        cards = "".join(render_quote(quote) for quote in rows)
+        blocks.append(
+            '<div class="group">'
+            f'<div class="group-head"><h3>{esc(heading)}</h3><p>{esc(note)}</p></div>'
+            f'<div class="quote-grid">{cards}</div></div>'
+        )
+    return (
+        '<section class="block more-markets" id="more-markets">'
+        '<div class="section-head"><h2>More markets</h2>'
+        "<p>Nasdaq, Treasuries, futures, oil, gold, VIX, and Bitcoin.</p></div>"
+        f"{''.join(blocks)}</section>"
+    )
+
+
+def render_hero_card(quote: Quote, future: Quote | None) -> str:
+    chip = futures_chip(future) if future is not None else ""
+    if not quote.ok:
+        return (
+            '<article class="quote hero is-missing">'
+            f'<p class="q-name">{esc(quote.label)}</p>'
+            '<p class="q-price">—</p>'
+            '<p class="q-move flat">Unavailable</p>'
+            "</article>"
+        )
+    direction, move = move_display(quote)
+    if quote.comparison == "vs prior week":
+        move = move.replace(" vs prior week", " this week")
+    arrow = {"up": "▲", "down": "▼", "flat": "–"}[direction]
+    if quote.comparison == "vs prior week" and quote.as_of:
+        local = quote.as_of.astimezone(EASTERN)
+        meta = f"Week of {local.strftime('%b')} {local.day}"
+    else:
+        meta = format_when(quote.as_of, False)
+    return (
+        f'<article class="quote hero {direction}">'
+        f'<p class="q-name">{esc(quote.label)}</p>'
+        f'<p class="q-price">{esc(format_price(quote))}</p>'
+        f'<p class="q-move {direction}"><span aria-hidden="true">{arrow}</span> {esc(move)}</p>'
+        f"{chip}"
+        f'<p class="q-asof">{esc(meta)}</p>'
+        "</article>"
+    )
+
+
+def futures_chip(quote: Quote) -> str:
+    if not quote.ok or quote.pct is None:
+        return ""
+    prefix = {
+        "Premarket": "Premkt",
+        "Live": "Live",
+        "After hours": "After hrs",
+        "Last": "Last",
+    }.get(quote.session_label, "Fut")
+    if abs(quote.pct) < 0.005:
+        direction = "flat"
+        text = f"{prefix} flat"
+    else:
+        direction = "up" if quote.pct > 0 else "down"
+        sign = "+" if quote.pct > 0 else "−"
+        text = f"{prefix} {sign}{abs(quote.pct):.2f}%"
+    # A longer label would wrap on a phone card. Leave it off rather than crowd the top.
+    if len(text) > 16:
+        return ""
+    return f'<p class="q-fut {direction}">{esc(text)}</p>'
+
+
 def render_briefing(briefing: Briefing) -> str:
-    paragraphs = "".join(f"<p>{esc(sentence)}</p>" for sentence in briefing.explanation)
-    openers = "".join(f"<li>{esc(line)}</li>" for line in briefing.openers)
+    paragraphs = "".join(f"<p>{esc(sentence)}</p>" for sentence in briefing.paragraphs)
+    if briefing.say:
+        quoted = " ".join(f"“{esc(line)}”" for line in briefing.say)
+        paragraphs += f'<p class="script">You can say it this way: {quoted}</p>'
     return f"""
   <section class="talking" id="talking">
     <p class="kicker">Client talking points</p>
     <h2>{esc(briefing.headline)}</h2>
-    <div class="explain">{paragraphs}</div>
-    <div class="say">
-      <h3>What to say to clients:</h3>
-      <ul>{openers}</ul>
-    </div>
-    <p class="takeaway">{esc(briefing.takeaway)}</p>
+    <div class="passage">{paragraphs}</div>
     <p class="fine">Internal prep. Not a forecast and not investment advice.</p>
   </section>
 """
@@ -2116,19 +2418,29 @@ h1 {
   color: var(--navy);
   font-weight: 650;
 }
-.explain p { margin: 0 0 8px; font-size: 18px; }
-.say {
-  margin-top: 12px;
-  background: #f8f4ea;
-  border-left: 3px solid var(--navy);
-  border-radius: 0 12px 12px 0;
-  padding: 12px 16px 8px;
-}
-.say h3 { margin: 0 0 6px; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--navy); }
-.say ul { margin: 0; padding: 0 0 0 18px; }
-.say li { margin: 0 0 8px; font-size: 17px; }
-.takeaway { margin: 14px 0 0; font-weight: 700; color: var(--navy); }
+.passage p { margin: 0 0 10px; font-size: 18px; }
+.passage .script { margin: 6px 0 0; font-weight: 650; color: var(--navy); }
 .fine { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+.hero-head { margin-top: 8px; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.quote.hero { min-height: 0; padding: 10px 12px 9px; }
+.quote.hero .q-price { font-size: 24px; }
+.q-fut {
+  margin: 3px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.q-fut.up { color: var(--up); }
+.q-fut.down { color: var(--down); }
+.q-fut.flat { color: var(--muted); font-weight: 600; }
+.more-markets .group { margin-top: 14px; }
+.more-markets .group:first-of-type { margin-top: 4px; }
 .block { margin-top: 28px; }
 .section-head {
   display: flex;
@@ -2208,18 +2520,30 @@ h1 {
   font-size: 14px;
 }
 @media (max-width: 800px) {
-  h1 { font-size: 36px; }
+  h1 { font-size: 30px; }
+  .band-inner { padding: 14px 14px 12px; }
   .band-inner, .section-head { flex-direction: column; align-items: flex-start; }
   .when, .section-head p { text-align: left; }
-  .talking { padding: 18px 16px; }
-  .talking h2 { font-size: 26px; }
+  .date { font-size: 15px; }
+  .wrap { padding: 4px 14px 40px; }
+  .jump { gap: 6px 12px; padding: 10px 0 2px; }
+  .talking { padding: 16px 14px; }
+  .talking h2 { font-size: 24px; }
+  .passage p { font-size: 17px; }
   .story a { font-size: 19px; }
   .link-grid { grid-template-columns: 1fr; }
   .quote-grid { grid-template-columns: 1fr 1fr; }
   .q-price { font-size: 22px; }
+  .hero-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .quote.hero { padding: 8px 10px 8px; }
+  .quote.hero .q-price { font-size: 20px; }
+  .quote.hero .q-move { font-size: 13px; }
+  .hero-head p { margin-bottom: 8px; }
 }
 @media (max-width: 420px) {
   .quote-grid { grid-template-columns: 1fr; }
+  .hero-grid { grid-template-columns: 1fr 1fr; }
+  h1 { font-size: 28px; }
 }
 """
 

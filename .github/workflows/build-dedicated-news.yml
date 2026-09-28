@@ -37,9 +37,6 @@ permissions:
   contents: read
   pages: write
   id-token: write
-  # Lets the build call GitHub Models with the built-in token.
-  # If that call fails, build.py uses the templated talking points.
-  models: read
 
 concurrency:
   group: pages
@@ -123,7 +120,11 @@ jobs:
 
       - name: Build the page
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Optional. If none of these secrets exist, the page uses the
+          # story library in prompts/stories.yml. See the README.
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
         run: python build.py
 
       - name: Stage the page for GitHub Pages

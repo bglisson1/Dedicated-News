@@ -1,0 +1,268 @@
+# Client-script library. Edit the stories and the closing lines here.
+# build.py picks one story for the day from the market conditions, then
+# walks to the next match on the next date so the same story does not
+# repeat for about two weeks. Closing lines rotate on their own.
+#
+# conditions: stocks_up, stocks_down, flat, rates_up, rates_down,
+# big_news, record_high, volatility
+#
+# Keep each story to two or three spoken sentences. No statistics.
+
+stories:
+  - id: weather-tree
+    principle: "Time in the market beats timing the market"
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility]
+    headline: "The plan does not need a perfect morning"
+    say: "Time in the market is the idea. We stay invested so your plan gets the years it needs."
+    tie: "Your plan already has room for ordinary weeks. Staying invested is how it gets those years."
+    text: "Picture a client who plants a tree and then digs it up every time the weather looks ugly. The tree never gets tall, because it spends its life being moved. Time in the market works the same way. The years you stay invested matter more than picking a perfect day."
+
+  - id: coffee-drip
+    principle: "Dollar-cost averaging"
+    conditions: [stocks_up, stocks_down, flat, volatility, big_news]
+    headline: "Steady beats clever"
+    say: "We keep adding on the schedule you already set. We do not wait for a perfect week."
+    tie: "That steady habit is already in your plan. A noisy week is not a reason to pause it."
+    text: "Picture someone who only buys coffee on the days the price looks perfect, and then wonders why the habit never sticks. Putting money in on a schedule, a little at a time, is the opposite. Some weeks you buy a bit more for the same dollars, and some weeks a bit less. The habit is the point."
+
+  - id: snowball
+    principle: "Compounding"
+    conditions: [stocks_up, flat, record_high, stocks_down]
+    headline: "The quiet work is the money staying put"
+    say: "We leave the plan alone so time can do the compounding. That is the job."
+    tie: "Your plan is built to stay invested long enough for that quiet work to matter."
+    text: "Picture a snowball at the top of a long hill. The first turns are small. Leave it alone and each turn picks up more snow than the one before. Compounding is that same idea with money. The early years look ordinary. The later years do more of the work, if you do not keep stopping the hill."
+
+  - id: seatbelt
+    principle: "Having a plan and sticking to it"
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility, rates_up, rates_down]
+    headline: "The plan is the seatbelt"
+    say: "We are not taking the plan off because the road feels different this week."
+    tie: "You already chose the plan for the whole trip, not for one stretch of road."
+    text: "Picture a client who unbuckles the seatbelt every time the road gets interesting. The buckle was never there for the smooth miles. It was there for the surprising ones. A financial plan works the same way. You do not take it off because a headline made the week feel bumpy."
+
+  - id: restaurant-menu
+    principle: "Diversification"
+    conditions: [stocks_up, stocks_down, flat, volatility, big_news]
+    headline: "You do not need every dish to be perfect"
+    say: "Your plan is a mix on purpose. We do not throw out the mix because one piece had a loud week."
+    tie: "That mix is how the plan keeps one headline from becoming the whole story."
+    text: "Picture dinner with a few plates on the table, not one giant dish. If the soup is salty, you still have the rest of the meal. Diversification is that simple. You own a mix so one company, one headline, or one rough week does not decide the whole plan."
+
+  - id: gym-membership
+    principle: "Staying invested through headlines"
+    conditions: [stocks_down, flat, volatility, big_news, stocks_up]
+    headline: "You do not cancel the plan on a noisy week"
+    say: "We are staying in. A headline is not a reason to cancel a long-term plan."
+    tie: "The benefit shows up for people who keep showing up, including on the weeks that feel pointless."
+    text: "Picture someone who cancels a gym membership every time a week feels off, then starts over a month later. They pay the signup fee a lot and get very little of the result. Staying invested is the market version of keeping the membership. The result belongs to the people who stay through the dull weeks and the loud ones."
+
+  - id: umbrella
+    principle: "Volatility is the price of admission"
+    conditions: [stocks_down, volatility, big_news, flat, stocks_up]
+    headline: "A little weather is the price of the trip"
+    say: "Ups and downs are the price of a long-term stock plan. We paid that price on purpose, and we are staying in."
+    tie: "Your plan expected weeks like this. The bumps are not a sign that the plan broke."
+    text: "Picture a ballgame that might sprinkle. You still go, and you bring a light jacket, because the game is the point and the weather is the cost of being there. Stocks move up and down. That movement is the price of admission for long-term growth. You do not leave the park because a cloud showed up."
+
+  - id: flight
+    principle: "Volatility is the price of admission"
+    conditions: [stocks_down, volatility, big_news, flat, stocks_up]
+    headline: "Turbulence is not the same as turning around"
+    say: "A bumpy week is not a reason to change the destination. We are staying with your plan."
+    tie: "The destination is the plan you already set. This week is just a patch of bumpy air."
+    text: "Picture a flight that shakes for ten minutes. The nervous move is to ask the pilot to turn around. The plane was always going to shake sometimes. That is flying. A long-term stock plan shakes sometimes too. The shake is uncomfortable, and it is not the same thing as being off course."
+
+  - id: garden-headlines
+    principle: "Staying invested through headlines"
+    conditions: [big_news, stocks_down, stocks_up, volatility, flat]
+    headline: "A headline is weather, not the soil"
+    say: "We let the headline pass. Your plan is the thing we keep."
+    tie: "You do not have to follow every headline. That is what the plan is for."
+    text: "Picture a gardener who reads a dramatic forecast every morning and rips out the plants by lunch. The garden never has a chance. Headlines are weather reports. Some are important, and most of them pass. The plan is the soil. We leave it in place."
+
+  - id: cookbook
+    principle: "Having a plan and sticking to it"
+    conditions: [flat, stocks_up, stocks_down, big_news, rates_up, rates_down]
+    headline: "We already wrote this recipe"
+    say: "We follow the plan you already signed. We do not rewrite it for one week of news."
+    tie: "Changing the recipe every time the kitchen feels warm is how dinner never gets made."
+    text: "Picture a cook who owns a good recipe and then invents a new one every night because a friend texted a tip. Some nights are fine. Most nights are a mess, and nothing ever becomes a habit. Your plan is the recipe. We already chose it for your life. A noisy week is not a new recipe."
+
+  - id: commute
+    principle: "Time in the market beats timing the market"
+    conditions: [stocks_up, stocks_down, flat, big_news]
+    headline: "You do not have to time the green lights"
+    say: "We are not trying to dodge every red light. We stay on the route your plan already set."
+    tie: "The people who arrive are the ones who stay on the road, not the ones who keep pulling over to guess the lights."
+    text: "Picture a commute where you try to hit every green light by leaving at a magical minute. Most days you still stop, and you leave the house stressed. Leaving at your normal time gets you there. Timing the market is the magical-minute version. Time in the market is just making the drive."
+
+  - id: savings-jar
+    principle: "Compounding"
+    conditions: [stocks_up, flat, record_high, stocks_down]
+    headline: "The jar works when you stop shaking it"
+    say: "We leave the money in the plan so time can keep working. That is the whole trick."
+    tie: "Your plan is that jar. A good week is not a reason to empty it, and a noisy week is not either."
+    text: "Picture a jar you add to every month and then shake out whenever you feel curious. It never gets heavy, because it never gets time. Compounding needs the money to stay put. The interesting part is not a single week. It is the long stretch when you leave the lid on."
+
+  - id: team-roster
+    principle: "Diversification"
+    conditions: [stocks_down, volatility, stocks_up, flat, big_news]
+    headline: "One player does not have to win the week"
+    say: "We own a roster on purpose. We do not bench the whole plan because one name had a bad week."
+    tie: "Your plan is the roster. The week belongs to the mix, not to the loudest headline."
+    text: "Picture a team that benches everyone because the star had a bad night. The season falls apart, even if the rest of the roster was fine. A diversified plan is a roster. Some holdings will have a loud week. That is why you do not own only one of them."
+
+  - id: rainy-saturday
+    principle: "Staying invested through a down week"
+    conditions: [stocks_down, volatility]
+    headline: "A softer week is still a normal week"
+    say: "Stocks can have a softer week and your plan can stay exactly the same. That is what we are doing."
+    tie: "Down weeks are part of the deal you already accepted when you chose a long-term stock plan."
+    text: "Picture a family that cancels the whole summer because one Saturday rains. They miss the sunny ones too, because they keep waiting for a month with no clouds. A softer week in stocks is a rainy Saturday. You stay in the plan so you are still there when the weather turns."
+
+  - id: sunny-saturday
+    principle: "Do not chase a good week"
+    conditions: [stocks_up, record_high]
+    headline: "A good week is not a command to do something"
+    say: "We do not chase a good week, and we do not treat it like a finish line. We stay with the plan."
+    tie: "Enjoy the week. Then leave the plan where it is."
+    text: "Picture someone who, on the first warm Saturday, tries to do the whole summer in one afternoon. They end up tired and no further along. A good week for stocks can tempt the same rush. You do not need to chase it. The plan was already going to have good weeks."
+
+  - id: thermostat
+    principle: "Interest rates and a steady plan"
+    conditions: [rates_up, rates_down, big_news, flat, stocks_up, stocks_down]
+    headline: "The thermostat moved, and the house is still the house"
+    say: "Interest rates can move and your plan can stay put. We are not rebuilding the house over one adjustment."
+    tie: "The Fed sets short-term interest rates. Your plan was built knowing those rates would not sit still."
+    text: "Picture a house where someone bumps the thermostat and the family holds a meeting to move. The rooms are the same. The adjustment is real, and it is not a new house. Interest rates move. Sometimes the Fed, which sets short-term interest rates, is the reason people notice. The plan is the house."
+
+  - id: mortgage-kitchen
+    principle: "A plan survives a change in borrowing costs"
+    conditions: [rates_up, rates_down, flat, stocks_up, stocks_down]
+    headline: "Borrowing costs are not the whole plan"
+    say: "A change in interest rates is something we talk about. It is not something that throws out your plan."
+    tie: "If a rate matters to your life, we look at it inside the plan you already have."
+    text: "Picture a family that loves their kitchen and then sees that lumber prices moved, so they debate tearing the kitchen out. The price of money, which is all an interest rate is, moves around too. You do not remodel your whole financial life because that price twitched this week."
+
+  - id: newspaper
+    principle: "Staying invested through headlines"
+    conditions: [big_news, volatility, stocks_down, stocks_up, flat]
+    headline: "Tomorrow's paper will have a new front page"
+    say: "We read the headline, and then we stay with your plan. The plan outlasts the front page."
+    tie: "You do not have to react to be responsible. Staying with the plan is the responsible move."
+    text: "Picture a stack of old front pages in the garage. Each one felt huge on the day it was printed. Most of them did not change what a family needed to do with their savings. A loud headline can be real and still not be a reason to redo a long-term plan."
+
+  - id: marathon
+    principle: "Time in the market beats timing the market"
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility]
+    headline: "Mile nine is not the medal"
+    say: "We are not judging a long-term plan by one mile. We stay in the race you already trained for."
+    tie: "Your plan is the race. This week is one mile marker, and we do not stop there."
+    text: "Picture a runner who quits at mile nine because that mile felt slow, then wonders why there is no medal. The medal was never awarded at mile nine. A long-term plan is the full distance. Some miles are easy and some feel pointless. You only get the distance if you keep going."
+
+  - id: paycheck
+    principle: "Dollar-cost averaging"
+    conditions: [stocks_down, flat, stocks_up, volatility, big_news]
+    headline: "The schedule is the strategy"
+    say: "We keep the schedule. A loud week does not get to rewrite when you invest."
+    tie: "Automatic and boring is a compliment here. That is how the plan keeps working when headlines get loud."
+    text: "Picture a client who waits for payday and then waits a little longer, hoping next week looks calmer. The calmer week keeps moving. Putting money to work on a set schedule means you stop negotiating with the news. Some contributions land on a soft week, and that is a feature, not a mistake."
+
+  - id: toolbox
+    principle: "Diversification"
+    conditions: [flat, stocks_down, stocks_up, volatility]
+    headline: "One tool is not a toolbox"
+    say: "We keep the whole toolbox. We do not toss it because one tool had a bad week."
+    tie: "Your mix is how the plan stays useful when any single piece is having a moment."
+    text: "Picture a toolbox with only a hammer. It is great until the job is a screw. A financial plan keeps more than one tool, stocks and the steadier pieces, so a week that is hard on one of them is not hard on all of them. That is diversification in plain clothes."
+
+  - id: lighthouse
+    principle: "Having a plan and sticking to it"
+    conditions: [big_news, volatility, stocks_down, stocks_up, rates_up]
+    headline: "We already picked the light on the shore"
+    say: "When the news gets loud, we look at your plan, not at the waves. We are staying with it."
+    tie: "The plan was written for weeks when the water feels choppy. This is one of those weeks, or it is a quiet one. Either way, the light does not move."
+    text: "Picture a boat in a choppy inlet. The useful thing is not a new argument about the waves. It is the lighthouse you already picked. Your plan is that light. Headlines are the water. We steer by the light you chose when things were calm enough to think."
+
+  - id: birthday-cake
+    principle: "Compounding"
+    conditions: [stocks_up, flat, record_high, stocks_down]
+    headline: "You do not eat the cake at the first layer"
+    say: "We let the plan keep compounding. We do not cut it short because a week felt finished."
+    tie: "A good stretch is a layer, not the whole cake. We leave it in the oven."
+    text: "Picture a birthday cake you frost after the first layer because you are impatient to see it done. It is thinner than the one you meant to bake. Compounding is the extra layers. They show up when money stays invested long enough to earn on what it already earned. A single week is not the cake."
+
+  - id: rearview
+    principle: "Do not drive by the headline"
+    conditions: [big_news, volatility, stocks_down, stocks_up, flat]
+    headline: "The mirror is not the windshield"
+    say: "We glance at the news, and then we look forward at your plan. That is the drive."
+    tie: "Your plan is the road ahead. The headline is something you notice and then pass."
+    text: "Picture a driver who stares at the rearview mirror the whole way home. They see everything behind them and miss the turn in front of them. Headlines are the mirror. They tell you what just happened. The plan is the windshield. We keep our eyes there."
+
+  - id: grocery-list
+    principle: "Having a plan and sticking to it"
+    conditions: [flat, stocks_up, stocks_down, rates_up, rates_down, big_news]
+    headline: "We shop from the list"
+    say: "We stick to the list you already made. A sale sign in the aisle does not get to rewrite it."
+    tie: "Interest rates and stock weeks are the sale signs. The list is your plan."
+    text: "Picture a grocery trip with a list on the counter at home, and then a bright sign in aisle four. If you buy whatever the sign shouts, you come home with snacks and no dinner. A financial plan is the list. The week can shout. We still shop from the list."
+
+  - id: sunrise
+    principle: "The long view"
+    conditions: [stocks_up, stocks_down, flat, big_news, record_high, volatility]
+    headline: "One morning does not decide the season"
+    say: "We are planning for the season, not for this morning. Your plan stays in place."
+    tie: "That is the reassuring part. You do not have to get this week right. You already got the plan right."
+    text: "Picture someone judging the whole summer by whether Tuesday morning was gray. They would cancel a lot of good months. Stocks have gray mornings and bright ones. A long-term plan is the season. We do not let one morning talk us out of it."
+
+closers:
+  - id: built-for-weeks
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility, rates_up, rates_down, record_high]
+    line: "Your plan was built for weeks like this, and we are staying with it."
+  - id: no-new-plan
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility, rates_up, rates_down, record_high]
+    line: "We do not need a new plan because the news is loud. We stay with the one you already have."
+  - id: one-week-no-vote
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility, rates_up, rates_down, record_high]
+    line: "A single week does not get a vote on a plan built for years."
+  - id: staying-invested
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility, record_high]
+    line: "We are staying invested, because that is how a long-term plan does its work."
+  - id: you-dont-follow
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility, rates_up, rates_down, record_high]
+    line: "You do not have to follow the market. That is what the plan is for."
+  - id: headlines-pass
+    conditions: [big_news, volatility, stocks_down, stocks_up, flat]
+    line: "Headlines come and go. Your plan stays."
+  - id: not-outguess
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility, record_high]
+    line: "We are not trying to outguess a morning. We are sticking with your plan."
+  - id: normal-week
+    conditions: [stocks_up, stocks_down, flat, rates_up, rates_down, record_high]
+    line: "This is a normal week, and normal weeks are already part of the plan."
+  - id: ignore-noise
+    conditions: [big_news, volatility, stocks_down, stocks_up, flat]
+    line: "You can ignore the noise. We are watching the plan, not the headline."
+  - id: boring-move
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility, rates_up, rates_down, record_high]
+    line: "The disciplined move is the boring one, and we are making it."
+  - id: dont-start-over
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility, rates_up, rates_down, record_high]
+    line: "Nothing in this week asks you to start over."
+  - id: one-foot
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility, record_high]
+    line: "We keep going, one ordinary week at a time, on the plan you already chose."
+  - id: hired-a-plan
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility, rates_up, rates_down, record_high]
+    line: "You hired a plan, not a reaction. We are honoring that."
+  - id: dont-chase
+    conditions: [stocks_up, record_high, flat]
+    line: "We will not chase a good week, and we will not run from a noisy one."
+  - id: future-self
+    conditions: [stocks_up, stocks_down, flat, big_news, volatility, rates_up, rates_down, record_high]
+    line: "Your future self is who this plan is for, not this morning's news."
+  - id: rates-stay
+    conditions: [rates_up, rates_down, big_news, flat, stocks_up, stocks_down]
+    line: "Interest rates can move without moving your plan. We are leaving the plan where it is."

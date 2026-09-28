@@ -2,7 +2,7 @@
 
 A morning briefing for a team of financial advisors in Tampa Bay. It is a single page: market figures, a client talking-points script, and the headlines that matter before the open. No ads. No accounts. Each headline opens the original story in a new tab.
 
-The page is rebuilt from free public sources. You change sources, keywords, and market symbols in `feeds.yml`. You change the voice of the client script in `prompts/talking_points.md`. You do not need to write code.
+The page is rebuilt from free public sources. You change sources, keywords, and market symbols in `feeds.yml`. You change the client stories in `prompts/stories.yml`, and the voice of an optional model in `prompts/talking_points.md`. You do not need to write code.
 
 **The site:** https://bglisson1.github.io/Dedicated-News/
 
@@ -53,21 +53,47 @@ Refresh the site in a minute or two.
 
 The date and the "last updated" time are Eastern.
 
-1. **Markets.** Previous close for the S&P 500, Dow, Nasdaq, and Russell 2000 (level, points, percent). Treasury yields and the Freddie Mac 30-year mortgage rate, with the change in basis points. Premarket or live futures for the S&P, Dow, and Nasdaq. Oil, gold, the 10-year market yield, VIX, and Bitcoin when those quotes answer. A missing quote is a dash. The label on each card says whether it is a previous close or a premarket / live price, and when that figure was current.
-2. **Client talking points.** A short script in plain language: a headline, what is going on, lines an advisor can say, and a calm close. It uses the figures and headlines from that build. It does not promise returns or tell anyone what to buy or sell.
+1. **At a glance.** Four cards: S&P 500, Dow, Russell 2000 (previous close, change, and arrow), and the Freddie Mac 30-year mortgage rate with the week-over-week change. On a phone those four sit in a two-by-two grid. When it fits on one line, the S&P and Dow cards also show a short futures percent.
+2. **Client talking points.** One short piece in plain language for a client who does not follow markets: what is going on, a simple story, and a line or two the advisor can say. It does not promise returns or tell anyone what to buy or sell.
 3. **Top 3 Financial News.** Business and markets stories, one line each. The same story in several outlets is shown once, and the stories the most outlets are carrying are listed first.
 4. **Top 3 Political News.** Washington, policy, the Fed, taxes, trade, and elections.
-5. **More Market & Economy.** About a dozen further market links.
-6. **Industry News.** Wealth management and advisor trade press. Those sites publish more slowly, so this section keeps about two weeks of headlines.
-7. **Footer.** "For internal team prep only. Not investment advice." Plus where the figures came from.
+5. **More markets.** Nasdaq, 10-year and 2-year Treasuries, the futures cards, oil, gold, the 10-year market yield, VIX, and Bitcoin. A missing quote is a dash. Each card says whether the figure is a previous close, a weekly rate, or a premarket / live price.
+6. **More Market & Economy.** About a dozen further market links.
+7. **Industry News.** Wealth management and advisor trade press. Those sites publish more slowly, so this section keeps about two weeks of headlines.
+8. **Footer.** "For internal team prep only. Not investment advice." Plus where the figures came from.
 
 Sports and celebrity headlines are left out. A story is not repeated in a second section.
 
 ## The client script
 
-The build asks GitHub Models (`openai/gpt-4.1-mini`) for the talking points, using the token the Action already has. The instructions it follows are in `prompts/talking_points.md`. Edit that file to change the tone. Keep the request for a JSON object with `headline`, `explanation`, `openers`, and `takeaway`, or the page will use the backup script instead.
+Every build writes the talking points from `prompts/stories.yml`. That file holds short stories and closing lines. Each story is tagged with the kind of day it fits: stocks up, stocks down, a flat day, rates up, rates down, a big news day, record highs, or a volatile day. The build picks one story from the tags that match today's figures. The pick is tied to the date, so the same conditions keep walking through the list and a story does not come back for about two weeks. The opening lines are written from the real figures, in plain words such as "stocks rose a bit." No model is required for this.
 
-If the model call fails, the page still builds. The backup script is written from the figures and headlines on that run. It does not invent a number that was not in the data.
+You can edit the stories. Keep each one to two or three sentences, keep the `conditions` list, and do not put statistics in a story.
+
+### Optional: use your own model key
+
+GitHub Models is no longer available, so the build does not call it. If you want a model to write the piece instead of the story library, add one repository secret. The build checks three names, in this order, and uses the first one it finds:
+
+| Secret name | Model |
+| --- | --- |
+| `OPENAI_API_KEY` | `gpt-4.1-mini` |
+| `ANTHROPIC_API_KEY` | `claude-haiku-4-5` |
+| `XAI_API_KEY` | `grok-3-mini` |
+
+The model names are in `feeds.yml` if you want a different small model. The instructions the model follows are in `prompts/talking_points.md`. Keep the request for a JSON object with `headline`, `passage`, and `say`. The build also hands the model two or three stories from the library as voice samples. If the call fails, or the writing is not usable, the page uses the story library.
+
+To add a key:
+
+1. Open [github.com/bglisson1/Dedicated-News](https://github.com/bglisson1/Dedicated-News).
+2. Click **Settings** in the top menu of the repository.
+3. In the left sidebar, click **Secrets and variables**.
+4. Click **Actions**.
+5. Click **New repository secret**.
+6. In **Name**, enter `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY`, or `XAI_API_KEY`.
+7. Paste the key into **Secret**.
+8. Click **Add secret**.
+
+The next build on `main` will use it. You do not put the key in `feeds.yml` or in the page.
 
 On an ordinary day the script talks about this week and the long-term plan. It talks about today only when something large is actually in the data: a move of about 1.5% or more in the S&P, Dow, Nasdaq, or their futures, or a fresh headline about a Fed decision, a jobs report, or an inflation report. You can change that bar and those phrases in `feeds.yml` (`big_move_percent`, `big_day_phrases`).
 
