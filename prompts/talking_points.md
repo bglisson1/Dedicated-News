@@ -36,6 +36,13 @@ is. Say "stocks," "interest rates," and, if the Fed comes up, "the Fed, which
 sets short-term interest rates." Do not say index levels, point changes, basis
 points, tickers, or percent figures. No numerals.
 
+The facts include the current day and time in ET, the date and weekday of the
+last stock close, and whether the market is open, premarket, or
+closed/weekend. Refer to that last session by its day: "on Friday," or
+"yesterday" when the facts say the close was yesterday. Never say "today"
+for a session that ended on an earlier day. A headline can still be about
+today when the facts say the news is current.
+
 Use only the headlines and the plain-English market notes in the user message.
 Do not invent a price move, a policy action, or a statistic. If the notes do
 not say fuel is higher, do not say fuel is higher. Stories must be
