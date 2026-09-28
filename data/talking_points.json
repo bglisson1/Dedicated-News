@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-09-27T22:55:59-04:00",
+  "origin": "templates:tech-ai,war-energy,fed-rates",
+  "headlines": [
+    "Dow Jones Futures Fall, Oil Prices Rise Amid Trump Iran Comments; Micron, SpaceX, Tesla Eye Buy Points",
+    "Fed raises rates for first time in years: What it means for your wallet",
+    "Northern Star rejects Gold Fields' $27B takeover proposal",
+    "Anthropic CEO Dario Amodei to have private White House dinner with Trump",
+    "Trump says he approved new fuel economy standards, rolling back Biden-era rules",
+    "US Releases Product Lists for $30 Billion China Tariff Deal"
+  ],
+  "cards": [
+    {
+      "topic": "tech-ai",
+      "hearing": "You may hear about an artificial-intelligence company meeting with political leaders.",
+      "why": "New technology makes a lot of noise, and the noise gets louder when politics is in the room. It can sound like one company is about to rewrite how money works.",
+      "but": "But a headline about one company is not a reason to redo a long-term plan. We own a mix on purpose, so one name does not get to be the whole story.",
+      "story": "Picture a dinner everyone repeats the next morning as if the menu changed the neighborhood. It was one dinner. Your plan is the neighborhood, and it does not get rebuilt over one meal.",
+      "say": [
+        "We let that headline pass. Your plan is what we keep.",
+        "One company can have a loud week. The mix is the point, and we are staying with it."
+      ]
+    },
+    {
+      "topic": "war-energy",
+      "hearing": "You may hear that tension with Iran is in the news, and that fuel prices are higher.",
+      "why": "The conflict in the headlines has pushed fuel prices up. Trucks move almost everything we buy, so when fuel costs more, that can nudge prices up across the economy.",
+      "but": "But a week of fuel headlines is not a reason to redo a long-term plan. The plan already expects noisy stretches.",
+      "story": "Picture filling the car and deciding the whole year has to change because the tank costs more. The pump is one errand. Your plan is the long trip, and we do not turn around over one fill-up.",
+      "say": [
+        "We see the headline, and we stay with your plan.",
+        "Fuel can bounce without bouncing the plan you already chose."
+      ]
+    },
+    {
+      "topic": "fed-rates",
+      "hearing": "You may hear that the Fed, which sets short-term interest rates, raised them.",
+      "why": "Those rates influence what people pay to borrow and what they earn on savings. That is why a Fed headline feels like it should change everything in the kitchen drawer.",
+      "but": "But one decision does not rewrite a plan built for years. We do not need a new strategy because the headline is loud.",
+      "story": "Picture a house where someone bumps the thermostat and the family holds a meeting to move. The rooms are the same. Interest rates can move, and the plan is still the house.",
+      "say": [
+        "The Fed can move rates, and your plan can stay put.",
+        "We are not rebuilding the plan over one rate headline."
+      ]
+    }
+  ]
+}

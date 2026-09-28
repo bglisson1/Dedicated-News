@@ -1,0 +1,192 @@
+# Headline cards for the client talking points.
+# The build matches a headline to the first topic whose keywords fit,
+# then fills the card from these lines. Edit the words here.
+# A line under "lines" is used when every tag in "when" is true.
+# Tags can be words from the headline, or oil_up, oil_down, rates_up, rates_down.
+# stories and say lines rotate by the date so a multi-day story does not
+# repeat the same analogy every morning.
+#
+# Keep each finished card in everyday language. No statistics.
+
+topics:
+  - id: war-energy
+    keywords: [iran, ukraine, gaza, israel, "middle east", war, missile, diesel, gasoline, "oil price", "oil prices", crude, invasion, conflict]
+    avoid: ["fuel economy", "cafe standard", "emissions"]
+    lines:
+      - when: [iran, oil_up]
+        hearing: "You may hear that tension with Iran is in the news, and that fuel prices are higher."
+      - when: [iran, oil_down]
+        hearing: "You may hear that tension with Iran is in the news, even though fuel prices have eased."
+      - when: [iran]
+        hearing: "You may hear that tension with Iran is in the news."
+      - when: [ukraine]
+        hearing: "You may hear about the war in Ukraine, and about what it means for prices at home."
+      - when: [oil_up]
+        hearing: "You may hear that fuel prices are higher because of a conflict in the news."
+      - when: []
+        hearing: "You may hear about a conflict overseas, and about what that could mean for prices at home."
+    why_oil_up: "The conflict in the headlines has pushed fuel prices up. Trucks move almost everything we buy, so when fuel costs more, that can nudge prices up across the economy."
+    why_oil_down: "A conflict overseas often makes people brace for a higher bill at the pump. Fuel is not running higher on the latest reading, which is a useful reminder that the scary headline and the household bill are not the same thing."
+    why: "When a conflict is in the headlines, fuel is the part families notice, because trucks move almost everything we buy."
+    but: "But a week of fuel headlines is not a reason to redo a long-term plan. The plan already expects noisy stretches."
+    stories:
+      - "Picture filling the car and deciding the whole year has to change because the tank costs more. The pump is one errand. Your plan is the long trip, and we do not turn around over one fill-up."
+      - "Picture a grocery list that gets a little more expensive for a few weeks and a family that throws out the list. The list was still the right dinner. A headline about fuel is the same kind of bump."
+    say:
+      - "We see the headline, and we stay with your plan."
+      - "Fuel can bounce without bouncing the plan you already chose."
+
+  - id: fed-rates
+    keywords: ["federal reserve", fomc, "the fed", "fed raises", "fed cuts", "fed hike", "rate hike", "rate cut", "raises rates", "raised rates", "cuts rates", "interest rates"]
+    avoid: ["archive"]
+    lines:
+      - when: [raised]
+        hearing: "You may hear that the Fed, which sets short-term interest rates, raised them."
+      - when: [cut]
+        hearing: "You may hear that the Fed, which sets short-term interest rates, cut them."
+      - when: []
+        hearing: "You may hear about the Fed, which sets short-term interest rates."
+    why: "Those rates influence what people pay to borrow and what they earn on savings. That is why a Fed headline feels like it should change everything in the kitchen drawer."
+    but: "But one decision does not rewrite a plan built for years. We do not need a new strategy because the headline is loud."
+    stories:
+      - "Picture a house where someone bumps the thermostat and the family holds a meeting to move. The rooms are the same. Interest rates can move, and the plan is still the house."
+      - "Picture a client who hears a rate headline and wants to start the whole plan over before lunch. The plan was written for days when rates move. This is one of those days."
+    say:
+      - "The Fed can move rates, and your plan can stay put."
+      - "We are not rebuilding the plan over one rate headline."
+
+  - id: inflation
+    keywords: [inflation, "consumer price", "cpi report", "price index"]
+    avoid: []
+    lines:
+      - when: []
+        hearing: "You may hear about inflation, which is simply how fast everyday prices are rising."
+    why: "It shows up in groceries, rent, and the pump, so it feels personal. One report gets treated like a verdict on the whole year."
+    but: "But one reading does not get to steer a long-term plan. We already built the plan knowing prices would not sit still."
+    stories:
+      - "Picture judging the whole summer by the price of eggs on a single Tuesday. You would cancel a lot of good months. A long-term plan is the season, not the receipt."
+      - "Picture a family meeting every time the grocery total changes by a little. They would never get to dinner. We notice the report, and we stay with the plan."
+    say:
+      - "Prices move around. Your plan stays where we put it."
+      - "We do not redo a long-term plan over one inflation report."
+
+  - id: jobs
+    keywords: ["jobs report", payroll, nonfarm, unemployment, "hiring freeze", "job growth", "jobs numbers"]
+    avoid: []
+    lines:
+      - when: []
+        hearing: "You may hear about the jobs report, which is the monthly count of people working."
+    why: "It is a wide snapshot of the economy, and it gets a loud morning because everyone wants a simple yes or no. One month is a snapshot, not the whole album."
+    but: "But we do not guess the next number, and we do not change your plan to chase it."
+    stories:
+      - "Picture someone checking the weather at dawn and canceling a vacation that is six months away. The dawn reading mattered for a jacket. It did not matter for the trip. A jobs report is a dawn reading."
+      - "Picture a client who waits for a perfect jobs number before sticking with a plan they already like. The perfect month keeps moving. The plan does not."
+    say:
+      - "A jobs report is news. It is not a new plan."
+      - "We stay invested. One monthly count does not get a vote on your future."
+
+  - id: tariffs
+    keywords: [tariff, tariffs, "trade war", "trade deal", duties]
+    avoid: []
+    lines:
+      - when: [china]
+        hearing: "You may hear about tariffs on goods from China. A tariff is a tax on products that come in from another country."
+      - when: []
+        hearing: "You may hear about tariffs, which are taxes on goods that come in from another country."
+    why: "Tariffs can change what some products cost, and a fight between countries sounds like the whole store just got rearranged."
+    but: "But a trade headline is one piece of a long plan. We do not toss the plan because trade policy had a loud week."
+    stories:
+      - "Picture a grocery trip with a list, and then a bright sign in one aisle about a price change on a few items. If you abandon the list, you come home with snacks and no dinner. The list is your plan."
+      - "Picture repainting the whole house because one room had a draft from a window that was opened. Trade policy is the window. The house is the plan."
+    say:
+      - "We can talk about tariffs. We are not throwing out your plan over them."
+      - "A loud trade headline does not get to rewrite the list you already made."
+
+  - id: election
+    keywords: [election, midterm, midterms, ballot, "senate race", "presidential race", campaign, "polling"]
+    avoid: []
+    lines:
+      - when: [midterm]
+        hearing: "You may hear about the midterms, and about what people think the vote means for their money."
+      - when: []
+        hearing: "You may hear about the election, and about what people think it means for their money."
+    why: "Campaigns talk as if one night redraws the whole economy. Clients feel that in their stomach, which is normal, and it is a bad compass for a plan."
+    but: "But your plan was not built for one election night. It was built for the years on either side of it."
+    stories:
+      - "Picture a driver who stares at a billboard the whole way home and misses the turn. The billboard is the campaign. The windshield is the plan. We keep our eyes there."
+      - "Picture canceling a family budget every time a poll comes out. You would never get past Tuesday. We let the election be loud, and we stay with the plan."
+    say:
+      - "Elections come and go. Your plan stays."
+      - "We are not making a new plan because a campaign is loud."
+
+  - id: market-drop
+    keywords: ["stocks fall", "stocks fell", "stocks sink", "stocks slid", "market selloff", "market slide", sell-off, selloff, plunge, tumble, "stocks drop", "wall street falls"]
+    avoid: ["futures"]
+    lines:
+      - when: []
+        hearing: "You may hear that stocks had a rough stretch."
+    why: "A down day feels personal, like something broke. Most of the time it is the market doing what it has always done, which is move around on the way to a longer result."
+    but: "But a rough stretch is the price of admission for a long-term stock plan. We paid that price on purpose, and we are staying in."
+    stories:
+      - "Picture a flight that shakes for ten minutes. The nervous move is to ask the pilot to turn around. The shake is uncomfortable, and it is not the same thing as being off course."
+      - "Picture a ballgame that starts to sprinkle. You still go, because the game is the point and a little weather is the cost of being there. A down stretch in stocks is that weather."
+    say:
+      - "A bumpy week is not a reason to change the destination. We are staying with your plan."
+      - "We are staying invested. One rough stretch does not get to end a long-term plan."
+
+  - id: market-record
+    keywords: ["record high", "all-time high", "record close", "stocks surge", "wall street record"]
+    avoid: []
+    lines:
+      - when: []
+        hearing: "You may hear that stocks have been strong, and that people are treating a good run like a finish line."
+    why: "A cheerful headline can push people to chase what already went up, or to worry that they missed it. Both reactions make the week feel urgent."
+    but: "But a good stretch is a nice week inside a plan, not a command to do something new."
+    stories:
+      - "Picture someone who, on the first warm Saturday, tries to do the whole summer in one afternoon. They end up tired and no further along. A strong week for stocks can tempt the same rush."
+      - "Picture frosting a cake after the first layer because you are impatient to see it done. It is thinner than the one you meant to bake. A good week is a layer, not the whole cake."
+    say:
+      - "We do not chase a good week, and we do not treat it like a finish line."
+      - "We leave the plan where it is. A strong headline is not a new strategy."
+
+  - id: tech-ai
+    keywords: [anthropic, openai, chatgpt, "artificial intelligence", "ai company", "ai tool"]
+    avoid: ["advisor", "advisors", "ria"]
+    lines:
+      - when: ["white house"]
+        hearing: "You may hear about an artificial-intelligence company meeting with political leaders."
+      - when: []
+        hearing: "You may hear about artificial intelligence, and about a company that is suddenly everywhere in the news."
+    why: "New technology makes a lot of noise, and the noise gets louder when politics is in the room. It can sound like one company is about to rewrite how money works."
+    but: "But a headline about one company is not a reason to redo a long-term plan. We own a mix on purpose, so one name does not get to be the whole story."
+    stories:
+      - "Picture a dinner everyone repeats the next morning as if the menu changed the neighborhood. It was one dinner. Your plan is the neighborhood, and it does not get rebuilt over one meal."
+      - "Picture a toolbox with only a hammer. It is great until the job is a screw. A plan keeps more than one tool so a loud week for one company is not a loud week for everything you own."
+    say:
+      - "We let that headline pass. Your plan is what we keep."
+      - "One company can have a loud week. The mix is the point, and we are staying with it."
+
+  - id: general
+    keywords: []
+    avoid: []
+    lines:
+      - when: [stocks_up]
+        hearing: "You may hear that stocks rose a bit, and wonder if you were supposed to do something about it."
+      - when: [stocks_strong]
+        hearing: "You may hear that stocks had a strong stretch, and wonder if you were supposed to chase it."
+      - when: [stocks_down]
+        hearing: "You may hear that stocks slipped, and wonder if something is wrong with the plan."
+      - when: [stocks_rough]
+        hearing: "You may hear that stocks had a rough day, and wonder if the plan should change."
+      - when: []
+        hearing: "You may hear that stocks were quiet, which is easy to miss and perfectly fine."
+    why_stocks_down: "A softer stretch feels like a signal. Most of the time it is an ordinary week, and ordinary weeks are already inside a long-term plan."
+    why_stocks_up: "A nicer stretch can feel like a signal too, as if the right move is to hurry. It is still one week."
+    why: "Nothing in a quiet week asks you to follow the market. The plan is there so you do not have to."
+    but: "But your plan was built for weeks like this, and we are staying with it."
+    stories:
+      - "Picture a client who planted a tree and then digs it up every time the sky looks ordinary. The tree never gets tall. Time in the market works the same way. The years you stay invested matter more than a perfect week."
+      - "Picture judging the whole summer by whether one morning was gray. You would cancel a lot of good months. A long-term plan is the season. We do not let one quiet week talk us out of it."
+    say:
+      - "You do not have to follow the market. That is what the plan is for."
+      - "We are staying invested, because that is how a long-term plan does its work."

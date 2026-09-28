@@ -26,7 +26,9 @@
 # Keep the quotes around web addresses. Keep the indentation.
 #
 # The talking-points voice lives in prompts/talking_points.md.
-# The model name is talking_points.model below.
+# Headline cards without a model live in prompts/topics.yml.
+# Stories for the model live in prompts/stories.yml.
+# OpenRouter is used when OPENROUTER_API_KEY is set. See the README.
 # =============================================================================
 
 site:
@@ -38,8 +40,11 @@ site:
   long_window_hours: 96
   top_count: 3
   # Next market stories after the top 3. The page asks for about 10 to 15.
-  more_count: 12
-  industry_count: 8
+  # More Market & Economy and Industry News show 3 to 5 stories.
+  # Weak or old items are dropped instead of padding the list.
+  more_count: 5
+  industry_count: 5
+  list_min: 3
   # A move at least this large, in the cash indexes or index futures,
   # lets the talking points talk about today.
   big_move_percent: 1.5
@@ -47,9 +52,20 @@ site:
   big_day_headline_hours: 20
 
 talking_points:
-  model: "openai/gpt-4.1-mini"
+  stories_file: "prompts/stories.yml"
+  topics_file: "prompts/topics.yml"
   prompt_file: "prompts/talking_points.md"
-  endpoint: "https://models.github.ai/inference/chat/completions"
+  # OpenRouter is used when the OPENROUTER_API_KEY secret is set.
+  # llm_model is the writer. If that call fails, llm_fallback_model is tried.
+  llm_model: "anthropic/claude-sonnet-5"
+  llm_fallback_model: "openai/gpt-6-luna"
+  llm_temperature: 0.7
+  llm_max_tokens: 1200
+  # Used only when OpenRouter is not set and that provider's own secret is.
+  # OpenAI is tried first, then Anthropic, then xAI.
+  openai_model: "gpt-4.1-mini"
+  anthropic_model: "claude-haiku-4-5"
+  xai_model: "grok-3-mini"
 
 # Symbols whose percent move can mark a "big day." Oil, gold, and Bitcoin
 # can swing without changing the client script.
@@ -455,6 +471,21 @@ sections:
       - /entertainment/
       - /celebrity/
     sources:
+      # advisorhub.com/feed returns a Cloudflare challenge (HTTP 403),
+      # including with a normal browser agent. The Feedburner address
+      # "advisorhub" is a different site. Google News still has the stories.
+      # priority lifts fresh AdvisorHub items in this section. The page
+      # still leaves room for the other trade desks.
+      - name: AdvisorHub
+        enabled: yes
+        url: "https://news.google.com/rss/search?q=site:advisorhub.com+when:14d&hl=en-US&gl=US&ceid=US:en"
+        max_items: 14
+        strip_publisher_suffix: yes
+        priority: 10
+        skip_keywords:
+          - most-read
+          - inc. 5000
+
       # Direct feed. This one answers.
       - name: WealthManagement.com
         enabled: yes

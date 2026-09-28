@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Build Dedicated News.
 
-You do not need to edit this file. Change feeds.yml, or the talking-points
-voice in prompts/talking_points.md, then run:
+You do not need to edit this file. Change feeds.yml, the stories in
+prompts/stories.yml, or the talking-points voice in prompts/talking_points.md,
+then run:
 
     python build.py
 
@@ -108,6 +109,8 @@ class Item:
     published: datetime
     boosts: list[str] = field(default_factory=list)
     cluster_id: int = -1
+    priority: int = 0
+    summary: str = ""
 
 
 @dataclass
@@ -119,11 +122,18 @@ class FeedReport:
 
 
 @dataclass
+class TalkCard:
+    hearing: str
+    why: str
+    reality: str
+    story: str
+    say: list[str]
+    topic: str
+
+
+@dataclass
 class Briefing:
-    headline: str
-    explanation: list[str]
-    openers: list[str]
-    takeaway: str
+    cards: list[TalkCard]
     origin: str
 
 
@@ -165,6 +175,16 @@ def main() -> int:
         f"industry {len(picked['industry'])}"
     )
     print(f"Talking points: {talk_log}")
+    print("--- client talking points ---")
+    for index, card in enumerate(briefing.cards, start=1):
+        print(f"CARD {index} ({card.topic}, {word_count(card_text(card))} words)")
+        print(f"HEARING: {card.hearing}")
+        print(f"WHY: {card.why}")
+        print(f"BUT: {card.reality}")
+        print(f"STORY: {card.story}")
+        for line in card.say:
+            print(f"SAY: {line}")
+        print()
     if failed:
         print(f"{failed} feed(s) skipped. The page was still built.", file=sys.stderr)
     return 0
@@ -636,6 +656,11 @@ def fetch_source(config: dict, section: dict, source: dict, now: datetime):
     window = section_window(config, section, now)
     keywords = resolve_keywords(config, section, source)
     require_match = source_requires_match(section, source, keywords)
+    try:
+        priority = int(source.get("priority") or 0)
+    except (TypeError, ValueError):
+        priority = 0
+    skip_keywords = list(section.get("skip_keywords") or []) + list(source.get("skip_keywords") or [])
     kept: list[Item] = []
     for entry in entries:
         try:
@@ -647,11 +672,12 @@ def fetch_source(config: dict, section: dict, source: dict, now: datetime):
                 block_keywords=config.get("block_keywords") or [],
                 boost_keywords=config.get("boost_keywords") or [],
                 skip_url_parts=section.get("skip_url_parts") or [],
-                skip_keywords=section.get("skip_keywords") or [],
+                skip_keywords=skip_keywords,
                 require_keywords=keywords,
                 require_match=require_match,
                 max_age=window,
                 now=now,
+                priority=priority,
             )
         except Exception:
             traceback.print_exc(file=sys.stderr)
@@ -713,6 +739,19 @@ def download_entries(url: str) -> list:
     return []
 
 
+def entry_summary(entry, title: str) -> str:
+    raw = entry.get("summary") or entry.get("description") or ""
+    text = clean_text(re.sub(r"<[^>]+>", " ", str(raw)))
+    if not text:
+        return ""
+    if text.lower().strip(" .") == title.lower().strip(" ."):
+        return ""
+    # Google News descriptions often repeat the headline and the publisher.
+    if title and text.lower().startswith(title.lower()[:48]):
+        return ""
+    return text[:360]
+
+
 def entry_to_item(
     entry,
     source_name: str,
@@ -726,6 +765,7 @@ def entry_to_item(
     require_match: bool,
     max_age: timedelta,
     now: datetime,
+    priority: int = 0,
 ) -> Item | None:
     title = clean_text(entry.get("title") or "")
     link = clean_link(entry.get("link") or "")
@@ -755,6 +795,8 @@ def entry_to_item(
         role=role,
         published=published,
         boosts=boosts,
+        priority=priority,
+        summary=entry_summary(entry, title),
     )
 
 
@@ -1055,6 +1097,91 @@ def market_relevant(cluster: list[Item], keywords: list, phrases: list | None = 
     return any(keyword_in(text, keyword) for keyword in keywords)
 
 
+def cluster_age_hours(cluster: list[Item], now: datetime) -> float:
+    newest = max(item.published for item in cluster)
+    return max(0.0, (now - newest).total_seconds() / 3600.0)
+
+
+def default_fresh_hours(now: datetime) -> float:
+    monday_morning = now.weekday() == 0 and now.hour < 12
+    if now.weekday() >= 5 or monday_morning:
+        return 72.0
+    return 40.0
+
+
+def cluster_is_strong(cluster: list[Item], now: datetime, fresh_hours: float) -> bool:
+    hours = cluster_age_hours(cluster, now)
+    priority = max((item.priority for item in cluster), default=0)
+    if priority > 0 and hours <= max(fresh_hours, 120.0):
+        return True
+    if len(outlet_names(cluster)) >= 2 and hours <= fresh_hours * 1.5:
+        return True
+    return hours <= fresh_hours
+
+
+def trim_section(
+    ranked: list[list[Item]],
+    now: datetime,
+    limit: int,
+    floor: int,
+    fresh_hours: float | None = None,
+) -> list[list[Item]]:
+    """Keep three to five stories. Drop thin or old ones before filling the minimum."""
+    if limit < 1 or not ranked:
+        return []
+    hours = default_fresh_hours(now) if fresh_hours is None else fresh_hours
+    strong = [cluster for cluster in ranked if cluster_is_strong(cluster, now, hours)]
+    chosen = strong[:limit]
+    if len(chosen) < floor:
+        for cluster in ranked:
+            if cluster not in chosen:
+                chosen.append(cluster)
+            if len(chosen) >= floor:
+                break
+    return chosen[:limit]
+
+
+INDUSTRY_GOSSIP = (
+    "hires", "hired", "joins", "joined", "recruit", "recruits",
+    "jumps to", "moves to", "team from", "snags", "welcomes",
+)
+
+
+def industry_score(cluster: list[Item], now: datetime) -> float:
+    priority = max((item.priority for item in cluster), default=0)
+    text = " ".join(item.title.lower() for item in cluster)
+    gossip = 8.0 if any(keyword_in(text, word) for word in INDUSTRY_GOSSIP) else 0.0
+    return priority + gossip + freshness(cluster, now) * 20 + len(outlet_names(cluster))
+
+
+def mix_priority(
+    ranked: list[list[Item]],
+    limit: int,
+    floor: int,
+    priority_cap: int,
+) -> list[list[Item]]:
+    """Let a boosted source lead, and still leave room for the other desks."""
+    chosen: list[list[Item]] = []
+    used = 0
+    skipped: list[list[Item]] = []
+    for cluster in ranked:
+        is_priority = max((item.priority for item in cluster), default=0) > 0
+        if is_priority and used >= priority_cap:
+            skipped.append(cluster)
+            continue
+        chosen.append(cluster)
+        used += int(is_priority)
+        if len(chosen) >= limit:
+            break
+    if len(chosen) < floor:
+        for cluster in skipped + ranked:
+            if cluster not in chosen:
+                chosen.append(cluster)
+            if len(chosen) >= floor:
+                break
+    return chosen[:limit]
+
+
 def arrange(items: list[Item], clusters: list[list[Item]], config: dict, now: datetime) -> dict:
     site = config["site"]
     top_count = int(site.get("top_count", 3))
@@ -1122,18 +1249,24 @@ def arrange(items: list[Item], clusters: list[list[Item]], config: dict, now: da
     top_political = political_ranked[:top_count]
     used.update(cluster[0].cluster_id for cluster in top_political)
 
-    more = [cluster for cluster in financial if cluster[0].cluster_id not in used][:more_count]
+    more_ranked = [cluster for cluster in financial if cluster[0].cluster_id not in used]
+    more = trim_section(more_ranked, now, more_count, int(site.get("list_min", 3)))
     used.update(cluster[0].cluster_id for cluster in more)
 
     industry_pool = [
         cluster for cluster in clusters
         if has_role(cluster, "industry") and cluster[0].cluster_id not in used
     ]
-    industry = sorted(
-        industry_pool,
-        key=lambda cluster: (freshness(cluster, now), len(outlet_names(cluster))),
-        reverse=True,
-    )[:industry_count]
+    industry_ranked = sorted(industry_pool, key=lambda cluster: industry_score(cluster, now), reverse=True)
+    floor = int(site.get("list_min", 3))
+    fresh_hours = 120.0 if now.weekday() >= 5 or (now.weekday() == 0 and now.hour < 12) else 96.0
+    strong = [cluster for cluster in industry_ranked if cluster_is_strong(cluster, now, fresh_hours)]
+    industry = mix_priority(
+        strong if len(strong) >= floor else industry_ranked,
+        industry_count,
+        floor,
+        priority_cap=3,
+    )
 
     return {
         "financial": top_financial,
@@ -1143,20 +1276,181 @@ def arrange(items: list[Item], clusters: list[list[Item]], config: dict, now: da
     }
 
 
+CACHE_PATH = ROOT / "data" / "talking_points.json"
+LIVE_CACHE_URL = "https://bglisson1.github.io/Dedicated-News/talking_points.json"
+# Weekday 6:00 AM, 8:45 AM, and 12:00 PM, plus the weekend 8:00 AM run.
+# Both daylight and standard offsets are listed. The gate already skips the
+# offset that is not in effect, so each of these fires once.
+LLM_SLOT_CRONS = {
+    "0 10 * * 1-5",   # 6:00 AM EDT
+    "0 11 * * 1-5",   # 6:00 AM EST
+    "45 12 * * 1-5",  # 8:45 AM EDT
+    "45 13 * * 1-5",  # 8:45 AM EST
+    "0 16 * * 1-5",   # 12:00 PM EDT
+    "0 17 * * 1-5",   # 12:00 PM EST
+    "0 12 * * 0,6",   # 8:00 AM EDT Saturday and Sunday
+    "0 13 * * 0,6",   # 8:00 AM EST Saturday and Sunday
+}
+
+
 def build_talking_points(config, now, quotes, rates, picked, items) -> tuple[Briefing, str]:
+    facts = fact_sheet(config, now, quotes, rates, picked, items)
+    library = load_story_library(config)
+    headlines = talk_headlines(picked)
+    cache = load_talk_cache()
+    slot = is_llm_slot()
+    changed = headlines_changed_a_lot((cache or {}).get("headlines") or [], headlines)
+    has_provider = provider_configured()
+    # A model call happens on the morning and midday clocks, and also when
+    # the top headlines moved a lot. Other clocks keep the saved cards.
+    # With no key, the topic templates run every time, so the cards follow
+    # the news without a cache getting in the way.
+    should_call = has_provider and (slot or changed)
+    reuse = cache is not None and has_provider and not slot and not changed
+    if reuse:
+        cached = briefing_from_cache(cache)
+        if cached is not None:
+            if not CACHE_PATH.exists():
+                write_talk_cache(cache)
+            print("  reusing cached talking points")
+            return cached, f"cached ({cached.origin})"
     try:
-        facts = fact_sheet(config, now, quotes, rates, picked, items)
-        briefing = call_model(config, facts)
+        briefing = call_provider(config, facts, library) if should_call else None
         if briefing is None:
-            briefing = fallback_briefing(facts)
-            return briefing, f"fallback ({briefing.origin})"
-        return briefing, f"model {config.get('talking_points', {}).get('model', '')}"
+            briefing = template_briefing(config, facts)
+        save_talk_cache(briefing, headlines, now)
+        return briefing, briefing.origin
     except Exception as exc:
         traceback.print_exc(file=sys.stderr)
-        facts = fact_sheet(config, now, quotes, rates, picked, items)
-        briefing = fallback_briefing(facts)
-        briefing.origin = f"fallback after error: {exc}"
+        briefing = template_briefing(config, facts)
+        briefing.origin = f"{briefing.origin}; provider error: {exc}"
+        save_talk_cache(briefing, headlines, now)
         return briefing, briefing.origin
+
+
+def is_llm_slot() -> bool:
+    event = (os.environ.get("EVENT_NAME") or "").strip()
+    schedule = " ".join((os.environ.get("EVENT_SCHEDULE") or "").split())
+    if event != "schedule":
+        return False
+    return schedule in LLM_SLOT_CRONS
+
+
+def provider_configured() -> bool:
+    names = ("OPENROUTER_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "XAI_API_KEY")
+    return any((os.environ.get(name) or "").strip() for name in names)
+
+
+def talk_headlines(picked: dict) -> list[str]:
+    titles = []
+    for key in ("financial", "political"):
+        for cluster in picked.get(key) or []:
+            titles.append(choose_representative(cluster).title)
+    return titles
+
+
+def headlines_changed_a_lot(cached: list, current: list[str]) -> bool:
+    """True when fewer than half of today's top headlines were in the cache."""
+    old = [str(title) for title in cached if str(title).strip()]
+    new = [title for title in current if title.strip()]
+    if not old or not new:
+        return False
+    matched = 0
+    for title in new:
+        left = normalize_title(title)
+        for previous in old:
+            if titles_match(left, normalize_title(previous)):
+                matched += 1
+                break
+    return matched * 2 < len(new)
+
+
+def load_talk_cache() -> dict | None:
+    local = read_talk_cache(CACHE_PATH)
+    if local is not None:
+        return local
+    return fetch_live_talk_cache()
+
+
+def read_talk_cache(path: Path) -> dict | None:
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"  talking-points cache could not be read: {exc}")
+        return None
+    if not isinstance(data, dict) or not data.get("cards"):
+        return None
+    return data
+
+
+def fetch_live_talk_cache() -> dict | None:
+    request = urllib.request.Request(
+        LIVE_CACHE_URL,
+        headers={"User-Agent": UA_FEED, "Accept": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=8) as response:
+            payload = response.read(MAX_BYTES)
+        data = json.loads(payload.decode("utf-8"))
+    except Exception as exc:
+        print(f"  live talking-points cache unavailable: {exc}")
+        return None
+    if not isinstance(data, dict) or not data.get("cards"):
+        return None
+    print("  loaded talking points from the live site")
+    return data
+
+
+def briefing_from_cache(data: dict) -> Briefing | None:
+    cards: list[TalkCard] = []
+    for raw in data.get("cards") or []:
+        if not isinstance(raw, dict):
+            continue
+        hearing = clean_text(str(raw.get("hearing") or ""))
+        why = clean_text(str(raw.get("why") or ""))
+        reality = clean_text(str(raw.get("but") or raw.get("reality") or ""))
+        story = clean_text(str(raw.get("story") or ""))
+        say_raw = raw.get("say") or []
+        if isinstance(say_raw, str):
+            say_raw = [say_raw]
+        say = [clean_text(str(line)) for line in say_raw if clean_text(str(line))][:2]
+        if not hearing or not why or not reality or not story or not say:
+            continue
+        cards.append(TalkCard(hearing, why, reality, story, say, str(raw.get("topic") or "cached")))
+    if not cards:
+        return None
+    origin = clean_text(str(data.get("origin") or "cache"))
+    return Briefing(cards, origin)
+
+
+def write_talk_cache(payload: dict) -> None:
+    try:
+        CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        CACHE_PATH.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    except OSError as exc:
+        print(f"  could not save talking-points cache: {exc}")
+
+
+def save_talk_cache(briefing: Briefing, headlines: list[str], now: datetime) -> None:
+    payload = {
+        "generated_at": now.isoformat(timespec="seconds"),
+        "origin": briefing.origin,
+        "headlines": headlines,
+        "cards": [
+            {
+                "topic": card.topic,
+                "hearing": card.hearing,
+                "why": card.why,
+                "but": card.reality,
+                "story": card.story,
+                "say": list(card.say),
+            }
+            for card in briefing.cards
+        ],
+    }
+    write_talk_cache(payload)
 
 
 def fact_sheet(config, now, quotes, rates, picked, items) -> dict:
@@ -1216,14 +1510,10 @@ def fact_sheet(config, now, quotes, rates, picked, items) -> dict:
         lines.append(describe_rate_fact(quote))
     lines.append("")
     lines.append("TOP FINANCIAL HEADLINES:")
-    for cluster in picked["financial"]:
-        item = choose_representative(cluster)
-        lines.append(f"- {item.title} ({item.source})")
+    lines.extend(describe_headline_facts(picked["financial"]))
     lines.append("")
     lines.append("TOP POLITICAL HEADLINES:")
-    for cluster in picked["political"]:
-        item = choose_representative(cluster)
-        lines.append(f"- {item.title} ({item.source})")
+    lines.extend(describe_headline_facts(picked["political"]))
     if not picked["financial"] and not picked["political"]:
         lines.append("No headlines were available.")
     return {
@@ -1271,43 +1561,232 @@ def describe_rate_fact(quote: Quote) -> str:
     return f"- {quote.label} ({quote.symbol}): {quote.price:.2f} percent, {move}, {source}, as of {when}"
 
 
-def call_model(config: dict, facts: dict) -> Briefing | None:
-    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
-    if not token:
-        print("  model skipped: GITHUB_TOKEN is not set")
-        return None
+def describe_headline_facts(clusters: list[list[Item]]) -> list[str]:
+    rows = []
+    for cluster in clusters:
+        item = choose_representative(cluster)
+        outlets = len(outlet_names(cluster))
+        label = "1 outlet" if outlets == 1 else f"{outlets} outlets"
+        rows.append(f"- {item.title} ({item.source}, {label})")
+        if item.summary:
+            rows.append(f"  summary: {item.summary}")
+    if not rows:
+        rows.append("- none")
+    return rows
+
+
+def load_topics(config: dict) -> list[dict]:
+    talking = config.get("talking_points") or {}
+    path = ROOT / str(talking.get("topics_file") or "prompts/topics.yml")
+    if not path.exists():
+        print(f"  topic file missing: {path.name}")
+        return []
+    with path.open(encoding="utf-8") as handle:
+        data = yaml.safe_load(handle) or {}
+    return [item for item in (data.get("topics") or []) if isinstance(item, dict) and item.get("id")]
+
+
+def load_story_library(config: dict) -> dict:
+    talking = config.get("talking_points") or {}
+    path = ROOT / str(talking.get("stories_file") or "prompts/stories.yml")
+    if not path.exists():
+        print(f"  story library missing: {path.name}")
+        return {"stories": [], "closers": []}
+    with path.open(encoding="utf-8") as handle:
+        data = yaml.safe_load(handle) or {}
+    stories = [
+        item for item in (data.get("stories") or [])
+        if isinstance(item, dict) and str(item.get("text") or "").strip()
+    ]
+    closers = [
+        item for item in (data.get("closers") or [])
+        if isinstance(item, dict) and str(item.get("line") or "").strip()
+    ]
+    return {"stories": stories, "closers": closers}
+
+
+def call_provider(config: dict, facts: dict, library: dict) -> Briefing | None:
+    """Use a model when a repository secret is set. Otherwise skip."""
     talking = config.get("talking_points") or {}
     prompt_path = ROOT / str(talking.get("prompt_file") or "prompts/talking_points.md")
     if not prompt_path.exists():
-        print(f"  model skipped: missing {prompt_path.name}")
+        print(f"  provider skipped: missing {prompt_path.name}")
         return None
     system = prompt_path.read_text(encoding="utf-8")
-    model = str(talking.get("model") or "openai/gpt-4.1-mini")
-    endpoint = str(talking.get("endpoint") or "https://models.github.ai/inference/chat/completions")
-    body = {
-        "model": model,
-        "temperature": 0.4,
-        "messages": [
-            {"role": "system", "content": system},
-            {
-                "role": "user",
-                "content": (
-                    "Write the client talking points from these facts only. "
-                    "Do not invent any number or event.\n\n"
-                    + facts["context"]
-                ),
-            },
-        ],
-    }
+    user = provider_user_message(facts, library)
+    openrouter = (os.environ.get("OPENROUTER_API_KEY") or "").strip()
+    if openrouter:
+        return call_openrouter(talking, openrouter, system, user, facts["context"])
+    providers = (
+        (
+            "openai",
+            "OPENAI_API_KEY",
+            "https://api.openai.com/v1/chat/completions",
+            str(talking.get("openai_model") or "gpt-4.1-mini"),
+        ),
+        (
+            "anthropic",
+            "ANTHROPIC_API_KEY",
+            "https://api.anthropic.com/v1/messages",
+            str(talking.get("anthropic_model") or "claude-haiku-4-5"),
+        ),
+        (
+            "xai",
+            "XAI_API_KEY",
+            "https://api.x.ai/v1/chat/completions",
+            str(talking.get("xai_model") or "grok-3-mini"),
+        ),
+    )
+    for name, env_name, endpoint, model in providers:
+        key = (os.environ.get(env_name) or "").strip()
+        if not key:
+            continue
+        print(f"  asking {name} ({model})")
+        content = post_provider(name, key, endpoint, model, system, user)
+        if not content:
+            return None
+        briefing = parse_briefing(content, facts["context"])
+        if briefing is None:
+            print("  provider text rejected; using the headline templates")
+            return None
+        briefing.origin = f"{name}:{model}"
+        return briefing
+    print("  no provider key set; using the headline templates")
+    return None
+
+
+def call_openrouter(talking: dict, key: str, system: str, user: str, context: str) -> Briefing | None:
+    primary = str(talking.get("llm_model") or "anthropic/claude-sonnet-5").strip()
+    fallback = str(talking.get("llm_fallback_model") or "openai/gpt-6-luna").strip()
+    try:
+        temperature = float(talking.get("llm_temperature", 0.7))
+    except (TypeError, ValueError):
+        temperature = 0.7
+    try:
+        max_tokens = int(talking.get("llm_max_tokens", 1200))
+    except (TypeError, ValueError):
+        max_tokens = 1200
+    endpoint = "https://openrouter.ai/api/v1/chat/completions"
+    models = [primary]
+    if fallback and fallback != primary:
+        models.append(fallback)
+    for model in models:
+        print(f"  asking openrouter ({model})")
+        content = post_provider(
+            "openrouter",
+            key,
+            endpoint,
+            model,
+            system,
+            user,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+        if not content:
+            continue
+        briefing = parse_briefing(content, context)
+        if briefing is None:
+            print(f"  {model} text rejected")
+            continue
+        briefing.origin = f"openrouter:{model}"
+        return briefing
+    print("  OpenRouter did not return usable cards; using the headline templates")
+    return None
+
+
+def provider_user_message(facts: dict, library: dict) -> str:
+    primary, _tags = market_conditions(facts)
+    today = pick_rotating(library.get("stories") or [], primary, facts["now"])
+    skip = str((today or {}).get("id") or "")
+    samples = style_samples(library.get("stories") or [], facts["now"], skip_id=skip)
+    blocks = []
+    for index, story in enumerate(samples, start=1):
+        blocks.append(
+            "SAMPLE "
+            f"{index}\n"
+            f"principle: {story.get('principle', '')}\n"
+            f"story: {story.get('text', '')}\n"
+            f"tie: {story.get('tie', '')}\n"
+            f"say: {story.get('say', '')}"
+        )
+    sample_text = "\n\n".join(blocks) if blocks else "No samples were available."
+    plain = plain_english_facts(facts)
+    return (
+        "Write 2 or 3 talking-point cards from these facts only. "
+        "Do not invent any number or event. Do not copy a sample.\n\n"
+        "STYLE SAMPLES (voice only):\n"
+        f"{sample_text}\n\n"
+        "PLAIN ENGLISH (use these size words, not the figures):\n"
+        f"{plain}\n\n"
+        "FACTS:\n"
+        f"{facts['context']}"
+    )
+
+
+def style_samples(stories: list[dict], when: datetime, skip_id: str, count: int = 3) -> list[dict]:
+    pool = [story for story in stories if str(story.get("id") or "") != skip_id]
+    pool.sort(key=lambda story: str(story.get("id") or ""))
+    if not pool:
+        return []
+    start = when.astimezone(EASTERN).date().toordinal()
+    picked: list[dict] = []
+    seen: set[str] = set()
+    for step in range(count * 3):
+        story = pool[(start + step * 5) % len(pool)]
+        ident = str(story.get("id") or "")
+        if ident in seen:
+            continue
+        seen.add(ident)
+        picked.append(story)
+        if len(picked) == count:
+            break
+    return picked
+
+
+def post_provider(
+    name: str,
+    key: str,
+    endpoint: str,
+    model: str,
+    system: str,
+    user: str,
+    temperature: float = 0.4,
+    max_tokens: int = 1400,
+) -> str | None:
+    if name == "anthropic":
+        body = {
+            "model": model,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "system": system,
+            "messages": [{"role": "user", "content": user}],
+        }
+        headers = {
+            "x-api-key": key,
+            "anthropic-version": "2023-06-01",
+            "content-type": "application/json",
+        }
+    else:
+        body = {
+            "model": model,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+        }
+        headers = {
+            "Authorization": f"Bearer {key}",
+            "Content-Type": "application/json",
+        }
+        if name == "openrouter":
+            headers["HTTP-Referer"] = "https://bglisson1.github.io/Dedicated-News/"
+            headers["X-Title"] = "Dedicated News"
     request = urllib.request.Request(
         endpoint,
         data=json.dumps(body).encode("utf-8"),
-        headers={
-            "Accept": "application/vnd.github+json",
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-            "X-GitHub-Api-Version": "2022-11-28",
-        },
+        headers=headers,
         method="POST",
     )
     try:
@@ -1315,23 +1794,25 @@ def call_model(config: dict, facts: dict) -> Briefing | None:
             payload = response.read(MAX_BYTES)
     except urllib.error.HTTPError as exc:
         detail = exc.read(500).decode("utf-8", "replace")
-        print(f"  model HTTP {exc.code}: {detail[:300]}")
+        print(f"  {name} HTTP {exc.code}: {detail[:300]}")
         return None
     except Exception as exc:
-        print(f"  model failed: {exc}")
+        print(f"  {name} failed: {exc}")
         return None
     try:
         data = json.loads(payload.decode("utf-8"))
-        content = data["choices"][0]["message"]["content"]
+        if name == "anthropic":
+            return str(data["content"][0]["text"])
+        return str(data["choices"][0]["message"]["content"])
     except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
-        print(f"  model response could not be read: {exc}")
+        print(f"  {name} response could not be read: {exc}")
         return None
-    briefing = parse_briefing(str(content), facts["context"])
-    if briefing is None:
-        print("  model text rejected; using the template")
-        return None
-    briefing.origin = "model"
-    return briefing
+
+
+JARGON = re.compile(
+    r"\b(basis points?|bps|S&P|Nasdaq|Russell|futures|VIX|Dow|yields?|tickers?|premarket|indexes?|indices)\b",
+    re.I,
+)
 
 
 def parse_briefing(content: str, context: str) -> Briefing | None:
@@ -1350,35 +1831,58 @@ def parse_briefing(content: str, context: str) -> Briefing | None:
             return None
     if not isinstance(data, dict):
         return None
-    headline = clean_text(str(data.get("headline") or ""))
-    explanation_raw = data.get("explanation") or ""
-    if isinstance(explanation_raw, list):
-        explanation = [clean_text(str(part)) for part in explanation_raw if clean_text(str(part))]
-    else:
-        explanation = [
-            clean_text(part)
-            for part in re.split(r"(?<=[.!?])\s+", str(explanation_raw))
-            if clean_text(part)
-        ]
-    openers_raw = data.get("openers") or data.get("say") or []
-    if isinstance(openers_raw, str):
-        openers_raw = [openers_raw]
-    openers = [clean_text(str(part)) for part in openers_raw if clean_text(str(part))]
-    takeaway = clean_text(str(data.get("takeaway") or ""))
-    if not headline or not explanation or not openers or not takeaway:
+    raw_cards = data.get("cards")
+    if not isinstance(raw_cards, list):
+        print("  provider text had no cards")
         return None
-    blob = " ".join([headline, *explanation, *openers, takeaway])
+    cards: list[TalkCard] = []
+    for raw in raw_cards:
+        if not isinstance(raw, dict):
+            continue
+        card = card_from_model(raw, context)
+        if card is None:
+            continue
+        cards.append(card)
+        if len(cards) == 3:
+            break
+    if len(cards) < 2:
+        print(f"  provider returned {len(cards)} usable card(s)")
+        return None
+    return Briefing(cards, "provider")
+
+
+def card_from_model(raw: dict, context: str) -> TalkCard | None:
+    hearing = clean_text(str(raw.get("hearing") or ""))
+    why = clean_text(str(raw.get("why") or ""))
+    reality = clean_text(str(raw.get("but") or raw.get("reality") or ""))
+    story = clean_text(str(raw.get("story") or ""))
+    say_raw = raw.get("say") or []
+    if isinstance(say_raw, str):
+        say_raw = [say_raw]
+    say = [clean_text(str(part)) for part in say_raw if clean_text(str(part))][:2]
+    if not hearing or not why or not reality or not story or not say:
+        return None
+    if not reality.lower().startswith("but"):
+        reality = "But " + reality[0].lower() + reality[1:]
+    card = TalkCard(hearing, why, reality, story, say, "model")
+    blob = card_text(card)
     if any(re.search(pattern, blob, flags=re.I) for pattern in BANNED_COPY):
-        print("  model text included a recommendation or a promise")
+        print("  provider card included a recommendation or a promise")
+        return None
+    if JARGON.search(blob):
+        print("  provider card used market jargon")
+        return None
+    if re.search(r"\d", blob):
+        print("  provider card included a figure")
         return None
     if not numbers_are_grounded(blob, context):
-        print("  model text included a number that was not in the facts")
+        print("  provider card included a number that was not in the facts")
         return None
     words = word_count(blob)
-    if words < 100 or words > 210:
-        print(f"  model text was {words} words")
+    if words < 80 or words > 155:
+        print(f"  provider card was {words} words")
         return None
-    return Briefing(headline, explanation[:4], openers[:2], takeaway, "model")
+    return card
 
 
 def numbers_are_grounded(text: str, context: str) -> bool:
@@ -1410,234 +1914,457 @@ def numbers_are_grounded(text: str, context: str) -> bool:
     return True
 
 
-def fallback_briefing(facts: dict) -> Briefing:
-    quotes = [quote for quote in facts["quotes"] if quote.ok and quote.price is not None]
-    closes = [quote for quote in quotes if quote.group == "previous_close"]
-    futures = [quote for quote in quotes if quote.group == "futures"]
-    rates = [quote for quote in facts["rates"] if quote.ok and quote.price is not None]
-    spx = next((quote for quote in closes if quote.symbol == "^GSPC"), closes[0] if closes else None)
-    es = next((quote for quote in futures if quote.symbol == "ES=F"), futures[0] if futures else None)
-    ten_year = next((quote for quote in rates if quote.symbol == "DGS10"), None)
-    mortgage = next((quote for quote in rates if quote.symbol == "MORTGAGE30US"), None)
-    matched = facts["matched"]
-    big_moves = facts["big_moves"]
-
-    others = [quote for quote in closes if quote is not spx]
-    also = others_clause(others) if others else ""
-    sentences: list[str] = []
-    if spx is not None:
-        sentences.append(close_sentence(spx, also))
-    elif closes:
-        sentences.append(close_sentence(closes[0], also))
-    else:
-        sentences.append(
-            "A full set of index closes did not come through, and the plan does not depend on one missing quote."
-        )
-
-    if matched:
-        sentences.append(event_sentence(matched[0]))
-    elif big_moves:
-        sentences.append(move_sentence(big_moves[0]))
-
-    if es is not None and es.pct is not None:
-        sentences.append(futures_sentence(es, policy=bool(matched)))
-    elif ten_year is not None and ten_year.bp is not None:
-        sentences.append(yield_sentence(ten_year))
-
-    if not matched and not big_moves and ten_year is not None and ten_year.bp is not None and es is not None:
-        sentences.append(yield_sentence(ten_year))
-    elif not matched and mortgage is not None and mortgage.bp is not None and len(sentences) < 3:
-        sentences.append(mortgage_sentence(mortgage))
-
-    if facts["big_day"]:
-        sentences.append(
-            "A day like this is already inside a long-term plan, and the plan is what your client hired you to protect."
-        )
-        headline = "A loud headline, and the plan still comes first"
-        when_word = "today" if facts["now"].weekday() < 5 else "before the open"
-        openers = [
-            f"You may hear a big market headline {when_word}. Your plan was built for weeks like this, and we are staying with it.",
-            "We do not need a new strategy because of one decision. Staying invested is how the long-term plan does its job.",
+def template_briefing(config: dict, facts: dict) -> Briefing:
+    """Two or three headline cards from the topic file, with a general fallback."""
+    topics = load_topics(config)
+    picks = select_topic_cards(config, facts, topics)
+    if not picks:
+        general = next((topic for topic in topics if topic.get("id") == "general"), None)
+        if general is not None:
+            picks = [(general, None)]
+    cards = [build_topic_card(topic, item, facts) for topic, item in picks]
+    if len(cards) == 1 and cards[0].topic != "general":
+        general = next((topic for topic in topics if topic.get("id") == "general"), None)
+        if general is not None:
+            cards.append(build_topic_card(general, None, facts))
+    if not cards:
+        cards = [
+            TalkCard(
+                "You may hear a loud headline and wonder if the plan should change.",
+                "Most headlines feel urgent for a day.",
+                "But the plan was built for more than one day, and we are staying with it.",
+                "Picture a driver who stares at the rearview mirror and misses the turn. The headline is the mirror. The plan is the road ahead.",
+                ["We are staying with your plan."],
+                "general",
+            )
         ]
+    origin = "templates:" + ",".join(card.topic for card in cards)
+    return Briefing(cards, origin)
+
+
+def select_topic_cards(config: dict, facts: dict, topics: list[dict]) -> list[tuple[dict, Item | None]]:
+    phrases = config.get("big_day_phrases") or []
+    ranked: list[tuple[float, str, dict, Item]] = []
+    for cluster in list(facts.get("financial") or []) + list(facts.get("political") or []):
+        item = choose_representative(cluster)
+        topic = match_topic(item.title, topics)
+        if topic is None:
+            continue
+        outlets = len(outlet_names(cluster))
+        major = 14.0 if any(headline_is_major(row.title, phrases) for row in cluster) else 0.0
+        score = outlets * 10 + 8 + major + freshness(cluster, facts["now"]) * 3
+        ranked.append((score, str(topic.get("id")), topic, item))
+    ranked.sort(key=lambda row: row[0], reverse=True)
+    chosen: list[tuple[dict, Item | None]] = []
+    seen: set[str] = set()
+    for _score, topic_id, topic, item in ranked:
+        if topic_id in seen:
+            continue
+        seen.add(topic_id)
+        chosen.append((topic, item))
+        if len(chosen) == 3:
+            break
+    spx = quote_by(facts["quotes"], "^GSPC")
+    pct = spx.pct if spx is not None else None
+    if pct is not None and abs(pct) >= 1.5:
+        swing_id = "market-drop" if pct < 0 else "market-record"
+        if swing_id not in seen:
+            swing = next((topic for topic in topics if topic.get("id") == swing_id), None)
+            if swing is not None:
+                if len(chosen) >= 3:
+                    chosen.pop()
+                chosen.append((swing, None))
+    return chosen
+
+
+def match_topic(title: str, topics: list[dict]) -> dict | None:
+    low = title.lower()
+    best = None
+    best_score = 0
+    for topic in topics:
+        if str(topic.get("id")) == "general":
+            continue
+        if any(keyword_in(low, word) for word in (topic.get("avoid") or [])):
+            continue
+        score = 0
+        for keyword in topic.get("keywords") or []:
+            if keyword_in(low, keyword):
+                score += 2 + len(str(keyword).split())
+        if score > best_score:
+            best = topic
+            best_score = score
+    return best
+
+
+def build_topic_card(topic: dict, item: Item | None, facts: dict) -> TalkCard:
+    flags = situation_flags(item.title if item is not None else "", facts)
+    hearing = pick_hearing(topic, flags)
+    why = pick_why(topic, flags)
+    reality = clean_text(str(topic.get("but") or ""))
+    story = clean_text(str(rotate_list(topic.get("stories") or [], facts["now"])))
+    say_raw = topic.get("say") or []
+    if say_raw and isinstance(say_raw[0], list):
+        chosen = rotate_list(say_raw, facts["now"])
+        say = [clean_text(str(line)) for line in chosen if clean_text(str(line))][:2]
     else:
-        sentences.append(
-            "Here is the simple version: a move like this sits inside a long-term plan, and that plan is what your client hired you to protect."
-        )
-        direction = spx and direction_of(spx)
-        if direction == "down":
-            headline = "A softer market, and the long-term plan still leads"
-        elif direction == "up":
-            headline = "A decent finish, and the plan is still the point"
-        else:
-            headline = "A quiet market, and quiet is fine for the plan"
-        openers = [
-            "The market gave us an ordinary move, and your long-term plan is still what we follow.",
-            "We are staying invested, because one session does not rewrite a plan built for years.",
-        ]
-    # Keep the reassuring line, and stay inside four sentences.
-    if len(sentences) > 4:
-        perspective = sentences[-1]
-        sentences = sentences[:3] + [perspective]
-    takeaway = (
-        "Keep the conversation on the plan, the time horizon, and the discipline of staying invested."
+        say = [clean_text(str(line)) for line in say_raw if clean_text(str(line))][:2]
+    card = TalkCard(
+        hearing,
+        why,
+        reality,
+        story,
+        say,
+        str(topic.get("id") or "general"),
     )
-    briefing = Briefing(headline, sentences, openers, takeaway, "template from the figures on this page")
-    briefing = fit_word_count(briefing, None)
-    return briefing
+    return fit_card(card)
 
 
-def fit_word_count(briefing: Briefing, mortgage: Quote | None) -> Briefing:
-    extra_lines = [
-        "Nothing in these figures asks a client to walk away from a plan built for the long run.",
-        "You can say that calmly, and then stop. Clients trust the steady version.",
-    ]
-    if mortgage is not None and mortgage.ok and mortgage.price is not None and mortgage.bp is not None:
-        extra_lines.insert(0, mortgage_sentence(mortgage))
-    extras = list(extra_lines)
-    while word_count(briefing_text(briefing)) < 120 and extras and len(briefing.explanation) < 4:
-        briefing.explanation.append(extras.pop(0))
-    while word_count(briefing_text(briefing)) < 120 and extras:
-        # The explanation is already at four sentences. Lengthen the takeaway
-        # with a second calm line rather than inventing a fifth explanation sentence.
-        briefing.takeaway = briefing.takeaway.rstrip(".") + ". " + extras.pop(0)
-    while word_count(briefing_text(briefing)) > 180 and len(briefing.explanation) > 2:
-        # Drop a middle sentence. The last sentence is the long-term takeaway.
-        briefing.explanation.pop(-2)
-    return briefing
+def situation_flags(title: str, facts: dict) -> set[str]:
+    flags: set[str] = set()
+    low = title.lower()
+    padded = f" {low} "
+    if any(piece in padded for piece in (" raise", " raises", " raised", " hike", " hikes")):
+        flags.add("raised")
+    if any(piece in padded for piece in (" cut", " cuts", " rate cut")):
+        flags.add("cut")
+    if "white house" in low:
+        flags.add("white house")
+    if "midterm" in low:
+        flags.add("midterm")
+    if "china" in low:
+        flags.add("china")
+    if "iran" in low:
+        flags.add("iran")
+    if "ukraine" in low:
+        flags.add("ukraine")
+    if "oil price" in low or "oil prices" in low:
+        flags.add("oil price")
+    oil = quote_by(facts["quotes"], "CL=F")
+    if oil is not None and oil.pct is not None:
+        if oil.pct >= 0.4:
+            flags.add("oil_up")
+        elif oil.pct <= -0.4:
+            flags.add("oil_down")
+    spx = quote_by(facts["quotes"], "^GSPC")
+    pct = spx.pct if spx is not None else None
+    if pct is None or abs(pct) < 0.20:
+        flags.add("stocks_flat")
+    elif pct <= -1.5:
+        flags.add("stocks_rough")
+        flags.add("stocks_down")
+    elif pct < 0:
+        flags.add("stocks_down")
+    elif pct >= 1.5:
+        flags.add("stocks_strong")
+        flags.add("stocks_up")
+    else:
+        flags.add("stocks_up")
+    ten = quote_by(facts["rates"], "DGS10")
+    if ten is not None and ten.bp is not None:
+        if ten.bp >= 3:
+            flags.add("rates_up")
+        elif ten.bp <= -3:
+            flags.add("rates_down")
+    return flags
+
+
+def pick_hearing(topic: dict, flags: set[str]) -> str:
+    best = ""
+    best_len = -1
+    for line in topic.get("lines") or []:
+        if not isinstance(line, dict):
+            continue
+        when = [str(flag).lower() for flag in (line.get("when") or [])]
+        if all(flag in flags for flag in when) and len(when) > best_len:
+            best = clean_text(str(line.get("hearing") or ""))
+            best_len = len(when)
+    return best
+
+
+def pick_why(topic: dict, flags: set[str]) -> str:
+    if "oil_up" in flags and topic.get("why_oil_up"):
+        return clean_text(str(topic["why_oil_up"]))
+    if "oil_down" in flags and topic.get("why_oil_down"):
+        return clean_text(str(topic["why_oil_down"]))
+    if ("stocks_down" in flags or "stocks_rough" in flags) and topic.get("why_stocks_down"):
+        return clean_text(str(topic["why_stocks_down"]))
+    if ("stocks_up" in flags or "stocks_strong" in flags) and topic.get("why_stocks_up"):
+        return clean_text(str(topic["why_stocks_up"]))
+    return clean_text(str(topic.get("why") or ""))
+
+
+def rotate_list(values, when: datetime):
+    if isinstance(values, str):
+        return values
+    if not values:
+        return ""
+    index = when.astimezone(EASTERN).date().toordinal() % len(values)
+    return values[index]
+
+
+def fit_card(card: TalkCard) -> TalkCard:
+    while word_count(card_text(card)) > 140 and len(card.say) > 1:
+        card.say.pop()
+    return card
+
+
+def card_text(card: TalkCard) -> str:
+    return " ".join([card.hearing, card.why, card.reality, card.story, *card.say])
 
 
 def briefing_text(briefing: Briefing) -> str:
-    return " ".join([briefing.headline, *briefing.explanation, *briefing.openers, briefing.takeaway])
+    return " ".join(card_text(card) for card in briefing.cards)
 
 
-def close_sentence(quote: Quote, also: str = "") -> str:
-    day = weekday_name(quote.as_of)
-    when = f" closed {day}" if day else " last closed"
-    level = format_price(quote)
-    extra = f", and {also}" if also else ""
-    if quote.change is None or quote.pct is None or abs(quote.pct) < 0.005:
-        return (
-            f"The {quote.label}{when} at {level}, essentially unchanged from the session before{extra}."
-        )
-    word = "up" if quote.change > 0 else "down"
-    points = format_abs_number(quote.change, 2)
-    return (
-        f"The {quote.label}{when} at {level}, {word} {points} points, "
-        f"or {abs(quote.pct):.2f} percent{extra}."
-    )
 
-
-def others_clause(quotes: list[Quote]) -> str:
-    ups = [the_name(quote.label) for quote in quotes if direction_of(quote) == "up"]
-    downs = [the_name(quote.label) for quote in quotes if direction_of(quote) == "down"]
-    flats = [the_name(quote.label) for quote in quotes if direction_of(quote) == "flat"]
-    parts = []
-    if ups:
-        parts.append(human_join(ups) + " finished higher too")
-    if downs:
-        parts.append(human_join(downs) + " finished lower")
-    if flats:
-        parts.append(human_join(flats) + " finished flat")
-    return human_join(parts)
-
-
-def the_name(label: str) -> str:
-    if label.lower().startswith("the "):
-        return label
-    return "the " + label
-
-
-def futures_sentence(quote: Quote, policy: bool = False) -> str:
-    if quote.pct is None:
-        return f"{quote.label} futures did not print a change this run."
-    word = "up" if quote.pct > 0 else "down" if quote.pct < 0 else "flat"
-    label = quote.session_label.lower()
-    if label == "premarket":
-        lead = f"Before the next open, {quote.label} futures were {word}"
-    elif label == "live":
-        lead = f"{quote.label} futures were {word}"
+def market_conditions(facts: dict) -> tuple[str, set[str]]:
+    tags: set[str] = set()
+    spx = quote_by(facts["quotes"], "^GSPC")
+    pct = spx.pct if spx is not None else None
+    if pct is None or abs(pct) < 0.20:
+        tags.add("flat")
+        stock = "flat"
+    elif pct > 0:
+        tags.add("stocks_up")
+        stock = "stocks_up"
     else:
-        lead = f"{quote.label} futures last printed {word}"
-    if word == "flat":
-        return f"{lead}, little changed from the prior settle."
-    size = "a small move" if abs(quote.pct) < 0.6 else "a noticeable move"
-    tail = " next to that headline" if policy else ""
-    return f"{lead} {abs(quote.pct):.2f} percent from the prior settle, {size}{tail}."
+        tags.add("stocks_down")
+        stock = "stocks_down"
+    if facts.get("big_day"):
+        tags.add("big_news")
+    vix = quote_by(facts["quotes"], "^VIX")
+    if vix is not None and vix.price is not None and vix.price >= 20:
+        tags.add("volatility")
+    elif pct is not None and abs(pct) >= 1.5:
+        tags.add("volatility")
+    ten = quote_by(facts["rates"], "DGS10")
+    if ten is not None and ten.bp is not None:
+        if ten.bp >= 3:
+            tags.add("rates_up")
+        elif ten.bp <= -3:
+            tags.add("rates_down")
+    mortgage = quote_by(facts["rates"], "MORTGAGE30US")
+    if mortgage is not None and mortgage.bp is not None:
+        if mortgage.bp >= 5:
+            tags.add("rates_up")
+        elif mortgage.bp <= -5:
+            tags.add("rates_down")
+    for name in ("big_news", "volatility", "stocks_down", "stocks_up", "flat", "rates_up", "rates_down"):
+        if name in tags:
+            return name, tags
+    return stock, tags
 
 
-def event_sentence(title: str) -> str:
-    low = title.lower()
-    fed = "fed" in low or "federal reserve" in low or "fomc" in low
-    if fed and any(piece in low for piece in ("raise", "hike", "cut")):
-        verb = "cut" if " cut " in f" {low} " or "cuts " in low else "raised"
-        years = ""
-        if "first time in years" in low or "first increase" in low:
-            years = ", and the headline calls it the first move in years"
-        return (
-            "Headlines say the Federal Reserve "
-            f"{verb} interest rates, the rate that influences what people pay to borrow"
-            f"{years}."
+def quote_by(quotes: list[Quote], symbol: str) -> Quote | None:
+    for quote in quotes:
+        if quote.symbol == symbol and quote.ok:
+            return quote
+    return None
+
+
+def pick_rotating(items: list[dict], primary: str, when: datetime, salt: int = 0) -> dict | None:
+    eligible = [item for item in items if primary in (item.get("conditions") or [])]
+    if len(eligible) < 8:
+        widened = [
+            item for item in items
+            if primary in (item.get("conditions") or []) or "flat" in (item.get("conditions") or [])
+        ]
+        if len(widened) > len(eligible):
+            eligible = widened
+    if not eligible:
+        eligible = list(items)
+    eligible.sort(key=lambda item: str(item.get("id") or ""))
+    if not eligible:
+        return None
+    ordinal = when.astimezone(EASTERN).date().toordinal() + salt
+    return eligible[ordinal % len(eligible)]
+
+
+def pick_closer(closers: list[dict], primary: str, when: datetime, story: dict | None) -> str:
+    say = clean_text(str((story or {}).get("say") or ""))
+    ordinal = when.astimezone(EASTERN).date().toordinal()
+    eligible = [item for item in closers if primary in (item.get("conditions") or [])]
+    if not eligible:
+        eligible = list(closers)
+    eligible.sort(key=lambda item: str(item.get("id") or ""))
+    if not eligible:
+        return ""
+    for step in range(len(eligible)):
+        item = eligible[(ordinal + 7 + step) % len(eligible)]
+        line = clean_text(str(item.get("line") or ""))
+        if not line or line == say:
+            continue
+        if say and SequenceMatcher(None, say.lower(), line.lower()).ratio() > 0.72:
+            continue
+        return line
+    return ""
+
+
+def opener_paragraphs(facts: dict, tags: set[str]) -> list[str]:
+    spx = quote_by(facts["quotes"], "^GSPC")
+    es = quote_by(facts["quotes"], "ES=F")
+    ten = quote_by(facts["rates"], "DGS10")
+    mortgage = quote_by(facts["rates"], "MORTGAGE30US")
+    event = plain_event(facts.get("matched") or [])
+    stock = stock_phrase(spx.pct if spx is not None else None)
+    stock_in_session = session_phrase(stock)
+    sentences: list[str] = []
+    big = bool(facts.get("big_day"))
+
+    if event == "fed_up":
+        sentences.append(
+            "You may hear that the Fed, which sets short-term interest rates, "
+            f"raised them, and {stock_in_session}."
         )
-    if any(piece in low for piece in ("jobs report", "payroll", "nonfarm")):
-        return (
-            "A jobs report is in the headlines, which is the monthly count of how many people are working, "
-            "and we do not need to guess the next number."
+    elif event == "fed_down":
+        sentences.append(
+            "You may hear that the Fed, which sets short-term interest rates, "
+            f"cut them, and {stock_in_session}."
         )
-    if "cpi" in low or "consumer price" in low or "inflation report" in low:
-        return (
-            "An inflation report is in the headlines, which is the measure of how fast prices are rising, "
-            "and one report does not rewrite a long-term plan."
+    elif event == "jobs":
+        sentences.append(
+            "A jobs report is in the news. That is simply the monthly count of people working, "
+            f"and {stock_in_session}."
         )
-    short = title.split(":")[0].strip().rstrip(".")
-    return (
-        f"The headline in front of us is that {short[0].lower() + short[1:] if short else 'something big is moving'}, "
-        "and a headline is not a reason to leave a long-term plan."
-    )
-
-
-def move_sentence(quote: Quote) -> str:
-    word = "higher" if (quote.pct or 0) > 0 else "lower"
-    kind = "futures" if quote.group == "futures" else "the last session"
-    return (
-        f"{quote.label} moved {abs(quote.pct or 0):.2f} percent {word} in {kind}, "
-        "a swing that feels loud and still sits inside a long-term plan."
-    )
-
-
-def bp_words(bp: int) -> str:
-    if bp == 0:
-        return "unchanged"
-    unit = "basis point" if abs(bp) == 1 else "basis points"
-    word = "up" if bp > 0 else "down"
-    return f"{word} {abs(bp)} {unit}"
-
-
-def yield_sentence(quote: Quote) -> str:
-    change = bp_words(quote.bp or 0)
-    tiny = ""
-    if quote.bp is not None and abs(quote.bp) <= 3:
-        tiny = ", and a basis point is just one hundredth of a percent"
-    return (
-        "The 10-year Treasury yield, the interest rate on a 10-year government bond, "
-        f"was {quote.price:.2f} percent, {change}{tiny}."
-    )
-
-
-def mortgage_sentence(quote: Quote) -> str:
-    if quote.bp is None:
-        change = "with the weekly change unavailable"
-    elif quote.bp == 0:
-        change = "unchanged from the prior week"
+    elif event == "inflation":
+        sentences.append(
+            "An inflation report is in the news, which is a read on how fast everyday prices are rising, "
+            f"and {stock_in_session}."
+        )
+    elif big and event == "other":
+        sentences.append(
+            f"You may hear a loud headline, and {stock_in_session}. "
+            "A loud day is still just one day inside a long-term plan."
+        )
+    elif big:
+        sentences.append(
+            f"It was a louder session than usual, and {stock}. "
+            "A swing like that can feel big, and it still fits inside a long-term plan."
+        )
     else:
-        word = "up" if quote.bp > 0 else "down"
-        change = (
-            f"{word} {abs(quote.bp)} basis points from the prior week, "
-            f"which is {abs(quote.bp) / 100:.2f} percentage points"
-        )
-    return (
-        f"The average 30-year fixed mortgage rate, from Freddie Mac's weekly survey, "
-        f"was {quote.price:.2f} percent, {change}."
-    )
+        rate = ordinary_rate_clause(ten, mortgage)
+        lead = stock[0].upper() + stock[1:]
+        if rate:
+            sentences.append(f"{session_sentence(lead)}, and {rate}.")
+        else:
+            sentences.append(f"{session_sentence(lead)}.")
+
+    early = early_sentence(es, big)
+    if early and (big or "volatility" in tags):
+        sentences.append(early)
+    elif early and not big:
+        # Keep the opener to one or two sentences. A quiet week can mention
+        # the early read only when rates were not already the second clause.
+        if len(sentences) == 1 and " and " not in sentences[0]:
+            sentences.append(early)
+    return sentences
+
+
+def plain_event(titles: list[str]) -> str | None:
+    for title in titles:
+        low = f" {title.lower()} "
+        fed = "fed" in low or "federal reserve" in low or "fomc" in low
+        if fed and any(piece in low for piece in (" raise", " raises", " raised", " hike", " hikes")):
+            return "fed_up"
+        if fed and any(piece in low for piece in (" cut", " cuts", " lower")):
+            return "fed_down"
+        if any(piece in low for piece in ("jobs report", "payroll", "nonfarm", "jobs numbers")):
+            return "jobs"
+        if any(piece in low for piece in ("cpi", "consumer price", "inflation report", "inflation data")):
+            return "inflation"
+    if titles:
+        return "other"
+    return None
+
+
+def stock_phrase(pct: float | None) -> str:
+    if pct is None or abs(pct) < 0.20:
+        return "stocks were quiet"
+    up = pct > 0
+    size = abs(pct)
+    if size < 0.45:
+        return "stocks rose a little" if up else "stocks slipped a little"
+    if size < 0.90:
+        return "stocks rose a bit" if up else "stocks slipped"
+    if size < 1.50:
+        return "stocks had a strong session" if up else "stocks had a soft session"
+    return "stocks had a big up day" if up else "stocks had a rough day"
+
+
+def session_phrase(phrase: str) -> str:
+    if "session" in phrase or "day" in phrase:
+        return phrase
+    return phrase + " in the last session"
+
+
+def session_sentence(lead: str) -> str:
+    if "session" in lead or "day" in lead:
+        return lead
+    return lead + " in the last session"
+
+
+def ordinary_rate_clause(ten: Quote | None, mortgage: Quote | None) -> str | None:
+    if ten is not None and ten.bp is not None and abs(ten.bp) >= 3:
+        if ten.bp > 0:
+            return "interest rates ticked higher" if ten.bp < 10 else "interest rates moved up"
+        return "interest rates eased a little" if ten.bp > -10 else "interest rates moved lower"
+    if mortgage is not None and mortgage.bp is not None and abs(mortgage.bp) >= 5:
+        if mortgage.bp > 0:
+            return "the rate on a 30-year mortgage is a little higher than last week"
+        return "the rate on a 30-year mortgage is a little lower than last week"
+    if ten is not None and ten.bp is not None:
+        return "interest rates barely moved"
+    return None
+
+
+def early_sentence(quote: Quote | None, big: bool) -> str | None:
+    if quote is None or quote.pct is None or abs(quote.pct) < 0.15:
+        return None
+    size = abs(quote.pct)
+    if quote.pct > 0:
+        tone = "firmer" if size >= 0.75 else "a little firmer"
+    else:
+        tone = "softer" if size >= 0.75 else "a little softer"
+    label = (quote.session_label or "").lower()
+    if "premarket" in label or label == "live":
+        lead = "The early read before the next open is"
+    else:
+        lead = "The latest read before the next open is"
+    if big:
+        return f"{lead} {tone}, which is normal noise around a loud headline."
+    return f"{lead} {tone}."
+
+
+def plain_english_facts(facts: dict) -> str:
+    spx = quote_by(facts["quotes"], "^GSPC")
+    es = quote_by(facts["quotes"], "ES=F")
+    ten = quote_by(facts["rates"], "DGS10")
+    mortgage = quote_by(facts["rates"], "MORTGAGE30US")
+    lines = [
+        f"- Time frame: {facts.get('timeframe')}",
+        f"- Stocks: {stock_phrase(spx.pct if spx is not None else None)}",
+    ]
+    early = early_sentence(es, bool(facts.get("big_day")))
+    if early:
+        lines.append(f"- Next session: {early}")
+    rate = ordinary_rate_clause(ten, mortgage)
+    if rate:
+        lines.append(f"- Rates: {rate}")
+    event = plain_event(facts.get("matched") or [])
+    if event == "fed_up":
+        lines.append("- News: the Fed, which sets short-term interest rates, raised them")
+    elif event == "fed_down":
+        lines.append("- News: the Fed, which sets short-term interest rates, cut them")
+    elif event == "jobs":
+        lines.append("- News: a jobs report, the monthly count of people working")
+    elif event == "inflation":
+        lines.append("- News: an inflation report, a read on how fast everyday prices are rising")
+    elif event == "other":
+        lines.append("- News: a loud headline is in the facts below. Describe it without jargon or figures.")
+    else:
+        lines.append("- News: nothing in the facts is large enough to make this about today")
+    return "\n".join(lines)
+
 
 
 def direction_of(quote: Quote) -> str:
@@ -1725,58 +2452,42 @@ def move_display(quote: Quote) -> tuple[str, str]:
     return direction, percent
 
 
+HERO_FUTURES = {"^GSPC": "ES=F", "^DJI": "YM=F"}
+HERO_INDEXES = ("^GSPC", "^DJI", "^RUT")
+
+
+def futures_heading(quotes: list[Quote]) -> str:
+    futures = [quote for quote in quotes if quote.group == "futures"]
+    labels = {quote.session_label for quote in futures if quote.ok}
+    if labels == {"Premarket"}:
+        return "Futures · premarket"
+    if labels == {"Live"}:
+        return "Futures · live"
+    if labels == {"After hours"}:
+        return "Futures · after hours"
+    if labels == {"Last"}:
+        return "Futures · last price"
+    return "Futures · premarket / live"
+
+
 def render_page(config, now, quotes, rates, picked, briefing: Briefing) -> str:
     site = config["site"]
     title = str(site.get("title") or "Dedicated News")
     eyebrow = str(site.get("eyebrow") or "Morning prep")
     date_line = f"{now.strftime('%A')}, {now.strftime('%B')} {now.day}, {now.year}"
     clock = now.strftime("%I:%M %p").lstrip("0")
-    futures = [quote for quote in quotes if quote.group == "futures"]
-    futures_title = "Futures · premarket / live"
-    if futures:
-        labels = {quote.session_label for quote in futures if quote.ok}
-        if labels == {"Premarket"}:
-            futures_title = "Futures · premarket"
-        elif labels == {"Live"}:
-            futures_title = "Futures · live"
-        elif labels == {"After hours"}:
-            futures_title = "Futures · after hours"
-        elif labels == {"Last"}:
-            futures_title = "Futures · last price"
-    groups = [
-        (
-            "id-previous",
-            "Previous close",
-            "Last completed regular session. Level, point change, and percent change versus the session before. Not a live price.",
-            [quote for quote in quotes if quote.group == "previous_close"],
-        ),
-        (
-            "id-rates",
-            "Rates",
-            "Treasury yields versus the prior close, in basis points. One basis point is 0.01 percentage points. The mortgage rate is the Freddie Mac weekly 30-year fixed, versus the prior week.",
-            rates,
-        ),
-        (
-            "id-futures",
-            futures_title,
-            "S&P, Dow, and Nasdaq futures (ES, YM, NQ). Percent change versus the prior settle.",
-            futures,
-        ),
-        (
-            "id-extras",
-            "Also moving",
-            "Oil, gold, the 10-year market yield, VIX, and Bitcoin. Live when that market is trading. Otherwise the last print.",
-            [quote for quote in quotes if quote.group == "extras"],
-        ),
-    ]
-    market_html = []
-    for anchor, heading, note, rows in groups:
-        cards = "".join(render_quote(quote) for quote in rows)
-        market_html.append(
-            f'<section class="group" id="{anchor}">'
-            f'<div class="group-head"><h3>{esc(heading)}</h3><p>{esc(note)}</p></div>'
-            f'<div class="quote-grid">{cards}</div></section>'
-        )
+    by_symbol = {quote.symbol: quote for quote in quotes}
+    hero_cards = []
+    for symbol in HERO_INDEXES:
+        quote = by_symbol.get(symbol)
+        if quote is None:
+            continue
+        hero_cards.append(render_hero_card(quote, by_symbol.get(HERO_FUTURES.get(symbol, ""))))
+    mortgage = next((quote for quote in rates if quote.symbol == "MORTGAGE30US"), None)
+    if mortgage is not None:
+        hero_cards.append(render_hero_card(mortgage, None))
+    hero_html = "".join(hero_cards)
+    more_html = render_more_markets(quotes, rates)
     source_line = rate_source_line(rates)
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -1813,17 +2524,23 @@ def render_page(config, now, quotes, rates, picked, briefing: Briefing) -> str:
     <a href="#talking">Talking points</a>
     <a href="#financial">Financial</a>
     <a href="#political">Political</a>
-    <a href="#more">More</a>
+    <a href="#more-markets">More markets</a>
+    <a href="#more">More news</a>
     <a href="#industry">Industry</a>
   </nav>
   <section id="markets" class="markets">
-    {''.join(market_html)}
+    <div class="group-head hero-head">
+      <h3>At a glance</h3>
+      <p>Last stock close and this week's mortgage rate. A one-line futures percent shows when it fits.</p>
+    </div>
+    <div class="hero-grid">{hero_html}</div>
   </section>
   {render_briefing(briefing)}
   {render_top("financial", "Top 3 Financial News", "The stories the most outlets are carrying, with a lift for the newest.", picked["financial"])}
   {render_top("political", "Top 3 Political News", "Washington, policy, the Fed, taxes, trade, and elections, ahead of the rest.", picked["political"])}
-  {render_list("more", "More Market & Economy", "The next set of market headlines, without repeating the top three.", picked["more"])}
-  {render_list("industry", "Industry News", "Wealth management and financial advisors. Trade journals update more slowly than the wires.", picked["industry"])}
+  {more_html}
+  {render_list("more", "More Market & Economy", "Up to five more market headlines. Thin or old ones are left off.", picked["more"])}
+  {render_list("industry", "Industry News", "Advisor moves and firm news, with AdvisorHub first when it is fresh. Up to five.", picked["industry"])}
   <footer class="footer">
     <p class="disclaimer">For internal team prep only. Not investment advice.</p>
     <p>{esc(source_line)} Headlines come from the feeds in feeds.yml. The same story is shown once. Each link opens the original.</p>
@@ -1885,22 +2602,129 @@ def render_quote(quote: Quote) -> str:
     )
 
 
+def render_more_markets(quotes: list[Quote], rates: list[Quote]) -> str:
+    nasdaq = [quote for quote in quotes if quote.group == "previous_close" and quote.symbol == "^IXIC"]
+    futures = [quote for quote in quotes if quote.group == "futures"]
+    treasuries = [quote for quote in rates if quote.symbol != "MORTGAGE30US"]
+    extras = [quote for quote in quotes if quote.group == "extras"]
+    groups = [
+        (
+            "Nasdaq",
+            "Last completed session. Level, point change, and percent change.",
+            nasdaq,
+        ),
+        (
+            futures_heading(quotes),
+            "S&P, Dow, and Nasdaq futures (ES, YM, NQ). Percent change versus the prior settle.",
+            futures,
+        ),
+        (
+            "Treasuries",
+            "10-year and 2-year yields versus the prior close, in basis points. One basis point is 0.01 percentage points.",
+            treasuries,
+        ),
+        (
+            "Also moving",
+            "Oil, gold, the 10-year market yield, VIX, and Bitcoin. Live when that market is trading. Otherwise the last print.",
+            extras,
+        ),
+    ]
+    blocks = []
+    for heading, note, rows in groups:
+        if not rows:
+            continue
+        cards = "".join(render_quote(quote) for quote in rows)
+        blocks.append(
+            '<div class="group">'
+            f'<div class="group-head"><h3>{esc(heading)}</h3><p>{esc(note)}</p></div>'
+            f'<div class="quote-grid">{cards}</div></div>'
+        )
+    return (
+        '<section class="block more-markets" id="more-markets">'
+        '<div class="section-head"><h2>More markets</h2>'
+        "<p>Nasdaq, Treasuries, futures, oil, gold, VIX, and Bitcoin.</p></div>"
+        f"{''.join(blocks)}</section>"
+    )
+
+
+def render_hero_card(quote: Quote, future: Quote | None) -> str:
+    chip = futures_chip(future) if future is not None else ""
+    if not quote.ok:
+        return (
+            '<article class="quote hero is-missing">'
+            f'<p class="q-name">{esc(quote.label)}</p>'
+            '<p class="q-price">—</p>'
+            '<p class="q-move flat">Unavailable</p>'
+            "</article>"
+        )
+    direction, move = move_display(quote)
+    if quote.comparison == "vs prior week":
+        move = move.replace(" vs prior week", " this week")
+    arrow = {"up": "▲", "down": "▼", "flat": "–"}[direction]
+    if quote.comparison == "vs prior week" and quote.as_of:
+        local = quote.as_of.astimezone(EASTERN)
+        meta = f"Week of {local.strftime('%b')} {local.day}"
+    else:
+        meta = format_when(quote.as_of, False)
+    return (
+        f'<article class="quote hero {direction}">'
+        f'<p class="q-name">{esc(quote.label)}</p>'
+        f'<p class="q-price">{esc(format_price(quote))}</p>'
+        f'<p class="q-move {direction}"><span aria-hidden="true">{arrow}</span> {esc(move)}</p>'
+        f"{chip}"
+        f'<p class="q-asof">{esc(meta)}</p>'
+        "</article>"
+    )
+
+
+def futures_chip(quote: Quote) -> str:
+    if not quote.ok or quote.pct is None:
+        return ""
+    prefix = {
+        "Premarket": "Premkt",
+        "Live": "Live",
+        "After hours": "After hrs",
+        "Last": "Last",
+    }.get(quote.session_label, "Fut")
+    if abs(quote.pct) < 0.005:
+        direction = "flat"
+        text = f"{prefix} flat"
+    else:
+        direction = "up" if quote.pct > 0 else "down"
+        sign = "+" if quote.pct > 0 else "−"
+        text = f"{prefix} {sign}{abs(quote.pct):.2f}%"
+    # A longer label would wrap on a phone card. Leave it off rather than crowd the top.
+    if len(text) > 16:
+        return ""
+    return f'<p class="q-fut {direction}">{esc(text)}</p>'
+
+
 def render_briefing(briefing: Briefing) -> str:
-    paragraphs = "".join(f"<p>{esc(sentence)}</p>" for sentence in briefing.explanation)
-    openers = "".join(f"<li>{esc(line)}</li>" for line in briefing.openers)
+    cards = "".join(render_talk_card(card) for card in briefing.cards)
     return f"""
   <section class="talking" id="talking">
-    <p class="kicker">Client talking points</p>
-    <h2>{esc(briefing.headline)}</h2>
-    <div class="explain">{paragraphs}</div>
-    <div class="say">
-      <h3>What to say to clients:</h3>
-      <ul>{openers}</ul>
+    <div class="section-head">
+      <h2>Talking points</h2>
+      <p>What clients are hearing, and what to say back. One card per headline.</p>
     </div>
-    <p class="takeaway">{esc(briefing.takeaway)}</p>
+    <div class="talk-grid">{cards}</div>
     <p class="fine">Internal prep. Not a forecast and not investment advice.</p>
   </section>
 """
+
+
+def render_talk_card(card: TalkCard) -> str:
+    quoted = " ".join(f"“{esc(line)}”" for line in card.say)
+    script = f'<p class="script">You can say it this way: {quoted}</p>' if quoted else ""
+    return (
+        '<article class="talk-card">'
+        '<p class="hear">What clients are hearing</p>'
+        f"<h3>{esc(card.hearing)}</h3>"
+        f"<p>{esc(card.why)} {esc(card.reality)}</p>"
+        f"<p>{esc(card.story)}</p>"
+        f"{script}"
+        "</article>"
+    )
 
 
 def render_top(anchor: str, title: str, note: str, clusters: list[list[Item]]) -> str:
@@ -2091,15 +2915,7 @@ h1 {
 .q-move.down { color: var(--down); }
 .q-move.flat { color: var(--muted); font-weight: 600; }
 .q-asof { margin: 6px 0 0; color: #7b8794; font-size: 12px; }
-.talking {
-  margin-top: 26px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-top: 4px solid var(--gold);
-  border-radius: 16px;
-  padding: 22px 26px 18px;
-  box-shadow: var(--shadow);
-}
+.talking { margin-top: 28px; }
 .kicker {
   margin: 0 0 6px;
   color: var(--gold);
@@ -2116,19 +2932,54 @@ h1 {
   color: var(--navy);
   font-weight: 650;
 }
-.explain p { margin: 0 0 8px; font-size: 18px; }
-.say {
-  margin-top: 12px;
-  background: #f8f4ea;
-  border-left: 3px solid var(--navy);
-  border-radius: 0 12px 12px 0;
-  padding: 12px 16px 8px;
+.talk-grid { display: grid; gap: 12px; }
+.talk-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--gold);
+  border-radius: 16px;
+  padding: 16px 18px 14px;
+  box-shadow: var(--shadow);
 }
-.say h3 { margin: 0 0 6px; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--navy); }
-.say ul { margin: 0; padding: 0 0 0 18px; }
-.say li { margin: 0 0 8px; font-size: 17px; }
-.takeaway { margin: 14px 0 0; font-weight: 700; color: var(--navy); }
-.fine { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+.talk-card h3 {
+  margin: 0 0 8px;
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--navy);
+  font-weight: 650;
+}
+.talk-card p { margin: 0 0 8px; font-size: 17px; }
+.hear {
+  margin: 0 0 4px;
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.talk-card .script { margin: 4px 0 0; font-weight: 650; color: var(--navy); }
+.fine { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
+.hero-head { margin-top: 8px; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.quote.hero { min-height: 0; padding: 10px 12px 9px; }
+.quote.hero .q-price { font-size: 24px; }
+.q-fut {
+  margin: 3px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.q-fut.up { color: var(--up); }
+.q-fut.down { color: var(--down); }
+.q-fut.flat { color: var(--muted); font-weight: 600; }
+.more-markets .group { margin-top: 14px; }
+.more-markets .group:first-of-type { margin-top: 4px; }
 .block { margin-top: 28px; }
 .section-head {
   display: flex;
@@ -2208,18 +3059,31 @@ h1 {
   font-size: 14px;
 }
 @media (max-width: 800px) {
-  h1 { font-size: 36px; }
+  h1 { font-size: 30px; }
+  .band-inner { padding: 14px 14px 12px; }
   .band-inner, .section-head { flex-direction: column; align-items: flex-start; }
   .when, .section-head p { text-align: left; }
-  .talking { padding: 18px 16px; }
+  .date { font-size: 15px; }
+  .wrap { padding: 4px 14px 40px; }
+  .jump { gap: 6px 12px; padding: 10px 0 2px; }
   .talking h2 { font-size: 26px; }
+  .talk-card { padding: 14px 14px 12px; }
+  .talk-card h3 { font-size: 20px; }
+  .talk-card p { font-size: 16px; }
   .story a { font-size: 19px; }
   .link-grid { grid-template-columns: 1fr; }
   .quote-grid { grid-template-columns: 1fr 1fr; }
   .q-price { font-size: 22px; }
+  .hero-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .quote.hero { padding: 8px 10px 8px; }
+  .quote.hero .q-price { font-size: 20px; }
+  .quote.hero .q-move { font-size: 13px; }
+  .hero-head p { margin-bottom: 8px; }
 }
 @media (max-width: 420px) {
   .quote-grid { grid-template-columns: 1fr; }
+  .hero-grid { grid-template-columns: 1fr 1fr; }
+  h1 { font-size: 28px; }
 }
 """
 
