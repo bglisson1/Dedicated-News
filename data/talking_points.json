@@ -1,36 +1,47 @@
 {
-  "generated_at": "2026-09-28T07:45:03-04:00",
+  "generated_at": "2026-09-28T08:57:23-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Police 'investigate Iran link' to suspected bomb plot at UK air base used by U.S.",
     "Fed raises rates for first time in years: What it means for your wallet",
     "Stock futures drop to start the week as oil prices and Treasury yields rise: Live updates",
-    "Trump says he approved new fuel economy standards, rolling back Biden-era rules",
-    "Fiscal Discipline to Be at Core of UK Budget, Healey Says",
-    "The national debt should be the number one issue in this year's election"
+    "Police 'investigate Iran link' to suspected bomb plot at UK air base used by U.S.",
+    "Treasury Secretary Scott Bessent hires Wall Street economist David Zervos",
+    "Meta, Google, Amazon, Microsoft draw Sen. Warren questions about AI tax subsidies",
+    "Good economy, bad vibes"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that police are investigating a possible bomb threat at a UK air base used by U.S. forces, with a possible Iran link, and that oil prices jumped on the news this morning.",
-      "why": "Oil is the raw material behind gas and diesel, so when it jumps, that can eventually show up at the pump and on delivery costs for the things we buy.",
-      "but": "But headlines like this move markets fast in the morning and often fade just as fast once more facts come in.",
-      "story": "Picture seeing storm clouds on the horizon during a picnic. You do not pack up the whole basket over a cloud. You watch, you stay put, and most days the rain passes without ever reaching the blanket.",
+      "hearing": "You may hear that the Fed just raised interest rates, the first move like this in a while.",
+      "why": "The Fed sets short-term interest rates, and that ripples into things like credit cards, car loans, and mortgages, so borrowing can cost a little more for a while.",
+      "but": "But rate moves are part of a normal cycle, not a reason to rewrite a plan built for many years.",
+      "story": "Picture adjusting the thermostat a notch because the weather shifted. You do not renovate the whole house over one degree. You just dress for it and keep living your life.",
       "say": [
-        "We saw this headline too, and your plan did not move because of it.",
-        "One tense morning is not a reason to change a long-term plan."
+        "We expected the Fed to move eventually, and your plan already accounts for that.",
+        "One rate decision does not change the years ahead of you."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that the Fed, which sets short-term interest rates, just raised rates for the first time in years, and people are asking what that means for their wallet.",
-      "why": "Higher rates can mean a pricier car loan, credit card, or new mortgage, though savings accounts can also start paying a bit more over time.",
-      "but": "But this kind of move doesn't rewrite a plan built for decades, not one headline.",
-      "story": "Think of it like turning a thermostat up one notch. The room changes a little, but the house, and the life you built in it, stays the same.",
+      "hearing": "You may hear that oil prices jumped this morning, tied to a security scare involving a UK air base.",
+      "why": "Oil feeds into gas and diesel, so a jump like this can eventually show up at the pump and in what it costs to ship groceries and goods.",
+      "but": "But headlines about overseas tension come and go, and a single morning's oil move is not a forecast for the year.",
+      "story": "Think of a driver who sees one red light and decides the whole road trip is ruined. One light does not cancel the trip. You slow down, then keep going.",
       "say": [
-        "We build plans that expect rate moves like this one.",
-        "One rate change doesn't change your long-term plan."
+        "We watch headlines like this without letting them steer the whole plan.",
+        "A jump in oil this morning is noise we expect to see from time to time."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may hear that stock futures are a little softer this morning after stocks rose on Friday.",
+      "why": "A quieter, choppier morning like this can feel unsettling, especially right after a good week, but it is a completely normal part of investing.",
+      "but": "But this kind of back-and-forth is exactly why we build plans for years, not for any single morning.",
+      "story": "Picture a hiker checking the trail app every five minutes. The trail does not change because you keep refreshing. You look up, keep walking, and you get where you are going.",
+      "say": [
+        "Stocks rose on Friday, and this morning is just a little quieter. That is normal.",
+        "We do not chase every morning move. We stick with your plan."
       ]
     }
   ]
