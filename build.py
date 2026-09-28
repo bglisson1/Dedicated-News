@@ -135,6 +135,8 @@ class TalkCard:
 class Briefing:
     cards: list[TalkCard]
     origin: str
+    source: str = ""
+    generated_at: datetime | None = None
 
 
 def main() -> int:
@@ -1301,31 +1303,96 @@ def build_talking_points(config, now, quotes, rates, picked, items) -> tuple[Bri
     slot = is_llm_slot()
     changed = headlines_changed_a_lot((cache or {}).get("headlines") or [], headlines)
     has_provider = provider_configured()
-    # A model call happens on the morning and midday clocks, and also when
-    # the top headlines moved a lot. Other clocks keep the saved cards.
-    # With no key, the topic templates run every time, so the cards follow
-    # the news without a cache getting in the way.
-    should_call = has_provider and (slot or changed)
-    reuse = cache is not None and has_provider and not slot and not changed
+    # A saved template, or a cache with no source, is stale once a key exists.
+    stale = has_provider and cache_needs_model(cache)
+    force = refresh_requested()
+    # A model call happens on the morning and midday clocks, when the top
+    # headlines moved a lot, when the cache is still the topic file, and
+    # when a manual run asks for a refresh. Other clocks keep a model cache.
+    # With no key, the topic templates run every time.
+    should_call = has_provider and (slot or changed or stale or force)
+    reuse = (
+        cache is not None
+        and has_provider
+        and not slot
+        and not changed
+        and not stale
+        and not force
+    )
     if reuse:
         cached = briefing_from_cache(cache)
         if cached is not None:
             if not CACHE_PATH.exists():
                 write_talk_cache(cache)
-            print("  reusing cached talking points")
+            label = cached.source or cached.origin
+            print(f"  talking points: reusing cache ({label})")
             return cached, f"cached ({cached.origin})"
     try:
         briefing = call_provider(config, facts, library) if should_call else None
         if briefing is None:
             briefing = template_briefing(config, facts)
+        finish_briefing(briefing, now)
         save_talk_cache(briefing, headlines, now)
         return briefing, briefing.origin
     except Exception as exc:
         traceback.print_exc(file=sys.stderr)
         briefing = template_briefing(config, facts)
         briefing.origin = f"{briefing.origin}; provider error: {exc}"
+        finish_briefing(briefing, now)
         save_talk_cache(briefing, headlines, now)
         return briefing, briefing.origin
+
+
+def refresh_requested() -> bool:
+    """Manual Run workflow refreshes the cards unless the box is turned off."""
+    event = (os.environ.get("EVENT_NAME") or "").strip()
+    if event != "workflow_dispatch":
+        return False
+    flag = (os.environ.get("REFRESH_TALKING_POINTS") or "").strip().lower()
+    return flag in {"true", "1", "yes"}
+
+
+def recorded_source(data: dict) -> str:
+    """Model id, 'templates', or '' when the cache does not say."""
+    source = str(data.get("source") or "").strip()
+    if source:
+        return source
+    origin = str(data.get("origin") or "").strip()
+    if origin.startswith("templates"):
+        return "templates"
+    if ":" in origin:
+        provider, model = origin.split(":", 1)
+        if provider in {"openrouter", "openai", "anthropic", "xai"} and model.strip():
+            return model.strip()
+    return ""
+
+
+def cache_needs_model(data: dict | None) -> bool:
+    """True when saved cards came from the topic file, or no source was stored."""
+    if not isinstance(data, dict) or not data.get("cards"):
+        return False
+    source = recorded_source(data).strip().lower()
+    return source == "" or source == "templates" or source.startswith("templates")
+
+
+def finish_briefing(briefing: Briefing, now: datetime) -> None:
+    if not briefing.source:
+        briefing.source = "templates" if briefing.origin.startswith("templates") else ""
+    if briefing.generated_at is None:
+        briefing.generated_at = now
+
+
+def parse_generated_at(value) -> datetime | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        when = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if when.tzinfo is None:
+        when = when.replace(tzinfo=EASTERN)
+    return when
 
 
 def is_llm_slot() -> bool:
@@ -1421,8 +1488,11 @@ def briefing_from_cache(data: dict) -> Briefing | None:
         cards.append(TalkCard(hearing, why, reality, story, say, str(raw.get("topic") or "cached")))
     if not cards:
         return None
-    origin = clean_text(str(data.get("origin") or "cache"))
-    return Briefing(cards, origin)
+    source = recorded_source(data)
+    origin = clean_text(str(data.get("origin") or source or "cache"))
+    briefing = Briefing(cards, origin, source=source)
+    briefing.generated_at = parse_generated_at(data.get("generated_at"))
+    return briefing
 
 
 def write_talk_cache(payload: dict) -> None:
@@ -1434,8 +1504,10 @@ def write_talk_cache(payload: dict) -> None:
 
 
 def save_talk_cache(briefing: Briefing, headlines: list[str], now: datetime) -> None:
+    when = briefing.generated_at or now
     payload = {
-        "generated_at": now.isoformat(timespec="seconds"),
+        "generated_at": when.isoformat(timespec="seconds"),
+        "source": briefing.source or "templates",
         "origin": briefing.origin,
         "headlines": headlines,
         "cards": [
@@ -1641,15 +1713,17 @@ def call_provider(config: dict, facts: dict, library: dict) -> Briefing | None:
         key = (os.environ.get(env_name) or "").strip()
         if not key:
             continue
-        print(f"  asking {name} ({model})")
+        print(f"  talking points: calling {name} model {model}")
         content = post_provider(name, key, endpoint, model, system, user)
         if not content:
             return None
         briefing = parse_briefing(content, facts["context"])
         if briefing is None:
-            print("  provider text rejected; using the headline templates")
+            print(f"  talking points: {name} FAILED rejected unusable cards")
             return None
+        print(f"  talking points: {name} OK")
         briefing.origin = f"{name}:{model}"
+        briefing.source = model
         return briefing
     print("  no provider key set; using the headline templates")
     return None
@@ -1671,7 +1745,7 @@ def call_openrouter(talking: dict, key: str, system: str, user: str, context: st
     if fallback and fallback != primary:
         models.append(fallback)
     for model in models:
-        print(f"  asking openrouter ({model})")
+        print(f"  talking points: calling openrouter model {model}")
         content = post_provider(
             "openrouter",
             key,
@@ -1686,11 +1760,13 @@ def call_openrouter(talking: dict, key: str, system: str, user: str, context: st
             continue
         briefing = parse_briefing(content, context)
         if briefing is None:
-            print(f"  {model} text rejected")
+            print("  talking points: openrouter FAILED rejected unusable cards")
             continue
+        print("  talking points: openrouter OK")
         briefing.origin = f"openrouter:{model}"
+        briefing.source = model
         return briefing
-    print("  OpenRouter did not return usable cards; using the headline templates")
+    print("  talking points: using templates")
     return None
 
 
@@ -1741,6 +1817,29 @@ def style_samples(stories: list[dict], when: datetime, skip_id: str, count: int 
         if len(picked) == count:
             break
     return picked
+
+
+def public_error(detail: str, secret: str = "") -> str:
+    """A short error for the log. The API key is never included."""
+    raw = str(detail or "")
+    message = raw
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        data = None
+    if isinstance(data, dict):
+        err = data.get("error")
+        if isinstance(err, dict) and err.get("message"):
+            message = str(err["message"])
+        elif isinstance(err, str):
+            message = err
+        elif data.get("message"):
+            message = str(data["message"])
+    text = " ".join(message.split())
+    if secret and secret in text:
+        text = text.replace(secret, "[redacted]")
+    text = re.sub(r"(?i)bearer\s+\S+", "Bearer [redacted]", text)
+    return text[:140] or "no detail"
 
 
 def post_provider(
@@ -1794,10 +1893,10 @@ def post_provider(
             payload = response.read(MAX_BYTES)
     except urllib.error.HTTPError as exc:
         detail = exc.read(500).decode("utf-8", "replace")
-        print(f"  {name} HTTP {exc.code}: {detail[:300]}")
+        print(f"  talking points: {name} FAILED {exc.code} {public_error(detail, key)}")
         return None
     except Exception as exc:
-        print(f"  {name} failed: {exc}")
+        print(f"  talking points: {name} FAILED error {public_error(str(exc), key)}")
         return None
     try:
         data = json.loads(payload.decode("utf-8"))
@@ -1939,7 +2038,7 @@ def template_briefing(config: dict, facts: dict) -> Briefing:
             )
         ]
     origin = "templates:" + ",".join(card.topic for card in cards)
-    return Briefing(cards, origin)
+    return Briefing(cards, origin, source="templates")
 
 
 def select_topic_cards(config: dict, facts: dict, topics: list[dict]) -> list[tuple[dict, Item | None]]:
@@ -2699,6 +2798,22 @@ def futures_chip(quote: Quote) -> str:
     return f'<p class="q-fut {direction}">{esc(text)}</p>'
 
 
+def talk_byline(briefing: Briefing) -> str:
+    source = (briefing.source or "").strip()
+    if not source or source.lower() == "templates" or source.lower().startswith("templates"):
+        return "Template version"
+    name = source.split("/")[-1]
+    when = briefing.generated_at
+    if when is None:
+        return f"Written by AI ({name})"
+    if when.tzinfo is None:
+        when = when.replace(tzinfo=EASTERN)
+    local = when.astimezone(EASTERN)
+    hour = local.strftime("%I").lstrip("0") or "12"
+    clock = f"{hour}:{local.strftime('%M %p')} ET"
+    return f"Written by AI ({name}) at {clock}"
+
+
 def render_briefing(briefing: Briefing) -> str:
     cards = "".join(render_talk_card(card) for card in briefing.cards)
     return f"""
@@ -2708,6 +2823,7 @@ def render_briefing(briefing: Briefing) -> str:
       <p>What clients are hearing, and what to say back. One card per headline.</p>
     </div>
     <div class="talk-grid">{cards}</div>
+    <p class="talk-byline">{esc(talk_byline(briefing))}</p>
     <p class="fine">Internal prep. Not a forecast and not investment advice.</p>
   </section>
 """
@@ -2959,6 +3075,7 @@ h1 {
   text-transform: uppercase;
 }
 .talk-card .script { margin: 4px 0 0; font-weight: 650; color: var(--navy); }
+.talk-byline { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
 .fine { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
 .hero-head { margin-top: 8px; }
 .hero-grid {
