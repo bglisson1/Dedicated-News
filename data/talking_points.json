@@ -1,47 +1,36 @@
 {
-  "generated_at": "2026-09-28T06:18:15-04:00",
+  "generated_at": "2026-09-28T07:45:03-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Fed raises rates for first time in years: What it means for your wallet",
-    "The 10-year Treasury yield is at its highest in nearly two decades. How we got here",
     "Police 'investigate Iran link' to suspected bomb plot at UK air base used by U.S.",
-    "Shifting Senate Map Is Fueling Most Expensive US Election Ever",
-    "Streeting Declines to Link US-Iran War With RAF Fairford Arrests",
-    "\u2018Love letter\u2019: California AG takes aim at Trump\u2019s links to Big Oil"
+    "Fed raises rates for first time in years: What it means for your wallet",
+    "Stock futures drop to start the week as oil prices and Treasury yields rise: Live updates",
+    "Trump says he approved new fuel economy standards, rolling back Biden-era rules",
+    "Fiscal Discipline to Be at Core of UK Budget, Healey Says",
+    "The national debt should be the number one issue in this year's election"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing that the Fed, which sets short-term interest rates, just raised rates for the first time in years.",
-      "why": "That can nudge up the cost of things like a car loan, a credit card balance, or a new mortgage, since borrowing tends to cost a little more when rates go up.",
-      "but": "But rates moving up and down is exactly the kind of thing your plan was built to handle.",
-      "story": "Picture a thermostat in a house. Sometimes it clicks up, sometimes down, and the family still eats dinner and goes to bed at the same time every night. Rate moves are the thermostat. Your routine, the plan, stays the same.",
+      "hearing": "You may hear that police are investigating a possible bomb threat at a UK air base used by U.S. forces, with a possible Iran link, and that oil prices jumped on the news this morning.",
+      "why": "Oil is the raw material behind gas and diesel, so when it jumps, that can eventually show up at the pump and on delivery costs for the things we buy.",
+      "but": "But headlines like this move markets fast in the morning and often fade just as fast once more facts come in.",
+      "story": "Picture seeing storm clouds on the horizon during a picnic. You do not pack up the whole basket over a cloud. You watch, you stay put, and most days the rain passes without ever reaching the blanket.",
       "say": [
-        "We built your plan expecting rates to move in both directions.",
-        "This is normal weather, not a reason to redo the plan."
+        "We saw this headline too, and your plan did not move because of it.",
+        "One tense morning is not a reason to change a long-term plan."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may be hearing about rising tension overseas, with reports of a bomb plot tied to Iran at a UK air base used by U.S. forces, as the U.S.-Iran conflict continues to make headlines.",
-      "why": "This matters because tension between countries can push oil prices higher, and oil prices flow into the cost of gas, diesel, and eventually the shipping costs baked into groceries and everyday goods.",
-      "but": "But a scary overseas headline moving markets for a morning is not a reason to rewrite a plan built for years, not days.",
-      "story": "Think of a sudden thunderstorm on a long road trip. You slow down, you stay alert, but you don't turn the car around and cancel the whole trip. The destination hasn't changed.",
+      "hearing": "You may hear that the Fed, which sets short-term interest rates, just raised rates for the first time in years, and people are asking what that means for their wallet.",
+      "why": "Higher rates can mean a pricier car loan, credit card, or new mortgage, though savings accounts can also start paying a bit more over time.",
+      "but": "But this kind of move doesn't rewrite a plan built for decades, not one headline.",
+      "story": "Think of it like turning a thermostat up one notch. The room changes a little, but the house, and the life you built in it, stays the same.",
       "say": [
-        "We watch headlines like this closely, but we don't drive your plan off them.",
-        "One stormy morning doesn't cancel a trip we planned for years."
-      ]
-    },
-    {
-      "topic": "model",
-      "hearing": "You may be hearing that a major interest rate, the one that influences mortgages, car loans, and business borrowing, has climbed to its highest level in nearly two decades.",
-      "why": "This matters because higher rates can mean pricier mortgages, car payments, and credit card bills for a lot of households.",
-      "but": "But a rate hitting a new high on a chart is not something you have to react to personally, especially if your plan already expected some bumps along the way.",
-      "story": "Imagine your neighborhood raising the toll on the highway you rarely use. It changes the drive for some people, but it doesn't touch the route you've already mapped out for your own trip.",
-      "say": [
-        "Higher rates get headlines, but your plan was built to handle stretches like this.",
-        "We don't chase every rate move, we stick with the road we already mapped."
+        "We build plans that expect rate moves like this one.",
+        "One rate change doesn't change your long-term plan."
       ]
     }
   ]
