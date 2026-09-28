@@ -16,7 +16,8 @@ Use a different headline for each card. If only one mainstream headline is in
 the facts, return two cards and make the second one the general mood of
 stocks, with no invented event.
 
-Each card has these parts, in this order, about 90 to 140 words total:
+Each card has these parts, in this order, about 90 to 140 words total
+(a little shorter or longer is fine):
 - hearing: what clients are hearing, in plain words. Not the raw headline.
 - why: a simple explanation of why it matters in daily life. One or two
   sentences. You may use a "because" such as trucks, groceries, borrowing, or
@@ -46,5 +47,13 @@ will do next. No buy or sell recommendations. No "you should buy," "sell now,"
 
 The STYLE SAMPLES are for voice only. Write a fresh card. Do not copy a sample.
 
-Return a single JSON object and nothing else. No markdown fence. Shape:
-{"cards": [{"hearing": "...", "why": "...", "but": "...", "story": "...", "say": ["...", "..."]}]}
+Return JSON. The whole reply must be one JSON object with a "cards" array.
+Do not add a preamble. If you do, the object still has to be valid JSON.
+
+Use these keys: hearing, why, but, story, say.
+say is an array of one or two strings.
+but should start with "But".
+Two or three cards. One card is acceptable when only one headline fits.
+
+Example:
+{"cards":[{"hearing":"You may hear that fuel prices are in the news.","why":"Trucks move almost everything we buy, so when fuel costs more, that can nudge the price of groceries.","but":"But one noisy week is not a reason to redo a long-term plan.","story":"Picture filling the car and deciding the whole year has to change. The pump is one errand. The plan is the long trip.","say":["We see the headline, and we stay with your plan.","Fuel can bounce without bouncing the plan you already chose."]}]}

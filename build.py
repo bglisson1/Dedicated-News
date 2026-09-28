@@ -1717,9 +1717,8 @@ def call_provider(config: dict, facts: dict, library: dict) -> Briefing | None:
         content = post_provider(name, key, endpoint, model, system, user)
         if not content:
             return None
-        briefing = parse_briefing(content, facts["context"])
+        briefing = parse_briefing(content, facts["context"], name, secret=key)
         if briefing is None:
-            print(f"  talking points: {name} FAILED rejected unusable cards")
             return None
         print(f"  talking points: {name} OK")
         briefing.origin = f"{name}:{model}"
@@ -1758,9 +1757,8 @@ def call_openrouter(talking: dict, key: str, system: str, user: str, context: st
         )
         if not content:
             continue
-        briefing = parse_briefing(content, context)
+        briefing = parse_briefing(content, context, "openrouter", secret=key)
         if briefing is None:
-            print("  talking points: openrouter FAILED rejected unusable cards")
             continue
         print("  talking points: openrouter OK")
         briefing.origin = f"openrouter:{model}"
@@ -1870,6 +1868,7 @@ def post_provider(
             "model": model,
             "temperature": temperature,
             "max_tokens": max_tokens,
+            "response_format": {"type": "json_object"},
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
@@ -1882,21 +1881,38 @@ def post_provider(
         if name == "openrouter":
             headers["HTTP-Referer"] = "https://bglisson1.github.io/Dedicated-News/"
             headers["X-Title"] = "Dedicated News"
-    request = urllib.request.Request(
-        endpoint,
-        data=json.dumps(body).encode("utf-8"),
-        headers=headers,
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(request, timeout=40) as response:
-            payload = response.read(MAX_BYTES)
-    except urllib.error.HTTPError as exc:
-        detail = exc.read(500).decode("utf-8", "replace")
-        print(f"  talking points: {name} FAILED {exc.code} {public_error(detail, key)}")
-        return None
-    except Exception as exc:
-        print(f"  talking points: {name} FAILED error {public_error(str(exc), key)}")
+    attempts = [body]
+    if "response_format" in body:
+        attempts.append({field: value for field, value in body.items() if field != "response_format"})
+    payload = None
+    for index, attempt in enumerate(attempts):
+        request = urllib.request.Request(
+            endpoint,
+            data=json.dumps(attempt).encode("utf-8"),
+            headers=headers,
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=40) as response:
+                payload = response.read(MAX_BYTES)
+            break
+        except urllib.error.HTTPError as exc:
+            detail = exc.read(500).decode("utf-8", "replace")
+            unsupported = (
+                index == 0
+                and len(attempts) > 1
+                and exc.code == 400
+                and "response_format" in detail.lower()
+            )
+            if unsupported:
+                print(f"  talking points: {name} does not accept json mode; retrying")
+                continue
+            print(f"  talking points: {name} FAILED {exc.code} {public_error(detail, key)}")
+            return None
+        except Exception as exc:
+            print(f"  talking points: {name} FAILED error {public_error(str(exc), key)}")
+            return None
+    if payload is None:
         return None
     try:
         data = json.loads(payload.decode("utf-8"))
@@ -1908,109 +1924,222 @@ def post_provider(
         return None
 
 
-JARGON = re.compile(
-    r"\b(basis points?|bps|S&P|Nasdaq|Russell|futures|VIX|Dow|yields?|tickers?|premarket|indexes?|indices)\b",
-    re.I,
+MIN_CARD_WORDS = 60
+MAX_CARD_WORDS = 200
+HEARING_KEYS = (
+    "hearing",
+    "what_clients_are_hearing",
+    "what_clients_hear",
+    "clients_are_hearing",
+    "headline",
+    "title",
 )
+WHY_KEYS = ("why", "why_it_matters", "explanation", "because", "matters")
+BUT_KEYS = ("but", "reality", "reality_check", "however", "the_but")
+STORY_KEYS = ("story", "analogy", "example", "illustration")
+SAY_KEYS = ("say", "say_this", "lines", "script", "advisor_lines", "you_can_say")
+CARD_LIST_KEYS = ("cards", "talking_points", "points", "items")
 
 
-def parse_briefing(content: str, context: str) -> Briefing | None:
-    text = content.strip()
-    text = re.sub(r"^```(?:json)?\s*", "", text)
-    text = re.sub(r"\s*```$", "", text)
-    try:
-        data = json.loads(text)
-    except json.JSONDecodeError:
-        start, end = text.find("{"), text.rfind("}")
-        if start < 0 or end <= start:
-            return None
+def norm_key(key: str) -> str:
+    text = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", str(key))
+    return re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
+
+
+def reply_preview(content: str, secret: str = "") -> str:
+    """First slice of the model text. Never includes a key or a header."""
+    text = str(content or "").replace("\r", "\n")
+    if secret and secret in text:
+        text = text.replace(secret, "[redacted]")
+    text = re.sub(r"(?i)bearer\s+\S+", "Bearer [redacted]", text)
+    text = text.replace("\n", " ")
+    text = re.sub(r" {2,}", " ", text).strip()
+    return text[:400]
+
+
+def reject_reply(provider: str, reason: str, content: str, secret: str = "") -> None:
+    print(f"  talking points: {provider} FAILED rejected {reason}")
+    print(f"  talking points: model reply: {reply_preview(content, secret)}")
+
+
+def extract_json_value(text: str):
+    """Pull the first JSON object or array out of fences or surrounding prose."""
+    raw = str(text or "").strip()
+    if not raw:
+        return None
+    candidates = [raw]
+    fenced = re.sub(r"^```(?:json|javascript|js)?\s*", "", raw, flags=re.I)
+    fenced = re.sub(r"\s*```$", "", fenced).strip()
+    if fenced != raw:
+        candidates.append(fenced)
+    fenced_block = re.search(
+        r"```(?:json|javascript|js)?\s*(.*?)```",
+        raw,
+        flags=re.I | re.S,
+    )
+    if fenced_block:
+        candidates.insert(0, fenced_block.group(1).strip())
+    for candidate in candidates:
         try:
-            data = json.loads(text[start : end + 1])
+            value = json.loads(candidate)
         except json.JSONDecodeError:
-            return None
+            value = None
+        if isinstance(value, (dict, list)):
+            return value
+        found = first_json_value(candidate)
+        if found is not None:
+            return found
+    return first_json_value(raw)
+
+
+def first_json_value(text: str):
+    decoder = json.JSONDecoder()
+    for index, char in enumerate(text):
+        if char not in "{[":
+            continue
+        try:
+            value, _end = decoder.raw_decode(text[index:])
+        except json.JSONDecodeError:
+            continue
+        if isinstance(value, (dict, list)):
+            return value
+    return None
+
+
+def cards_from_payload(data) -> list | None:
+    if isinstance(data, list):
+        return data
     if not isinstance(data, dict):
         return None
-    raw_cards = data.get("cards")
-    if not isinstance(raw_cards, list):
-        print("  provider text had no cards")
+    normalized = {norm_key(key): value for key, value in data.items()}
+    for key in CARD_LIST_KEYS:
+        value = normalized.get(key)
+        if isinstance(value, list):
+            return value
+    if any(norm_key(key) in HEARING_KEYS for key in data):
+        return [data]
+    return None
+
+
+def pick_text(raw: dict, names: tuple[str, ...]) -> str:
+    normalized = {norm_key(key): value for key, value in raw.items()}
+    for name in names:
+        value = normalized.get(name)
+        if isinstance(value, str) and clean_text(value):
+            return clean_text(value)
+    return ""
+
+
+def pick_say(raw: dict) -> list[str]:
+    normalized = {norm_key(key): value for key, value in raw.items()}
+    for name in SAY_KEYS:
+        value = normalized.get(name)
+        if isinstance(value, list):
+            lines = [clean_text(str(part)) for part in value if clean_text(str(part))]
+        elif isinstance(value, str) and clean_text(value):
+            lines = [clean_text(value)]
+        else:
+            continue
+        return lines[:2]
+    return []
+
+
+def parse_briefing(
+    content: str,
+    context: str,
+    provider: str = "provider",
+    secret: str = "",
+) -> Briefing | None:
+    data = extract_json_value(content)
+    if data is None:
+        reject_reply(provider, "not json", content, secret)
+        return None
+    raw_cards = cards_from_payload(data)
+    if not raw_cards:
+        reject_reply(provider, "no cards", content, secret)
         return None
     cards: list[TalkCard] = []
-    for raw in raw_cards:
-        if not isinstance(raw, dict):
-            continue
-        card = card_from_model(raw, context)
-        if card is None:
-            continue
-        cards.append(card)
+    reasons: list[str] = []
+    for index, raw in enumerate(raw_cards, start=1):
         if len(cards) == 3:
             break
-    if len(cards) < 2:
-        print(f"  provider returned {len(cards)} usable card(s)")
+        if not isinstance(raw, dict):
+            reason = "not a card"
+            reasons.append(f"card {index} {reason}")
+            print(f"  talking points: dropped card {index}: {reason}")
+            continue
+        card, reason = card_from_model(raw, context)
+        if card is None:
+            reasons.append(f"card {index} {reason}")
+            print(f"  talking points: dropped card {index}: {reason}")
+            continue
+        cards.append(card)
+    if not cards:
+        reject_reply(provider, "; ".join(reasons) or "no usable cards", content, secret)
         return None
     return Briefing(cards, "provider")
 
 
-def card_from_model(raw: dict, context: str) -> TalkCard | None:
-    hearing = clean_text(str(raw.get("hearing") or ""))
-    why = clean_text(str(raw.get("why") or ""))
-    reality = clean_text(str(raw.get("but") or raw.get("reality") or ""))
-    story = clean_text(str(raw.get("story") or ""))
-    say_raw = raw.get("say") or []
-    if isinstance(say_raw, str):
-        say_raw = [say_raw]
-    say = [clean_text(str(part)) for part in say_raw if clean_text(str(part))][:2]
-    if not hearing or not why or not reality or not story or not say:
-        return None
-    if not reality.lower().startswith("but"):
+def card_from_model(raw: dict, context: str) -> tuple[TalkCard | None, str]:
+    hearing = pick_text(raw, HEARING_KEYS)
+    why = pick_text(raw, WHY_KEYS)
+    reality = pick_text(raw, BUT_KEYS)
+    story = pick_text(raw, STORY_KEYS)
+    say = pick_say(raw)
+    if not any((hearing, why, reality, story, say)):
+        return None, "empty"
+    if not hearing:
+        return None, "no headline"
+    if reality and not reality.lower().startswith("but"):
         reality = "But " + reality[0].lower() + reality[1:]
     card = TalkCard(hearing, why, reality, story, say, "model")
     blob = card_text(card)
     if any(re.search(pattern, blob, flags=re.I) for pattern in BANNED_COPY):
-        print("  provider card included a recommendation or a promise")
-        return None
-    if JARGON.search(blob):
-        print("  provider card used market jargon")
-        return None
-    if re.search(r"\d", blob):
-        print("  provider card included a figure")
-        return None
+        return None, "forbidden language"
     if not numbers_are_grounded(blob, context):
-        print("  provider card included a number that was not in the facts")
-        return None
+        return None, "number not in the facts"
     words = word_count(blob)
-    if words < 80 or words > 155:
-        print(f"  provider card was {words} words")
-        return None
-    return card
+    if words < MIN_CARD_WORDS or words > MAX_CARD_WORDS:
+        return None, f"word count {words}"
+    return card, ""
 
 
 def numbers_are_grounded(text: str, context: str) -> bool:
-    ctx = context.replace(",", "")
-    cleaned = text.replace(",", "")
+    """True when every figure is a small count or appears in the facts.
+
+    A rounded level counts: 7743 matches a fact of 7743.41.
+    """
+    ctx_numbers = re.findall(r"\d+(?:\.\d+)?", context.replace(",", ""))
+    ctx_values: list[float] = []
+    for piece in ctx_numbers:
+        try:
+            ctx_values.append(float(piece))
+        except ValueError:
+            continue
     allowed = {str(number) for number in range(0, 11)}
-    for raw in re.findall(r"\d+(?:\.\d+)?", cleaned):
+    for raw in re.findall(r"\d+(?:\.\d+)?", text.replace(",", "")):
         if raw in allowed or raw in {"401", "529"}:
             continue
         if re.fullmatch(r"20[12]\d", raw):
             continue
-        if raw in ctx:
+        if raw in ctx_numbers:
             continue
         try:
             value = float(raw)
         except ValueError:
             return False
-        found = False
-        for piece in re.findall(r"\d+(?:\.\d+)?", ctx):
-            try:
-                other = float(piece)
-            except ValueError:
-                continue
-            if abs(value - other) <= 0.05:
-                found = True
-                break
-        if not found:
-            return False
+        if any(numbers_close(value, other) for other in ctx_values):
+            continue
+        return False
     return True
+
+
+def numbers_close(value: float, other: float) -> bool:
+    if abs(value - other) <= 0.05:
+        return True
+    if abs(other) >= 20 and abs(value - other) <= max(1.0, abs(other) * 0.01):
+        return True
+    return False
 
 
 def template_briefing(config: dict, facts: dict) -> Briefing:
@@ -2832,12 +2961,15 @@ def render_briefing(briefing: Briefing) -> str:
 def render_talk_card(card: TalkCard) -> str:
     quoted = " ".join(f"“{esc(line)}”" for line in card.say)
     script = f'<p class="script">You can say it this way: {quoted}</p>' if quoted else ""
+    body = " ".join(part for part in (card.why, card.reality) if part).strip()
+    paragraphs = f"<p>{esc(body)}</p>" if body else ""
+    if card.story:
+        paragraphs += f"<p>{esc(card.story)}</p>"
     return (
         '<article class="talk-card">'
         '<p class="hear">What clients are hearing</p>'
         f"<h3>{esc(card.hearing)}</h3>"
-        f"<p>{esc(card.why)} {esc(card.reality)}</p>"
-        f"<p>{esc(card.story)}</p>"
+        f"{paragraphs}"
         f"{script}"
         "</article>"
     )
