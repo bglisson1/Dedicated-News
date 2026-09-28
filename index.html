@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Dedicated News · Sunday, September 27, 2026</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%230E2340' width='32' height='32'/%3E%3Crect fill='%23C4A15A' y='24' width='32' height='8'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,520;8..60,650&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  color-scheme: light;
+  --navy: #0e2340;
+  --navy-2: #16345c;
+  --gold: #b0893e;
+  --gold-2: #c4a15a;
+  --paper: #f4f1ea;
+  --card: #fffcf8;
+  --ink: #1c2430;
+  --muted: #5e6a78;
+  --line: #e4dcc8;
+  --up: #0f7a45;
+  --down: #b13333;
+  --shadow: 0 8px 24px rgba(14, 35, 64, 0.05);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.45;
+}
+.goldbar { height: 5px; background: var(--gold-2); }
+.band { background: var(--navy); color: #f7f3ea; }
+.band-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 26px 22px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 18px;
+}
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--gold-2);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+h1 {
+  margin: 0;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-weight: 650;
+  font-size: 46px;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.when { text-align: right; }
+.date { margin: 0; font-size: 18px; font-weight: 600; }
+.updated { margin: 4px 0 0; color: #d9c89a; font-size: 14px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 8px 22px 56px; }
+.jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 14px 0 6px;
+}
+.jump a {
+  color: var(--navy-2);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.jump a:hover { color: var(--gold); }
+.group { margin-top: 18px; }
+.group-head h3 {
+  margin: 0;
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 22px;
+  color: var(--navy);
+}
+.group-head p { margin: 3px 0 10px; color: var(--muted); font-size: 14px; max-width: 70ch; }
+.quote-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+.quote {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px 11px;
+  box-shadow: 0 1px 0 rgba(14, 35, 64, 0.04);
+  min-height: 118px;
+}
+.q-name {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.q-hint {
+  margin-left: 6px;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+.q-price {
+  margin: 6px 0 2px;
+  color: var(--navy);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.q-move {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.q-move.up { color: var(--up); }
+.q-move.down { color: var(--down); }
+.q-move.flat { color: var(--muted); font-weight: 600; }
+.q-asof { margin: 6px 0 0; color: #7b8794; font-size: 12px; }
+.talking {
+  margin-top: 26px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--gold);
+  border-radius: 16px;
+  padding: 22px 26px 18px;
+  box-shadow: var(--shadow);
+}
+.kicker {
+  margin: 0 0 6px;
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.talking h2 {
+  margin: 0 0 10px;
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 30px;
+  line-height: 1.2;
+  color: var(--navy);
+  font-weight: 650;
+}
+.explain p { margin: 0 0 8px; font-size: 18px; }
+.say {
+  margin-top: 12px;
+  background: #f8f4ea;
+  border-left: 3px solid var(--navy);
+  border-radius: 0 12px 12px 0;
+  padding: 12px 16px 8px;
+}
+.say h3 { margin: 0 0 6px; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--navy); }
+.say ul { margin: 0; padding: 0 0 0 18px; }
+.say li { margin: 0 0 8px; font-size: 17px; }
+.takeaway { margin: 14px 0 0; font-weight: 700; color: var(--navy); }
+.fine { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+.block { margin-top: 28px; }
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+}
+.section-head h2 {
+  margin: 0;
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 28px;
+  color: var(--navy);
+  font-weight: 650;
+}
+.section-head p { margin: 0; color: var(--muted); font-size: 14px; max-width: 46ch; text-align: right; }
+.story {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 0 0 10px;
+}
+.rank {
+  width: 32px;
+  height: 32px;
+  margin: 2px 0 0;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #f3e6c4;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+.story a {
+  color: var(--navy);
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 22px;
+  line-height: 1.25;
+  text-decoration: none;
+}
+.story a:hover, .link-grid a:hover { text-decoration: underline; }
+.meta { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; }
+.link-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 28px;
+}
+.link-grid li { padding: 9px 0; border-bottom: 1px solid var(--line); }
+.link-grid a {
+  color: var(--navy);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+}
+.empty { color: var(--muted); }
+.footer {
+  margin-top: 34px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+}
+.disclaimer {
+  margin: 0 0 6px;
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 14px;
+}
+@media (max-width: 800px) {
+  h1 { font-size: 36px; }
+  .band-inner, .section-head { flex-direction: column; align-items: flex-start; }
+  .when, .section-head p { text-align: left; }
+  .talking { padding: 18px 16px; }
+  .talking h2 { font-size: 26px; }
+  .story a { font-size: 19px; }
+  .link-grid { grid-template-columns: 1fr; }
+  .quote-grid { grid-template-columns: 1fr 1fr; }
+  .q-price { font-size: 22px; }
+}
+@media (max-width: 420px) {
+  .quote-grid { grid-template-columns: 1fr; }
+}
+
+</style>
+</head>
+<body>
+<div class="goldbar"></div>
+<header class="band">
+  <div class="band-inner">
+    <div>
+      <p class="eyebrow">Morning prep · Tampa Bay</p>
+      <h1>Dedicated News</h1>
+    </div>
+    <div class="when">
+      <p class="date">Sunday, September 27, 2026</p>
+      <p class="updated">Last updated 10:11 PM ET</p>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <nav class="jump" aria-label="On this page">
+    <a href="#markets">Markets</a>
+    <a href="#talking">Talking points</a>
+    <a href="#financial">Financial</a>
+    <a href="#political">Political</a>
+    <a href="#more">More</a>
+    <a href="#industry">Industry</a>
+  </nav>
+  <section id="markets" class="markets">
+    <section class="group" id="id-previous"><div class="group-head"><h3>Previous close</h3><p>Last completed regular session. Level, point change, and percent change versus the session before. Not a live price.</p></div><div class="quote-grid"><article class="quote up"><p class="q-name">S&amp;P 500</p><p class="q-price">7,743.41</p><p class="q-move up"><span aria-hidden="true">▲</span> +39.28 · +0.51%</p><p class="q-asof">Previous close · Fri, Sep 25</p></article><article class="quote up"><p class="q-name">Dow</p><p class="q-price">51,828.62</p><p class="q-move up"><span aria-hidden="true">▲</span> +478.64 · +0.93%</p><p class="q-asof">Previous close · Fri, Sep 25</p></article><article class="quote up"><p class="q-name">Nasdaq</p><p class="q-price">27,068.72</p><p class="q-move up"><span aria-hidden="true">▲</span> +129.35 · +0.48%</p><p class="q-asof">Previous close · Fri, Sep 25</p></article><article class="quote up"><p class="q-name">Russell 2000</p><p class="q-price">2,837.55</p><p class="q-move up"><span aria-hidden="true">▲</span> +1.98 · +0.07%</p><p class="q-asof">Previous close · Fri, Sep 25</p></article></div></section><section class="group" id="id-rates"><div class="group-head"><h3>Rates</h3><p>Treasury yields versus the prior close, in basis points. One basis point is 0.01 percentage points. The mortgage rate is the Freddie Mac weekly 30-year fixed, versus the prior week.</p></div><div class="quote-grid"><article class="quote down"><p class="q-name">10-year Treasury</p><p class="q-price">5.17%</p><p class="q-move down"><span aria-hidden="true">▼</span> −1 bp vs prior close</p><p class="q-asof">Close · Fri, Sep 25 · U.S. Treasury</p></article><article class="quote down"><p class="q-name">2-year Treasury</p><p class="q-price">4.81%</p><p class="q-move down"><span aria-hidden="true">▼</span> −6 bp vs prior close</p><p class="q-asof">Close · Fri, Sep 25 · U.S. Treasury</p></article><article class="quote up"><p class="q-name">30-year mortgage</p><p class="q-price">7.03%</p><p class="q-move up"><span aria-hidden="true">▲</span> +8 bp vs prior week</p><p class="q-asof">Week of Sep 24 · Freddie Mac weekly</p></article></div></section><section class="group" id="id-futures"><div class="group-head"><h3>Futures · premarket</h3><p>S&amp;P, Dow, and Nasdaq futures (ES, YM, NQ). Percent change versus the prior settle.</p></div><div class="quote-grid"><article class="quote down"><p class="q-name">S&amp;P 500<span class="q-hint">ES</span></p><p class="q-price">7,778.50</p><p class="q-move down"><span aria-hidden="true">▼</span> −0.32%</p><p class="q-asof">Premarket · Sun, Sep 27 · 10:01 PM ET</p></article><article class="quote down"><p class="q-name">Dow<span class="q-hint">YM</span></p><p class="q-price">51,972.00</p><p class="q-move down"><span aria-hidden="true">▼</span> −0.37%</p><p class="q-asof">Premarket · Sun, Sep 27 · 10:01 PM ET</p></article><article class="quote down"><p class="q-name">Nasdaq<span class="q-hint">NQ</span></p><p class="q-price">30,735.00</p><p class="q-move down"><span aria-hidden="true">▼</span> −0.50%</p><p class="q-asof">Premarket · Sun, Sep 27 · 10:01 PM ET</p></article></div></section><section class="group" id="id-extras"><div class="group-head"><h3>Also moving</h3><p>Oil, gold, the 10-year market yield, VIX, and Bitcoin. Live when that market is trading. Otherwise the last print.</p></div><div class="quote-grid"><article class="quote up"><p class="q-name">WTI crude</p><p class="q-price">$93.46</p><p class="q-move up"><span aria-hidden="true">▲</span> +1.14%</p><p class="q-asof">Live · Sun, Sep 27 · 10:01 PM ET</p></article><article class="quote down"><p class="q-name">Gold</p><p class="q-price">$4,245.90</p><p class="q-move down"><span aria-hidden="true">▼</span> −1.74%</p><p class="q-asof">Live · Sun, Sep 27 · 10:01 PM ET</p></article><article class="quote up"><p class="q-name">10-year market</p><p class="q-price">5.18%</p><p class="q-move up"><span aria-hidden="true">▲</span> +2 bp vs prior close</p><p class="q-asof">Last · Fri, Sep 25</p></article><article class="quote down"><p class="q-name">VIX</p><p class="q-price">14.87</p><p class="q-move down"><span aria-hidden="true">▼</span> −5.11%</p><p class="q-asof">Last · Fri, Sep 25</p></article><article class="quote down"><p class="q-name">Bitcoin</p><p class="q-price">$83,698.47</p><p class="q-move down"><span aria-hidden="true">▼</span> −0.84%</p><p class="q-asof">Live · Sun, Sep 27 · 10:11 PM ET</p></article></div></section>
+  </section>
+  
+  <section class="talking" id="talking">
+    <p class="kicker">Client talking points</p>
+    <h2>A loud headline, and the plan still comes first</h2>
+    <div class="explain"><p>The S&amp;P 500 closed Friday at 7,743.41, up 39.28 points, or 0.51 percent, and the Dow, the Nasdaq, and the Russell 2000 finished higher too.</p><p>Headlines say the Federal Reserve raised interest rates, the rate that influences what people pay to borrow, and the headline calls it the first move in years.</p><p>Before the next open, S&amp;P 500 futures were down 0.32 percent from the prior settle, a small move next to that headline.</p><p>A day like this is already inside a long-term plan, and the plan is what your client hired you to protect.</p></div>
+    <div class="say">
+      <h3>What to say to clients:</h3>
+      <ul><li>You may hear a big market headline before the open. Your plan was built for weeks like this, and we are staying with it.</li><li>We do not need a new strategy because of one decision. Staying invested is how the long-term plan does its job.</li></ul>
+    </div>
+    <p class="takeaway">Keep the conversation on the plan, the time horizon, and the discipline of staying invested.</p>
+    <p class="fine">Internal prep. Not a forecast and not investment advice.</p>
+  </section>
+
+  <section class="block" id="financial"><div class="section-head"><h2>Top 3 Financial News</h2><p>The stories the most outlets are carrying, with a lift for the newest.</p></div><article class="story"><p class="rank">1</p><div><a href="https://finance.yahoo.com/m/473106f6-6763-38d5-b898-3f7ff08d4b61/dow-jones-futures-fall%2C-oil.html?.tsrc=rss" target="_blank" rel="noopener noreferrer">Dow Jones Futures Fall, Oil Prices Rise Amid Trump Iran Comments; Micron, SpaceX, Tesla Eye Buy Points</a><p class="meta">Yahoo Finance, CNBC, and Seeking Alpha · 3 outlets · Sun, Sep 27 · 10:09 PM ET</p></div></article><article class="story"><p class="rank">2</p><div><a href="https://www.foxbusiness.com/personal-finance/fed-raises-rates-first-time-years-what-means-your-wallet" target="_blank" rel="noopener noreferrer">Fed raises rates for first time in years: What it means for your wallet</a><p class="meta">Fox Business · 1 outlet · Sun, Sep 27 · 4:10 PM ET</p></div></article><article class="story"><p class="rank">3</p><div><a href="https://www.cnbc.com/2026/09/26/trump-fuel-economy-cafe-standards.html" target="_blank" rel="noopener noreferrer">Trump says he approved new fuel economy standards, rolling back Biden-era rules</a><p class="meta">CNBC and Fox Business · 2 outlets · Sat, Sep 26 · 5:21 PM ET</p></div></article></section>
+  <section class="block" id="political"><div class="section-head"><h2>Top 3 Political News</h2><p>Washington, policy, the Fed, taxes, trade, and elections, ahead of the rest.</p></div><article class="story"><p class="rank">1</p><div><a href="https://thehill.com/policy/technology/6114077-trump-anthropic-ceo-meeting/" target="_blank" rel="noopener noreferrer">Anthropic CEO Dario Amodei to have private White House dinner with Trump</a><p class="meta">The Hill, CNBC, and Axios +1 · 4 outlets · Sun, Sep 27 · 5:16 PM ET</p></div></article><article class="story"><p class="rank">2</p><div><a href="https://www.bloomberg.com/news/articles/2026-09-28/us-releases-details-on-30-billion-of-goods-with-tariff-cuts" target="_blank" rel="noopener noreferrer">US Releases Product Lists for $30 Billion China Tariff Deal</a><p class="meta">Bloomberg · 1 outlet · Sun, Sep 27 · 9:46 PM ET</p></div></article><article class="story"><p class="rank">3</p><div><a href="https://www.axios.com/2026/09/27/aoc-tests-senate-bid-new-york" target="_blank" rel="noopener noreferrer">AOC test-runs a Senate bid in upstate New York</a><p class="meta">Axios · 1 outlet · Sun, Sep 27 · 5:45 PM ET</p></div></article></section>
+  <section class="block" id="more"><div class="section-head"><h2>More Market &amp; Economy</h2><p>The next set of market headlines, without repeating the top three.</p></div><ul class="link-grid"><li><a href="https://www.cnbc.com/2026/09/27/stock-market-today-live-updates.html" target="_blank" rel="noopener noreferrer">Stock futures slip after winning week on Wall Street: Live updates</a><span class="meta">CNBC · Sun, Sep 27 · 10:09 PM ET</span></li><li><a href="https://beincrypto.com/oil-price-drop-stock-market-impact/?.tsrc=rss" target="_blank" rel="noopener noreferrer">Falling Oil Could Trigger a 10% Stock Market Rally, Says Wall Street Strategist</a><span class="meta">Yahoo Finance · Sun, Sep 27 · 8:25 PM ET</span></li><li><a href="https://247wallst.com/investing/etf/2026/09/27/forget-agg-in-retirement-mub-does-the-same-job-with-a-smaller-tax-bill/?.tsrc=rss" target="_blank" rel="noopener noreferrer">Forget AGG in Retirement. MUB Does the Same Job With a Smaller Tax Bill</a><span class="meta">Yahoo Finance · Sun, Sep 27 · 6:31 PM ET</span></li><li><a href="https://finance.yahoo.com/m/8166fe11-96cc-30ed-a3d5-f94a97cc53a7/stock-futures-are-slipping.html?.tsrc=rss" target="_blank" rel="noopener noreferrer">Stock Futures Are Slipping Ahead of Inflation, Jobs Data</a><span class="meta">Yahoo Finance · Sun, Sep 27 · 6:12 PM ET</span></li><li><a href="https://news.google.com/articles/CBMiqwFBVV95cUxNM2VZNkx1WkRhRFhWUlNOSVZGYlpzN0IyWE1pR3FnZktlUllVU1RDUFJlWWotenpIUlg1cWYxTl9FQjFEb01zd1NUZmxKaHE2X2drZFF2eDBfZm53bDV6bS1sbUVlWUJMWXpWRUo2QmhUYjFmTFZVUXFpVVJKcEdKX0U2UkxtV0dRRXRYVUF3TlRQNTZ6LWtRcFlfQnNVQm5QVGdzNDJZcTZNbkU" target="_blank" rel="noopener noreferrer">Treasury Bond Yields Resume Their March Higher to End the Week</a><span class="meta">WSJ · Sun, Sep 27 · 6:09 PM ET</span></li><li><a href="https://www.bloomberg.com/news/articles/2026-09-27/bessent-urges-fed-to-keep-open-mind-on-us-inflation-outlook" target="_blank" rel="noopener noreferrer">Bessent Urges Fed to Keep ‘Open Mind’ on US Inflation Outlook</a><span class="meta">Bloomberg Economics · Sun, Sep 27 · 12:19 PM ET</span></li><li><a href="https://news.google.com/articles/CBMixAFBVV95cUxNc1BoMWkyX0xibzdDSW1VMUFmNjdSNHdjNVRFMFBqaF9Tb1lJN281TnpYR2tWWW1HU2pXdk1lWEpHUEd3b19EcHQzWGZmQ2llU2owS3pIaTdxTVZtTXRTT3RpZHdhWFM2S0szUU4tZW1kSGVaWjRMZWNvOWpFOWc4bmEyQkdZOE14cHJBcDdLazdVMFo3bFZDTFZRdXpwdFZOTld5a09HbnA2Tjk4X1VlNlBmR18tc2YtdDF3alJKMXpZQnd0" target="_blank" rel="noopener noreferrer">Micron could dethrone Nvidia and become the biggest driver of S&amp;P 500 profit growth</a><span class="meta">MarketWatch · Sun, Sep 27 · 10:00 AM ET</span></li><li><a href="https://news.google.com/articles/CBMimwFBVV95cUxNbWxyWmlfcFlHTGJ5VXR4SFlMaDFsdWg1QmVhRDN6dWs0N19VX3NNcERCbEE3bkQ2aWdoZEtSelhndjFBd1FqNnRPaHU0U3JXY2g0MWxObG95UjIxbXplTDgxNGRKWldBZ01VeGM5bWkzbEREa3BKdEhsNEZfNks1N1E0Z21DREx2QllJNmFWSEpHc3BIRkRZbHR6OA" target="_blank" rel="noopener noreferrer">Look closer, and Wall Street’s rally is showing cracks</a><span class="meta">MarketWatch · Sun, Sep 27 · 9:00 AM ET</span></li><li><a href="https://www.cnbc.com/2026/09/28/china-posts-weakest-industrial-profit-growth-this-year-expanding-4point2percent-in-august-.html" target="_blank" rel="noopener noreferrer">China posts weakest industrial profit growth this year, expanding 4.2% in August</a><span class="meta">CNBC · Sun, Sep 27 · 10:04 PM ET</span></li><li><a href="https://www.bloomberg.com/news/articles/2026-09-28/japan-s-defense-buildup-won-t-rattle-markets-govt-adviser-says" target="_blank" rel="noopener noreferrer">Japan’s Defense Buildup Won’t Rattle Markets, Government Adviser Says</a><span class="meta">Bloomberg Economics · Sun, Sep 27 · 9:52 PM ET</span></li><li><a href="https://www.bloomberg.com/news/articles/2026-09-28/bond-selloff-resumes-as-oil-rises-after-trump-spurns-iran-offer" target="_blank" rel="noopener noreferrer">Bond Selloff Resumes as Oil Rises After Trump Spurns Iran Offer</a><span class="meta">Bloomberg Markets · Sun, Sep 27 · 9:50 PM ET</span></li><li><a href="https://www.cnbc.com/2026/09/28/northern-star-shares-gold-fields-takeover-bid.html" target="_blank" rel="noopener noreferrer">Northern Star shares pop as Australian gold miner rejects $27-billion takeover proposal</a><span class="meta">CNBC · Sun, Sep 27 · 9:19 PM ET</span></li></ul></section>
+  <section class="block" id="industry"><div class="section-head"><h2>Industry News</h2><p>Wealth management and financial advisors. Trade journals update more slowly than the wires.</p></div><ul class="link-grid"><li><a href="https://news.google.com/articles/CBMitAFBVV95cUxNSGd0ZkVucXVMdXJ3TTBDaDVNYXFJMjczNjdWNFIwVXBIU20zVmpBWlowd2wxSU1yUWZ2bFNGMUJraFg0aDRrazZsRTBydFZmSmthRWJWVmZJOEhacmJTNTd3TnpkbE1PWFVzdU4zTHd5OW1kWWNxYnN3b0xLdDI0WV9WRTVFeTMybXk1d1drMGQ0QWxmUTZGdDdVWm83bmJhRlJ1RTQxSVdvMnBxNUxfWTRVS1A" target="_blank" rel="noopener noreferrer">When Life Insurance Becomes More About the Projection Than the Protection</a><span class="meta">ThinkAdvisor · Sat, Sep 26 · 8:59 AM ET</span></li><li><a href="https://news.google.com/articles/CBMingFBVV95cUxNSlRwOFI3c1pFSWhaZmIzb0Fzd0lDTW9GdVhpSmdkYjRmbW5wZi15YTlJWVpSMWRvQUpZSWIwa0dCSGtfdmx3Q0xFV0NMNkVGMXpncDFBd1ZOeG5oYzdvY3dxTktZWFdsOHlBRkN3ZjZWMTF3cEJGZzQtMlFOVlRpSTl6UnRrWTVQX3ZPa3VfMUs2dXdRdnFZZXZ3VUJRZw" target="_blank" rel="noopener noreferrer">Insurance Regulators Respond to Sen. Warren&#x27;s Letter About Their Work</a><span class="meta">ThinkAdvisor · Fri, Sep 25 · 11:09 PM ET</span></li><li><a href="https://news.google.com/articles/CBMirwFBVV95cUxPVHV4TWdBTmlKWS1XU3ZLbENNSkV2X2NUUUFOY0ZVYUV4Rjc2VW5NZGQ2aE9IVXM2WlhTWXF0OFZkQjdRbVlPR2xtaE9tMTdkRXlEaDI2dzZOMXV4QjdxRlM1TzFiSG1fRDQ0ZzF3c0JMSFJ3QnJ4TUM2WGdLeWY0VHBIVDRFYlB1b3N1cXhUb0t4cUhlM0JQdnNuUWxCZnQ5NXFxWk1JZF9WVVdZWGxR" target="_blank" rel="noopener noreferrer">Verdence plans CTO hire, national push after largest acquisition</a><span class="meta">InvestmentNews · Fri, Sep 25 · 8:31 PM ET</span></li><li><a href="https://news.google.com/articles/CBMiiAFBVV95cUxQU2lyX25WdUR1WGEtZldJRUxhRmRMZTBPOF9BX1l3ejFQVUV3VDBwN000aHFkVEFja295Ym1yc1U0T2h3LXF4Nkp3Y2dXYkVMN3VoYmMtdGFCaEhRdUxWQ1p1U2REb0prQ0pnZlhJV0EyOVQ4OXlyemlQaDdmckg1RkpOb1g4RmY4" target="_blank" rel="noopener noreferrer">What climate finance means for portfolios</a><span class="meta">financial-planning.com · Fri, Sep 25 · 6:28 PM ET</span></li><li><a href="https://www.planadviser.com/retirement-industry-people-moves-9-25-2026/" target="_blank" rel="noopener noreferrer">Retirement Industry People Moves – 9/25/2026</a><span class="meta">PlanAdviser · Fri, Sep 25 · 5:05 PM ET</span></li><li><a href="https://news.google.com/articles/CBMioAFBVV95cUxQXy1XYmkzSDBocHFKRXlYYjZLUGVzSXQ1c2lQQVhpTm9oU3ZMYmRqRGtDcGtSSGtqNkJCRGhBSS1iVGU0NVJ4UnMxakVqaWxzX3MteVJLa296cVZsUGs1UEZ0d1l6S2FoU2tESURaYXZ2U3cwdkg4MjFhMDFQcjY3bjJrX2tWLVF6MmhINGNGWjdhekhoVWFCRTZuaE1SOTc0" target="_blank" rel="noopener noreferrer">Advisor Compensation Climbs As Firm Growth Hits A Decade Low</a><span class="meta">FA Mag · Fri, Sep 25 · 4:51 PM ET</span></li><li><a href="https://www.planadviser.com/wagner-law-group-pushes-back-on-proposed-pbgc-penalty-rule/" target="_blank" rel="noopener noreferrer">Wagner Law Group Pushes Back on Proposed PBGC Penalty Rule</a><span class="meta">PlanAdviser · Fri, Sep 25 · 4:49 PM ET</span></li><li><a href="https://news.google.com/articles/CBMirAFBVV95cUxOa3cyT3hSNERIeXFmeGZxU1FtV1Jzc1pIeXRJZnRpOWtGMUlZWFpUM0NlYWlkSkJJZk1CWm9USERkU09tdXlmUU02SGFPbGRoVkhoT1hiUkVZZFhhalZnQW5ieDRNTk1mOVQ1WTJSbF84eF9NaW1UaVR6T1dRSjdDcGpqeGdSUmdoTUIyZ1hibDVCNkpxcEkzakFHN0tKLXNWdzNIdUdBcHBJZjNO" target="_blank" rel="noopener noreferrer">RIAs working with Schwab get higher-yielding option for clients&#x27; cash</a><span class="meta">financial-planning.com · Fri, Sep 25 · 4:34 PM ET</span></li></ul></section>
+  <footer class="footer">
+    <p class="disclaimer">For internal team prep only. Not investment advice.</p>
+    <p>Index, futures, and the extra quotes are from Yahoo Finance. Rates: 10-year Treasury from U.S. Treasury; 2-year Treasury from U.S. Treasury; 30-year mortgage from Freddie Mac weekly. FRED did not respond on this run, so the Treasury yields are the U.S. Treasury daily yield curve, the same figures FRED publishes as DGS10 and DGS2, and the mortgage rate is Freddie Mac&#x27;s weekly survey, the same series as FRED MORTGAGE30US. Figures can be delayed. This page is a briefing, not a quote terminal. Headlines come from the feeds in feeds.yml. The same story is shown once. Each link opens the original.</p>
+  </footer>
+</div>
+</body>
+</html>

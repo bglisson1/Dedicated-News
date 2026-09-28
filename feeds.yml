@@ -1,0 +1,519 @@
+# =============================================================================
+# DEDICATED NEWS — edit this file to change sources, keywords, and markets
+# =============================================================================
+#
+# You do not need to write code. After you save this file on the main branch,
+# the page rebuilds by itself.
+#
+# HOW TO ADD A NEWS SOURCE
+#   1. Find the section (Financial, Political, or Industry).
+#   2. Copy one of the "- name / enabled / url / max_items" blocks.
+#   3. Paste it under "sources:" in that section.
+#   4. Change the name, paste the RSS address into url, and set max_items.
+#
+# HOW TO TURN A SOURCE OFF
+#   Change "enabled: yes" to "enabled: no". Leave the block so you can
+#   turn it back on later.
+#
+# HOW TO BLOCK OR BOOST A TOPIC
+#   block_keywords: a headline that contains one of these is skipped.
+#   boost_keywords: a small lift when ranking the top financial stories.
+#   political_focus_keywords: the top 3 political stories prefer these.
+#   big_day_phrases: if a fresh headline contains one, the talking points
+#   may talk about today instead of the week.
+#
+# Matching ignores capital letters. "Fed" and "fed" are the same.
+# Keep the quotes around web addresses. Keep the indentation.
+#
+# The talking-points voice lives in prompts/talking_points.md.
+# The model name is talking_points.model below.
+# =============================================================================
+
+site:
+  title: "Dedicated News"
+  eyebrow: "Morning prep · Tampa Bay"
+  # Headlines older than this are left off, except on Sat, Sun, and Monday
+  # morning, when long_window_hours is used so Friday's news is still here.
+  max_age_hours: 60
+  long_window_hours: 96
+  top_count: 3
+  # Next market stories after the top 3. The page asks for about 10 to 15.
+  more_count: 12
+  industry_count: 8
+  # A move at least this large, in the cash indexes or index futures,
+  # lets the talking points talk about today.
+  big_move_percent: 1.5
+  # A headline has to be this fresh to count as "happening today."
+  big_day_headline_hours: 20
+
+talking_points:
+  model: "openai/gpt-4.1-mini"
+  prompt_file: "prompts/talking_points.md"
+  endpoint: "https://models.github.ai/inference/chat/completions"
+
+# Symbols whose percent move can mark a "big day." Oil, gold, and Bitcoin
+# can swing without changing the client script.
+markets:
+  big_move_symbols:
+    - "^GSPC"
+    - "^DJI"
+    - "^IXIC"
+    - "ES=F"
+    - "YM=F"
+    - "NQ=F"
+
+  # Last completed regular session. Not a live price.
+  previous_close:
+    - symbol: "^GSPC"
+      label: "S&P 500"
+      decimals: 2
+    - symbol: "^DJI"
+      label: "Dow"
+      decimals: 2
+    - symbol: "^IXIC"
+      label: "Nasdaq"
+      decimals: 2
+    - symbol: "^RUT"
+      label: "Russell 2000"
+      decimals: 2
+
+  # ES, YM, and NQ. Percent change versus the prior settle.
+  futures:
+    - symbol: "ES=F"
+      label: "S&P 500"
+      hint: "ES"
+      decimals: 2
+    - symbol: "YM=F"
+      label: "Dow"
+      hint: "YM"
+      decimals: 0
+    - symbol: "NQ=F"
+      label: "Nasdaq"
+      hint: "NQ"
+      decimals: 2
+
+  # Nice-to-have quotes. Each card says whether it is live or the last print.
+  extras:
+    - symbol: "CL=F"
+      label: "WTI crude"
+      prefix: "$"
+      decimals: 2
+      mode: live
+    - symbol: "GC=F"
+      label: "Gold"
+      prefix: "$"
+      decimals: 2
+      mode: live
+    - symbol: "^TNX"
+      label: "10-year market"
+      suffix: "%"
+      decimals: 2
+      mode: yield
+    - symbol: "^VIX"
+      label: "VIX"
+      decimals: 2
+      mode: live
+    - symbol: "BTC-USD"
+      label: "Bitcoin"
+      prefix: "$"
+      decimals: 0
+      mode: live
+
+  # 10-year and 2-year are daily Treasury yields. The mortgage rate is the
+  # Freddie Mac weekly 30-year fixed (FRED series MORTGAGE30US).
+  # The build tries FRED first. If FRED does not answer, it uses the U.S.
+  # Treasury daily yield curve for DGS10 and DGS2, and Freddie Mac's own
+  # weekly file for the mortgage rate. Same official series, shown with a dash
+  # only when both the FRED file and the fallback fail.
+  rates:
+    - series: DGS10
+      label: "10-year Treasury"
+      tenor: "10 Yr"
+      change: day
+    - series: DGS2
+      label: "2-year Treasury"
+      tenor: "2 Yr"
+      change: day
+    - series: MORTGAGE30US
+      label: "30-year mortgage"
+      change: week
+      issuer: "Freddie Mac"
+
+# A fresh headline with one of these phrases can make the talking points
+# about today (a Fed decision, a jobs report, a CPI release, and the like).
+big_day_phrases:
+  - fomc
+  - federal reserve decision
+  - fed decision
+  - rate decision
+  - raises rates
+  - raised rates
+  - cuts rates
+  - cut rates
+  - rate hike
+  - rate cut
+  - jobs report
+  - nonfarm
+  - payrolls
+  - consumer price index
+  - cpi report
+  - inflation report
+
+# Used by mixed feeds (Fox Business latest) so a tuna recall does not land
+# in the market briefing. Business-only feeds do not use this list.
+keyword_lists:
+  market_terms:
+    - fed
+    - federal reserve
+    - rate
+    - rates
+    - stock
+    - stocks
+    - market
+    - markets
+    - inflation
+    - treasury
+    - tariff
+    - tax
+    - taxes
+    - economy
+    - economic
+    - oil
+    - bank
+    - banks
+    - mortgage
+    - recession
+    - jobs
+    - investor
+    - investors
+    - wall street
+    - bond
+    - bonds
+    - yield
+    - yields
+    - trade
+    - trading
+    - china
+    - iran
+    - shutdown
+    - congress
+    - budget
+    - debt
+    - s&p
+    - dow
+    - nasdaq
+    - futures
+    - earnings
+    - gdp
+    - payroll
+    - unemployment
+    - housing
+    - dollar
+    - gold
+    - bitcoin
+    - sec
+    - ipo
+
+# Headlines containing any of these are skipped everywhere.
+# Sports and celebrity items do not belong on this page.
+block_keywords:
+  - horoscope
+  - lottery
+  - crossword
+  - celebrity
+  - kardashian
+  - taylor swift
+  - box office
+  - red carpet
+  - bachelor
+  - nfl
+  - nba
+  - mlb
+  - nhl
+  - ncaa
+  - touchdown
+  - home run
+  - world series
+  - super bowl
+  - premier league
+  - stanley cup
+  - world cup
+  - obituary
+  - recipe
+  - recalled
+  - outbreak
+
+# A small lift for the top financial ranking. Outlet count and recency
+# still matter more than any single word.
+boost_keywords:
+  - federal reserve
+  - inflation
+  - mortgage
+  - treasury
+  - recession
+  - jobs report
+  - tariff
+  - social security
+  - retirement
+  - s&p
+  - wall street
+  - tampa
+  - florida
+
+# The top 3 political stories prefer headlines about Washington, policy,
+# the Fed, taxes, trade, and elections. If fewer than three match, the
+# page fills in with the other political headlines.
+political_focus_keywords:
+  - federal reserve
+  - fomc
+  - interest rate
+  - inflation
+  - cpi
+  - jobs report
+  - payroll
+  - unemployment
+  - tax
+  - taxes
+  - tariff
+  - trade
+  - treasury
+  - debt ceiling
+  - shutdown
+  - congress
+  - senate
+  - election
+  - regulation
+  - sec
+  - irs
+  - social security
+  - medicare
+  - spending
+  - budget
+  - deficit
+  - sanction
+  - recession
+  - economy
+  - mortgage
+  - housing
+  - oil
+  - war
+  - fuel economy
+  - deficit
+
+# -----------------------------------------------------------------------------
+# SECTIONS
+# role decides where a story can appear:
+#   financial → Top 3 Financial, then More Market & Economy
+#   political → Top 3 Political
+#   industry  → Industry News
+# A story is shown once, in the highest section it qualifies for.
+# max_items is how many fresh headlines to keep from that one source.
+# -----------------------------------------------------------------------------
+sections:
+  - name: Financial
+    role: financial
+    skip_url_parts:
+      - /sports/
+      - /sport/
+      - /entertainment/
+      - /celebrity/
+    sources:
+      - name: CNBC
+        enabled: yes
+        url: "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114"
+        max_items: 8
+
+      - name: CNBC Economy
+        enabled: yes
+        url: "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258"
+        max_items: 6
+
+      - name: CNBC Finance
+        enabled: yes
+        url: "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664"
+        max_items: 6
+
+      - name: Bloomberg Markets
+        enabled: yes
+        url: "https://feeds.bloomberg.com/markets/news.rss"
+        max_items: 8
+
+      - name: Bloomberg Economics
+        enabled: yes
+        url: "https://feeds.bloomberg.com/economics/news.rss"
+        max_items: 5
+
+      # Yahoo's old news index was stale. This is the live market-headline feed.
+      - name: Yahoo Finance
+        enabled: yes
+        url: "https://feeds.finance.yahoo.com/rss/2.0/headline?s=%5EGSPC&region=US&lang=en-US"
+        max_items: 6
+
+      - name: Seeking Alpha
+        enabled: yes
+        url: "https://seekingalpha.com/market_currents.xml"
+        max_items: 5
+
+      # feeds.a.dj.com still serves markets items from early 2025, so the
+      # official WSJ RSS is not used. This Google News feed is limited to
+      # recent markets stories on wsj.com. The link opens the story.
+      - name: WSJ Markets
+        enabled: yes
+        url: "https://news.google.com/rss/search?q=site:wsj.com+when:3d+(stocks+OR+S%26P+OR+%22Federal+Reserve%22+OR+yields+OR+inflation+OR+Treasury)&hl=en-US&gl=US&ceid=US:en"
+        max_items: 5
+        strip_publisher_suffix: yes
+
+      # Reuters no longer publishes a public RSS feed.
+      - name: Reuters
+        enabled: yes
+        url: "https://news.google.com/rss/search?q=site:reuters.com+when:3d+(stocks+OR+S%26P+OR+%22Federal+Reserve%22+OR+Treasury+OR+inflation+OR+jobs+OR+oil)&hl=en-US&gl=US&ceid=US:en"
+        max_items: 6
+        strip_publisher_suffix: yes
+
+      # AP shut its public RSS feed.
+      - name: AP Business
+        enabled: yes
+        url: "https://news.google.com/rss/search?q=site:apnews.com+when:3d+(economy+OR+%22Federal+Reserve%22+OR+inflation+OR+stocks+OR+jobs+OR+markets)&hl=en-US&gl=US&ceid=US:en"
+        max_items: 5
+        strip_publisher_suffix: yes
+
+      # MarketWatch topstories is mostly personal-finance columns.
+      # marketpulse and the realtime feed were frozen on old headlines.
+      - name: MarketWatch
+        enabled: yes
+        url: "https://news.google.com/rss/search?q=site:marketwatch.com+when:3d+(stocks+OR+market+OR+Fed+OR+yields+OR+inflation+OR+futures+OR+oil)&hl=en-US&gl=US&ceid=US:en"
+        max_items: 5
+        strip_publisher_suffix: yes
+
+      # The markets-only Fox Business feed was more than two days behind.
+      # The latest feed is current, so it is limited to market terms.
+      - name: Fox Business
+        enabled: yes
+        url: "https://moxie.foxbusiness.com/google-publisher/latest.xml"
+        max_items: 6
+        require_keyword_list: market_terms
+
+  - name: Political
+    role: political
+    skip_url_parts:
+      - /sports/
+      - /sport/
+      - /entertainment/
+      - /celebrity/
+    # Personal stories are not client-prep news, even when they name the White House.
+    skip_keywords:
+      - cancer
+      - tumor
+      - obituary
+      - divorce
+      - wedding
+    sources:
+      - name: The Hill
+        enabled: yes
+        url: "https://thehill.com/homenews/feed"
+        max_items: 6
+
+      - name: The Hill Policy
+        enabled: yes
+        url: "https://thehill.com/policy/feed"
+        max_items: 4
+
+      - name: Axios
+        enabled: yes
+        url: "https://www.axios.com/feeds/feed.rss"
+        max_items: 6
+
+      # politico.com answers "forbidden" on its own RSS address.
+      - name: Politico
+        enabled: yes
+        url: "https://news.google.com/rss/search?q=site:politico.com+when:3d+(economy+OR+tax+OR+tariff+OR+%22Federal+Reserve%22+OR+Congress+OR+election)&hl=en-US&gl=US&ceid=US:en"
+        max_items: 5
+        strip_publisher_suffix: yes
+
+      - name: Fox News Politics
+        enabled: yes
+        url: "https://moxie.foxnews.com/google-publisher/politics.xml"
+        max_items: 4
+
+      - name: CNBC Politics
+        enabled: yes
+        url: "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000113"
+        max_items: 4
+
+      - name: Bloomberg Politics
+        enabled: yes
+        url: "https://feeds.bloomberg.com/politics/news.rss"
+        max_items: 5
+
+  - name: Industry
+    role: industry
+    # Trade journals publish less often than the wire. Keep two weeks.
+    max_age_hours: 336
+    skip_url_parts:
+      - /sports/
+      - /sport/
+      - /entertainment/
+      - /celebrity/
+    sources:
+      # Direct feed. This one answers.
+      - name: WealthManagement.com
+        enabled: yes
+        url: "https://www.wealthmanagement.com/rss.xml"
+        max_items: 6
+
+      # Not on the original wish list, but the direct feed is current and
+      # it covers retirement plans and advisors. Safe to turn off.
+      - name: PlanAdviser
+        enabled: yes
+        url: "https://www.planadviser.com/feed/"
+        max_items: 4
+
+      # investmentnews.com/feed returns 404. Google News still has the stories.
+      - name: InvestmentNews
+        enabled: yes
+        url: "https://news.google.com/rss/search?q=site:investmentnews.com+when:14d&hl=en-US&gl=US&ceid=US:en"
+        max_items: 5
+        strip_publisher_suffix: yes
+
+      # thinkadvisor.com/feed returns 403.
+      - name: ThinkAdvisor
+        enabled: yes
+        url: "https://news.google.com/rss/search?q=site:thinkadvisor.com+when:14d&hl=en-US&gl=US&ceid=US:en"
+        max_items: 4
+        strip_publisher_suffix: yes
+
+      # financial-planning.com/feed came back empty.
+      - name: Financial Planning
+        enabled: yes
+        url: "https://news.google.com/rss/search?q=site:financial-planning.com+when:14d&hl=en-US&gl=US&ceid=US:en"
+        max_items: 4
+        strip_publisher_suffix: yes
+
+      # fa-mag.com RSS returns 403.
+      - name: FA Magazine
+        enabled: yes
+        url: "https://news.google.com/rss/search?q=site:fa-mag.com+when:14d&hl=en-US&gl=US&ceid=US:en"
+        max_items: 4
+        strip_publisher_suffix: yes
+
+      # citywire.com RIA RSS is empty. This search is limited to the RIA path.
+      - name: Citywire RIA
+        enabled: yes
+        url: "https://news.google.com/rss/search?q=site:citywire.com/ria+when:14d&hl=en-US&gl=US&ceid=US:en"
+        max_items: 4
+        strip_publisher_suffix: yes
+
+      # financialadvisoriq.com RSS redirects and does not return a feed.
+      - name: Financial Advisor IQ
+        enabled: yes
+        url: "https://news.google.com/rss/search?q=site:financialadvisoriq.com+when:14d&hl=en-US&gl=US&ceid=US:en"
+        max_items: 4
+        strip_publisher_suffix: yes
+
+      # Barron's Advisor is not listed. barrons.com RSS returns 401, and a
+      # Google News search for the advisor desk came back as general Barron's
+      # market stories. Leave it off rather than mix those in.
+      - name: Barron's Advisor
+        enabled: no
+        url: "https://www.barrons.com/news/feed"
+        max_items: 4
