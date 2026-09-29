@@ -1,44 +1,47 @@
 {
-  "generated_at": "2026-09-29T08:58:43-04:00",
+  "generated_at": "2026-09-29T12:15:09-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Stock Market Today: Dow Rises As Oil Prices, Treasury Yields Fall; Nvidia Stock Hits Buy Point (Live Coverage)",
-    "McDonald's stock and 10-year U.S. Treasury yield are perfect opposites",
-    "Update: US Equity Futures Slightly Higher Pre-Bell Amid Elevated Treasury Yields, Lack of Progress in US-Iran Talks",
-    "House Speaker Johnson says he hopes AI guardrails are 'voluntary' amid Congress inaction",
-    "Budget battle lines drawn",
-    "Live updates: Jack Smith faces Senate scrutiny; Trump to unveil federal AI tool"
+    "Job openings are low and hiring is weak. Why the U.S. labor market won\u2019t get better soon.",
+    "Stocks hold steady on Wall Street as oil prices ease, Treasury yields remain stable",
+    "Goldman Drops a Major Warning on the S&P 500",
+    "Senate Democrats warn Trump administration against Brazil election interference",
+    "Newsom signs laws targeting ICE with shock glove ban, detention center tax",
+    "Trump Accounts architect leaving Treasury for private sector: Report"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that interest rates ticked higher again, and that mortgage rates crept up too.",
-      "why": "When rates move higher, it can cost more to borrow for a house, a car, or even a credit card balance.",
-      "but": "But small moves in rates happen all the time, and your plan is built to handle stretches like this.",
-      "story": "Picture someone shopping for a home who watches the rate every single day and keeps waiting for the perfect number. Years go by and they never buy. The better move is picking a plan you can live with and adjusting later if needed, not chasing a moving target.",
+      "hearing": "You may hear that hiring has slowed down and there are fewer job openings out there right now.",
+      "why": "That matters because jobs are what pay the bills, and when hiring cools off, families can feel more cautious about spending.",
+      "but": "But one report on hiring does not tell you where the whole economy is headed over the years ahead.",
+      "story": "Think of a shop that has a slow week of foot traffic. The owner does not tear up the five-year lease over one quiet week. They watch the trend, not the day.",
       "say": [
-        "We do not try to time interest rates. We build a plan that can handle them moving either way."
+        "We watch the jobs picture, but we do not rebuild your plan around one report.",
+        "A slow hiring month is a data point, not a verdict on the future."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that oil prices dropped, which can mean some relief at the pump and for shipping costs.",
-      "why": "Oil feeds into gas and diesel, so when it falls, trucking and travel can get a little cheaper for a while.",
-      "but": "But oil bounces around often, and one calmer week for energy prices does not rewrite your long-term plan.",
-      "story": "Think of oil prices like weather on a road trip. Some stretches are smooth, some are bumpy, but you still keep driving toward where you are going. You do not turn the car around because of one clear afternoon.",
+      "hearing": "You may hear that stocks are fairly calm today because oil prices eased up a bit.",
+      "why": "When oil calms down, it can help keep a lid on what it costs to fill up the truck and ship groceries to the store, so it touches the family budget.",
+      "but": "But a quiet day in oil is just one data point, not a signal to change your long-term plan.",
+      "story": "Think of oil prices like the weather forecast. One mild day doesn't mean you cancel your winter coat for the season. You still dress for the whole year, not just today's forecast.",
       "say": [
-        "A dip in oil is nice to see, but we do not build the plan around it either way."
+        "We watch oil prices, but your plan is built for more than one calm day.",
+        "A gentle day in energy prices doesn't change the road we're on together."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that stocks slipped yesterday, and that futures are a touch higher again this morning.",
-      "why": "Normal back and forth days like this happen constantly, they are part of how markets work over time.",
-      "but": "But quiet, uneventful stretches like this week are exactly when it pays to leave a good plan alone.",
-      "story": "Picture a garden. You do not dig it up every time the weather shifts for a day or two. You water it, you wait, and you let it grow on its own schedule.",
+      "hearing": "You may hear that a big Wall Street firm is warning that only a small handful of companies are holding up most of the stock market's gains.",
+      "why": "That matters because if just a few big names are doing the heavy lifting, some worry the market could feel it more if those few stumble.",
+      "but": "But this is exactly why we don't build your plan around a handful of companies in the first place.",
+      "story": "Picture a table standing on four strong legs instead of balancing on just one. If one leg wobbles, the table still stands. That's the idea behind spreading your money across many different investments instead of a few.",
       "say": [
-        "Nothing about this week changes your plan. We let it keep growing."
+        "This is a good reminder of why we diversify instead of chasing a few big names.",
+        "Your plan was built with more than one leg holding it up."
       ]
     }
   ]
