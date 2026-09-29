@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-09-29T12:15:09-04:00",
+  "generated_at": "2026-09-29T16:37:54-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Job openings are low and hiring is weak. Why the U.S. labor market won\u2019t get better soon.",
-    "Stocks hold steady on Wall Street as oil prices ease, Treasury yields remain stable",
-    "Goldman Drops a Major Warning on the S&P 500",
+    "Fed\u2019s Williams Sees One More Interest Rate Hike in Late 2026",
+    "Trump Accounts will auto-enroll children, potentially adding 60 million accounts: Treasury",
+    "Stocks slip on Wall Street as rising Treasury yields pressure the market",
     "Senate Democrats warn Trump administration against Brazil election interference",
-    "Newsom signs laws targeting ICE with shock glove ban, detention center tax",
-    "Trump Accounts architect leaving Treasury for private sector: Report"
+    "Trump Hits Campaign Trail to Sell Economy to Anxious Voters",
+    "Rollout of NYC\u2019s Pied-a-Terre Tax Suffers Setback in Lawsuit"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that hiring has slowed down and there are fewer job openings out there right now.",
-      "why": "That matters because jobs are what pay the bills, and when hiring cools off, families can feel more cautious about spending.",
-      "but": "But one report on hiring does not tell you where the whole economy is headed over the years ahead.",
-      "story": "Think of a shop that has a slow week of foot traffic. The owner does not tear up the five-year lease over one quiet week. They watch the trend, not the day.",
+      "hearing": "You may be hearing that a top Fed official said one more interest rate increase could be coming before the year is out.",
+      "why": "The Fed sets short-term interest rates, and that ripples into credit cards, car loans, and how much it costs to borrow for just about anything.",
+      "but": "But a hint about one future move is not the same as a crisis, and your plan was built to handle rate changes in either direction.",
+      "story": "Picture a weather forecaster saying there might be one more warm spell before fall. You do not cancel the season. You just keep the jacket handy and keep living your life.",
       "say": [
-        "We watch the jobs picture, but we do not rebuild your plan around one report.",
-        "A slow hiring month is a data point, not a verdict on the future."
+        "We hear the Fed talk, and we keep the plan moving.",
+        "One possible rate move does not rewrite your whole strategy."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that stocks are fairly calm today because oil prices eased up a bit.",
-      "why": "When oil calms down, it can help keep a lid on what it costs to fill up the truck and ship groceries to the store, so it touches the family budget.",
-      "but": "But a quiet day in oil is just one data point, not a signal to change your long-term plan.",
-      "story": "Think of oil prices like the weather forecast. One mild day doesn't mean you cancel your winter coat for the season. You still dress for the whole year, not just today's forecast.",
+      "hearing": "You may hear that stocks slipped a bit today because interest rates on borrowing ticked higher.",
+      "why": "When those rates rise, it can nudge the cost of things like mortgages, car loans, and credit cards.",
+      "but": "But one day of rates drifting up is not a reason to rewrite a plan built for years, not hours.",
+      "story": "Think of driving cross-country and hitting one cloudy afternoon. You don't turn the car around, you just keep driving toward where you're headed.",
       "say": [
-        "We watch oil prices, but your plan is built for more than one calm day.",
-        "A gentle day in energy prices doesn't change the road we're on together."
+        "We saw the dip, and we're still on the road we planned.",
+        "A rate wiggle today doesn't change the map we drew for your future."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that a big Wall Street firm is warning that only a small handful of companies are holding up most of the stock market's gains.",
-      "why": "That matters because if just a few big names are doing the heavy lifting, some worry the market could feel it more if those few stumble.",
-      "but": "But this is exactly why we don't build your plan around a handful of companies in the first place.",
-      "story": "Picture a table standing on four strong legs instead of balancing on just one. If one leg wobbles, the table still stands. That's the idea behind spreading your money across many different investments instead of a few.",
+      "hearing": "You may be hearing a lot of political talk lately about the economy, with leaders trying to ease people's worries about the cost of living.",
+      "why": "When people feel less confident about their wallets, it can shape how they shop, save, and spend day to day.",
+      "but": "But campaign speeches change every election cycle, and your investment plan was never built around any one speech.",
+      "story": "Picture a gardener who hears a different weather forecast every morning. She still waters on schedule, because she planted for the whole season, not for one broadcast.",
       "say": [
-        "This is a good reminder of why we diversify instead of chasing a few big names.",
-        "Your plan was built with more than one leg holding it up."
+        "We don't plant your plan based on speeches.",
+        "Confidence numbers move around elections. Your plan is built to outlast any one of them."
       ]
     }
   ]
