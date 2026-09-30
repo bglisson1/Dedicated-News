@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-09-30T06:18:18-04:00",
+  "generated_at": "2026-09-30T07:44:17-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Dow Jones Futures Rise With Micron, Inflation Data Due After Bloom Energy Leads AI Rebound",
-    "More homes, more price cuts \u2013 but buyers still aren't biting as mortgage rates climb",
-    "Inside Man: How Chinese spies used lies, love and betrayal to target the Federal Reserve",
-    "NYC appeals Staten Island judge's ruling against Mamdani's pied-\u00e0-terre tax",
-    "What products are part of US-China $60 billion tariff cuts deal",
-    "Eric Cantor named new president of pharma trade group"
+    "US stock futures inch up as yields ease, inflation report looms",
+    "Inflation, Key Earnings Reports Cap Wall Street Pre-Bell; Asia Up, Europe Mixed",
+    "Mortgage rates jump for the sixth straight week, hitting both refinance and homebuyer demand hard",
+    "Israel Backlash Shapes Campaigns, Congress",
+    "Refugees Set to Lose Health Coverage Under Trump Budget Law",
+    "Inside Man: How Chinese spies used lies, love and betrayal to target the Federal Reserve"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that mortgage rates ticked up again this week, and that is keeping some home buyers on the sidelines.",
-      "why": "For a lot of families, a mortgage is the biggest monthly bill they have, so even a small move in interest rates can change what a home costs to finance.",
-      "but": "But mortgage rates moving up and down from week to week is normal, and it does not change the plan we built for your money over years, not weeks.",
-      "story": "Picture someone waiting for the exact perfect week to buy a house, checking rates every single day. Life and plans do not wait for perfect weeks. They move forward with the information they have.",
+      "hearing": "You may hear there's a big inflation report coming out today, the one that shows how fast everyday prices, like groceries and rent, are climbing.",
+      "why": "That report matters because it can shape how the Fed, which sets short-term interest rates, thinks about its next move, and that touches credit cards, car loans, and mortgages.",
+      "but": "But one report is a single data point. It is not a verdict on the whole economy, and it is not a signal to change a long-term plan.",
+      "story": "Picture checking the thermometer once and deciding the whole season is broken. One reading tells you about that morning, not about the year. A good plan is built for the whole year, not one number.",
       "say": [
-        "Rates move around. Your plan is built to handle that.",
-        "We do not chase the perfect week. We stick with the plan we already made."
+        "We watch these reports, but we do not rebuild your plan around one of them.",
+        "One data point is information, not a decision."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that the U.S. and China just agreed to cut tariffs on billions of dollars of goods, from toys to holiday decorations.",
-      "why": "Tariffs are like a toll on things shipped across the ocean, so when tolls come down, some everyday items can get a little cheaper to bring into the country.",
-      "but": "But trade deals shift back and forth over time, and no single agreement should be the reason we change a long-term plan.",
-      "story": "Think of it like a toll booth lowering the fee for a season. Drivers are glad for the break, but nobody repaves their whole route because of one toll change.",
+      "hearing": "You may hear that mortgage rates just climbed for the sixth week in a row, and that home buying and refinancing have both slowed down because of it.",
+      "why": "Higher rates mean bigger monthly payments on a home loan, so that touches a big household bill for anyone buying, selling, or refinancing a house.",
+      "but": "But rates move in cycles, and a plan built for decades does not need to react to six weeks of moves.",
+      "story": "Think of two neighbors. One waits by the window for the perfect rate before ever making a move, the other buys when it fits their life and adjusts later if rates shift. Over time, the second neighbor usually ends up further along.",
       "say": [
-        "We notice the news, but your plan was not built around one tariff deal.",
-        "One toll break is nice. It is not a reason to rebuild the road."
+        "We build your plan to handle rate swings, not to depend on guessing them.",
+        "This is a housing headline, not a reason to change your plan."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that Wall Street is waiting on a fresh inflation report and a big tech earnings release later this week.",
-      "why": "Inflation numbers can nudge how expensive borrowing feels, from credit cards to car loans, so people watch them closely.",
-      "but": "But waiting for one report is normal. Markets do this every week, and yesterday's small dip was nothing unusual.",
-      "story": "Picture waiting on a weather forecast before a weekend trip. You check it, you plan around it a little, but you do not cancel the whole vacation over one cloudy chance.",
+      "hearing": "You may hear stocks were a touch lower yesterday, and this morning things look calm, just easing up slightly before the bell.",
+      "why": "Small daily wiggles like this are just markets breathing, they are not a signal about your long-term plan.",
+      "but": "But a quiet, mixed morning like today is actually pretty normal, and normal is good.",
+      "story": "Picture a heartbeat on a monitor. If it never moved at all, that would be the scary part. The little ups and downs are just proof the system is alive and working.",
       "say": [
-        "We keep an eye on the data, but we do not rebuild your plan around one report.",
-        "This is a normal week of waiting, not a reason to change course."
+        "Small moves like this are just noise, not news for your plan.",
+        "We expect wiggles like this, it's part of how markets work."
       ]
     }
   ]
