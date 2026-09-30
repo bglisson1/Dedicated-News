@@ -1,25 +1,47 @@
 {
-  "generated_at": "2026-09-30T12:16:17-04:00",
+  "generated_at": "2026-09-30T16:36:43-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Wall St climbs as cooling inflation tempers Fed rate-hike concerns",
-    "OPEC+ expected to hold November oil output targets steady",
-    "Treasury 30-Year Yield's Continuous Rise Reveals Inflation Worry",
-    "Senate expected to vote on stock trading ban, data center bill before election recess",
-    "Burnham Walks Back Suggestion Social Care Plan Needs Tax Hikes",
-    "Trump's latest global tariffs face trade court challenge"
+    "Fed watchdog clears former chair Powell in renovation probe",
+    "10-year Treasury yield is higher as traders look past inflation data, await jobs report",
+    "Micron beats on earnings and issues strong guidance as data center revenue jumps 11-fold",
+    "Trump Tariffs Face Scrutiny in US Trade Court Over Legal Justification",
+    "Live updates: Hegseth calls officer cuts 'bare minimum' in address to troops; Senate Democrats block key bills",
+    "How Much Does it Cost to Win The US Senate?"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing that the Fed, which sets short-term interest rates, raised rates.",
-      "why": "That can nudge the cost of borrowing a little higher, like a credit card balance, a car loan, or a mortgage rate.",
-      "but": "But one rate decision does not rewrite a plan that is built to last for years, not for one morning.",
-      "story": "Picture turning up a thermostat a notch. The room feels a little warmer for a while, but the house is still the same house. The Fed adjusts a knob. Your plan is the whole house.",
+      "hearing": "You may hear that the tariffs on goods from other countries are being challenged in court.",
+      "why": "Tariffs can change what it costs to bring in things like clothes, electronics, or parts for the car in the garage, so a court fight over them can feel like it touches the family budget.",
+      "but": "But court cases move slowly, and no one can say today how a judge will rule or what it will mean for prices down the road.",
+      "story": "Picture a referee reviewing a close call while the game keeps going. Fans in the stands still watch, still cheer, still plan for next season, even before the review is final.",
       "say": [
-        "We saw the Fed move, and your plan already had room for that.",
-        "One rate decision does not change the years ahead of your plan."
+        "We let the courts sort out the tariff case. Your plan does not wait on a ruling.",
+        "One legal review does not change how we invest for your goals."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may hear that interest rates on longer-term borrowing ticked up today, even though inflation news came in a little softer than expected.",
+      "why": "Those rates help set things like mortgage costs and car loan costs, so when they drift up, monthly payments can drift up too.",
+      "but": "But rates move up and down often, and a plan built for years, not days, does not need to react to one day's move.",
+      "story": "Think of a homeowner who refinanced last year and now sees a headline that rates ticked up again. They do not tear up their loan. They just keep making the payment they already locked in.",
+      "say": [
+        "Rates wiggled today. Your plan already expects wiggles.",
+        "We watch rates, but we do not chase every move in them."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may hear that stocks had a mixed day today, some parts up, some parts down, and nothing dramatic either way.",
+      "why": "Days like this remind us that markets are not one big machine moving together, some areas lead while others lag.",
+      "but": "But a quiet, mixed day is actually pretty normal, and normal days are what long-term investing is built on.",
+      "story": "Picture a garden with different plants growing at different speeds. Some days one section looks better than another, but you do not rip out the whole garden over one afternoon.",
+      "say": [
+        "Nothing alarming here, just markets doing their normal thing.",
+        "This is the kind of day that does not change your plan at all."
       ]
     }
   ]
