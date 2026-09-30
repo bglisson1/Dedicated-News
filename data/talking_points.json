@@ -1,47 +1,36 @@
 {
-  "generated_at": "2026-09-30T07:44:17-04:00",
+  "generated_at": "2026-09-30T09:01:01-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "US stock futures inch up as yields ease, inflation report looms",
-    "Inflation, Key Earnings Reports Cap Wall Street Pre-Bell; Asia Up, Europe Mixed",
-    "Mortgage rates jump for the sixth straight week, hitting both refinance and homebuyer demand hard",
+    "Fed\u2019s preferred gauge showed core inflation at 3.0% in August, much lighter than expected",
+    "US Companies Added 90,000 Jobs in September: ADP",
+    "Core PCE Inflation Rate Slides; S&P 500 Futures Rally On Lower Yields, Fed Rate Odds (Live Coverage)",
+    "Live updates: Senate sets up stock trading, data center votes; trade court hears Trump tariffs case",
     "Israel Backlash Shapes Campaigns, Congress",
-    "Refugees Set to Lose Health Coverage Under Trump Budget Law",
     "Inside Man: How Chinese spies used lies, love and betrayal to target the Federal Reserve"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear there's a big inflation report coming out today, the one that shows how fast everyday prices, like groceries and rent, are climbing.",
-      "why": "That report matters because it can shape how the Fed, which sets short-term interest rates, thinks about its next move, and that touches credit cards, car loans, and mortgages.",
-      "but": "But one report is a single data point. It is not a verdict on the whole economy, and it is not a signal to change a long-term plan.",
-      "story": "Picture checking the thermometer once and deciding the whole season is broken. One reading tells you about that morning, not about the year. A good plan is built for the whole year, not one number.",
+      "hearing": "You may be hearing that a big inflation report came out this morning, and prices rose more slowly than expected last month.",
+      "why": "That matters because slower price increases can mean the everyday things you buy, like groceries and gas, are not climbing as fast, which can ease pressure on a household budget.",
+      "but": "But one report is a single reading, not a forecast for every month ahead.",
+      "story": "Picture checking your speedometer once and deciding you know the whole drive. One good reading feels great, but the road still has more miles to go.",
       "say": [
-        "We watch these reports, but we do not rebuild your plan around one of them.",
-        "One data point is information, not a decision."
+        "We are glad to see it, and we still plan for the whole road, not one reading.",
+        "One report can help the mood. It does not rewrite the plan."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that mortgage rates just climbed for the sixth week in a row, and that home buying and refinancing have both slowed down because of it.",
-      "why": "Higher rates mean bigger monthly payments on a home loan, so that touches a big household bill for anyone buying, selling, or refinancing a house.",
-      "but": "But rates move in cycles, and a plan built for decades does not need to react to six weeks of moves.",
-      "story": "Think of two neighbors. One waits by the window for the perfect rate before ever making a move, the other buys when it fits their life and adjusts later if rates shift. Over time, the second neighbor usually ends up further along.",
+      "hearing": "You may be hearing that a court is now reviewing the tariffs, the extra taxes on goods coming from other countries.",
+      "why": "Tariffs can raise the cost of things brought in from overseas, from electronics to clothes, which can show up on store shelves.",
+      "but": "But courts, rules, and policies shift over time, and a diversified plan is built to ride through changes like this, not to guess the outcome.",
+      "story": "Picture packing for a trip without knowing the weather. You do not cancel the trip, you just pack a few different things so you are ready either way.",
       "say": [
-        "We build your plan to handle rate swings, not to depend on guessing them.",
-        "This is a housing headline, not a reason to change your plan."
-      ]
-    },
-    {
-      "topic": "model",
-      "hearing": "You may hear stocks were a touch lower yesterday, and this morning things look calm, just easing up slightly before the bell.",
-      "why": "Small daily wiggles like this are just markets breathing, they are not a signal about your long-term plan.",
-      "but": "But a quiet, mixed morning like today is actually pretty normal, and normal is good.",
-      "story": "Picture a heartbeat on a monitor. If it never moved at all, that would be the scary part. The little ups and downs are just proof the system is alive and working.",
-      "say": [
-        "Small moves like this are just noise, not news for your plan.",
-        "We expect wiggles like this, it's part of how markets work."
+        "We do not try to guess how a court rules, we just make sure your plan can handle either outcome.",
+        "Policy will keep changing, that is exactly why we diversify."
       ]
     }
   ]
