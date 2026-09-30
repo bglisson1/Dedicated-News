@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-09-29T16:37:54-04:00",
+  "generated_at": "2026-09-30T06:18:18-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Fed\u2019s Williams Sees One More Interest Rate Hike in Late 2026",
-    "Trump Accounts will auto-enroll children, potentially adding 60 million accounts: Treasury",
-    "Stocks slip on Wall Street as rising Treasury yields pressure the market",
-    "Senate Democrats warn Trump administration against Brazil election interference",
-    "Trump Hits Campaign Trail to Sell Economy to Anxious Voters",
-    "Rollout of NYC\u2019s Pied-a-Terre Tax Suffers Setback in Lawsuit"
+    "Dow Jones Futures Rise With Micron, Inflation Data Due After Bloom Energy Leads AI Rebound",
+    "More homes, more price cuts \u2013 but buyers still aren't biting as mortgage rates climb",
+    "Inside Man: How Chinese spies used lies, love and betrayal to target the Federal Reserve",
+    "NYC appeals Staten Island judge's ruling against Mamdani's pied-\u00e0-terre tax",
+    "What products are part of US-China $60 billion tariff cuts deal",
+    "Eric Cantor named new president of pharma trade group"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing that a top Fed official said one more interest rate increase could be coming before the year is out.",
-      "why": "The Fed sets short-term interest rates, and that ripples into credit cards, car loans, and how much it costs to borrow for just about anything.",
-      "but": "But a hint about one future move is not the same as a crisis, and your plan was built to handle rate changes in either direction.",
-      "story": "Picture a weather forecaster saying there might be one more warm spell before fall. You do not cancel the season. You just keep the jacket handy and keep living your life.",
+      "hearing": "You may hear that mortgage rates ticked up again this week, and that is keeping some home buyers on the sidelines.",
+      "why": "For a lot of families, a mortgage is the biggest monthly bill they have, so even a small move in interest rates can change what a home costs to finance.",
+      "but": "But mortgage rates moving up and down from week to week is normal, and it does not change the plan we built for your money over years, not weeks.",
+      "story": "Picture someone waiting for the exact perfect week to buy a house, checking rates every single day. Life and plans do not wait for perfect weeks. They move forward with the information they have.",
       "say": [
-        "We hear the Fed talk, and we keep the plan moving.",
-        "One possible rate move does not rewrite your whole strategy."
+        "Rates move around. Your plan is built to handle that.",
+        "We do not chase the perfect week. We stick with the plan we already made."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that stocks slipped a bit today because interest rates on borrowing ticked higher.",
-      "why": "When those rates rise, it can nudge the cost of things like mortgages, car loans, and credit cards.",
-      "but": "But one day of rates drifting up is not a reason to rewrite a plan built for years, not hours.",
-      "story": "Think of driving cross-country and hitting one cloudy afternoon. You don't turn the car around, you just keep driving toward where you're headed.",
+      "hearing": "You may hear that the U.S. and China just agreed to cut tariffs on billions of dollars of goods, from toys to holiday decorations.",
+      "why": "Tariffs are like a toll on things shipped across the ocean, so when tolls come down, some everyday items can get a little cheaper to bring into the country.",
+      "but": "But trade deals shift back and forth over time, and no single agreement should be the reason we change a long-term plan.",
+      "story": "Think of it like a toll booth lowering the fee for a season. Drivers are glad for the break, but nobody repaves their whole route because of one toll change.",
       "say": [
-        "We saw the dip, and we're still on the road we planned.",
-        "A rate wiggle today doesn't change the map we drew for your future."
+        "We notice the news, but your plan was not built around one tariff deal.",
+        "One toll break is nice. It is not a reason to rebuild the road."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may be hearing a lot of political talk lately about the economy, with leaders trying to ease people's worries about the cost of living.",
-      "why": "When people feel less confident about their wallets, it can shape how they shop, save, and spend day to day.",
-      "but": "But campaign speeches change every election cycle, and your investment plan was never built around any one speech.",
-      "story": "Picture a gardener who hears a different weather forecast every morning. She still waters on schedule, because she planted for the whole season, not for one broadcast.",
+      "hearing": "You may hear that Wall Street is waiting on a fresh inflation report and a big tech earnings release later this week.",
+      "why": "Inflation numbers can nudge how expensive borrowing feels, from credit cards to car loans, so people watch them closely.",
+      "but": "But waiting for one report is normal. Markets do this every week, and yesterday's small dip was nothing unusual.",
+      "story": "Picture waiting on a weather forecast before a weekend trip. You check it, you plan around it a little, but you do not cancel the whole vacation over one cloudy chance.",
       "say": [
-        "We don't plant your plan based on speeches.",
-        "Confidence numbers move around elections. Your plan is built to outlast any one of them."
+        "We keep an eye on the data, but we do not rebuild your plan around one report.",
+        "This is a normal week of waiting, not a reason to change course."
       ]
     }
   ]
