@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-10-01T12:13:42-04:00",
+  "generated_at": "2026-10-01T16:39:03-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Fed's Kashkari says inflation 'still too high' despite lower PCE data than expected",
-    "Wall Street dips as surging Treasury yields outweigh software gains",
-    "Trump Accounts have auto-enrolled more than 60 million children, Treasury says",
-    "Judge dismisses Reflecting Pool case permanently, cites risk Trump will force new charges",
-    "Can you measure a Congress's success?",
-    "Can a wealth tax actually solve our political and fiscal problems? The math says no."
+    "S&P 500 closes higher to start October as Treasury yields retreat from multiyear highs: Live updates",
+    "Update: US Equity Indexes Rise as Treasury Yields Slump Amid Sliding Probability of Fed Rate Increase in October",
+    "Treasury sanctions operation targets Iran's auto, rail industries in latest economic attack",
+    "Reporter's Notebook: Congress dodged a fall shutdown, but the real fight looms",
+    "Trump says \u2018it\u2019s possible\u2019 Iran war could cost him the midterms",
+    "Federal Reserve vice chair says it \u2018may take more time\u2019 before hiking rates again"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that a top Federal Reserve official came out and said inflation is still too high, even though the newest reading came in a little better than expected.",
-      "why": "That matters because the Fed, which sets short-term interest rates, uses comments like this to signal how patient it plans to be before easing up on borrowing costs for things like credit cards and loans.",
-      "but": "But one official's comment on one day does not set policy, and it does not reset your long-term plan.",
-      "story": "Picture a coach saying after a decent practice that the team still has work to do. It is not the final score. It is one comment in a long season.",
+      "hearing": "You may hear that the Fed, which sets short-term interest rates, says it could take more time before raising rates again, and that longer-term interest rates eased a little this week.",
+      "why": "That matters for daily life because interest rates touch things like credit cards, car loans, and mortgages, so when they ease, borrowing can feel a little less heavy.",
+      "but": "But one comment from a Fed official is not a new plan for your money, and rates moving a little either way does not change the long-term picture.",
+      "story": "Picture waiting for better weather before you plant a garden. A forecast can shift day to day, but you do not dig up the whole yard every time the sky changes. You watch, you wait, you keep tending what you already planted.",
       "say": [
-        "We hear the Fed talk every week. We do not rebuild the plan around one quote.",
-        "One comment is not a policy change, and it is not a reason to move."
+        "We let the Fed talk about rates. We let your plan keep doing its job.",
+        "A rate comment is weather. Your plan is the garden."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that interest rates ticked higher this week, and that mortgage rates moved up along with them.",
-      "why": "That matters in daily life because higher rates can mean a bigger monthly payment on a new mortgage, a car loan, or a credit card balance.",
-      "but": "But rates move in both directions over time, and a plan built for the long run is not built around one week of movement.",
-      "story": "Picture a homeowner who refinanced years ago and still watches the rate ticker every morning out of habit. The ticker moves. Their payment does not, because they already locked in their plan.",
+      "hearing": "You may hear that oil prices moved higher this week, which can show up at the gas pump or on a diesel bill for trucking.",
+      "why": "That matters because fuel costs are baked into almost everything that gets delivered, from groceries to packages, so a move in oil can nudge prices elsewhere.",
+      "but": "But oil bounces around often, and a week of higher oil is not something we redesign a retirement plan around.",
+      "story": "Think of a toll road that raises its price for a season. You still take the trip. You just notice the toll a bit more that month, then move on with where you were headed.",
       "say": [
-        "We build plans that can live with rates moving either way.",
-        "A week of higher rates does not undo years of planning."
+        "We notice oil moving, we do not chase it.",
+        "The toll can change. The destination does not."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that stocks slipped a little this week, without any single big headline driving it.",
-      "why": "That matters because people naturally want to know why their account moved, even when the honest answer is that it was just a quiet, ordinary week.",
-      "but": "But quiet weeks are normal, and they are not a signal to change course.",
-      "story": "Picture a long road trip where the car drifts a little in the lane on a windy stretch. You do not pull over and call it the end of the trip. You keep both hands on the wheel and keep driving.",
+      "hearing": "You may hear that stocks finished the week quietly, without any big headline move.",
+      "why": "That matters because a calm week is actually the normal rhythm of investing, even though it rarely makes the news.",
+      "but": "But quiet is not the same as nothing happening. Compounding keeps working in the background, even on boring weeks.",
+      "story": "Picture a slow-cooker meal. Nothing dramatic happens on the counter while it simmers, but by dinner it has turned into something good. The magic was in the time, not in any one hour you watched the pot.",
       "say": [
-        "A quiet dip is just part of the drive, not a reason to pull over.",
-        "We stay the course through the ordinary weeks so we are still invested for the ones that matter."
+        "Quiet weeks are still working weeks for your plan.",
+        "We let it simmer. We do not lift the lid every hour."
       ]
     }
   ]
