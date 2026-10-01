@@ -1,47 +1,45 @@
 {
-  "generated_at": "2026-09-30T16:36:43-04:00",
-  "source": "anthropic/claude-sonnet-5",
-  "origin": "openrouter:anthropic/claude-sonnet-5",
+  "generated_at": "2026-10-01T06:19:08-04:00",
+  "source": "openai/gpt-6-luna",
+  "origin": "openrouter:openai/gpt-6-luna",
   "headlines": [
-    "Fed watchdog clears former chair Powell in renovation probe",
-    "10-year Treasury yield is higher as traders look past inflation data, await jobs report",
-    "Micron beats on earnings and issues strong guidance as data center revenue jumps 11-fold",
-    "Trump Tariffs Face Scrutiny in US Trade Court Over Legal Justification",
-    "Live updates: Hegseth calls officer cuts 'bare minimum' in address to troops; Senate Democrats block key bills",
-    "How Much Does it Cost to Win The US Senate?"
+    "10-year Treasury yield hits highest level since 2002 as global bond rout gathers pace",
+    "Oil prices rise as Chinese refiners reportedly ban October fuel exports; Brent crude back above $100",
+    "US Futures Mixed as Micron Outlook and Nike Results Take Focus: Dow Jones, S&P, Nasdaq, Wall Street",
+    "Calls for gas tax suspensions grow as Americans struggle with high prices",
+    "Supreme Court Weighs Shield for Oil Companies as New Term Opens",
+    "Teen's tragic killing by illegal immigrant becomes flashpoint in battle for control of Congress"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that the tariffs on goods from other countries are being challenged in court.",
-      "why": "Tariffs can change what it costs to bring in things like clothes, electronics, or parts for the car in the garage, so a court fight over them can feel like it touches the family budget.",
-      "but": "But court cases move slowly, and no one can say today how a judge will rule or what it will mean for prices down the road.",
-      "story": "Picture a referee reviewing a close call while the game keeps going. Fans in the stands still watch, still cheer, still plan for next season, even before the review is final.",
+      "hearing": "You may be hearing about oil prices and calls to pause gas taxes, as households feel pressure at the pump.",
+      "why": "Fuel matters beyond the cost of filling a car: trucks use it to move groceries and other everyday goods.",
+      "but": "But a fuel headline is one piece of the picture, not a reason to abandon a long-term investment plan.",
+      "story": "Picture planning a long drive and running into a detour. You adjust the route, but you don't cancel the trip; a good plan can stay on course through a noisy stretch.",
       "say": [
-        "We let the courts sort out the tariff case. Your plan does not wait on a ruling.",
-        "One legal review does not change how we invest for your goals."
+        "We can notice the fuel story without letting it rewrite your long-term plan."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that interest rates on longer-term borrowing ticked up today, even though inflation news came in a little softer than expected.",
-      "why": "Those rates help set things like mortgage costs and car loan costs, so when they drift up, monthly payments can drift up too.",
-      "but": "But rates move up and down often, and a plan built for years, not days, does not need to react to one day's move.",
-      "story": "Think of a homeowner who refinanced last year and now sees a headline that rates ticked up again. They do not tear up their loan. They just keep making the payment they already locked in.",
+      "hearing": "Stocks slipped a little yesterday, while interest rates ticked higher. The facts point to a quieter market week, not a major event today.",
+      "why": "Higher interest rates can make borrowing more expensive for households and businesses, including when they finance a home or a project.",
+      "but": "But a small move in stocks and a shift in rates are reasons to stay informed, not to lose sight of the long-term plan.",
+      "story": "Imagine a garden with several kinds of plants. One may have a rough week while another is doing fine; variety helps keep one patch from defining the whole garden.",
       "say": [
-        "Rates wiggled today. Your plan already expects wiggles.",
-        "We watch rates, but we do not chase every move in them."
+        "We built your plan for a mix of conditions, not just one market day."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that stocks had a mixed day today, some parts up, some parts down, and nothing dramatic either way.",
-      "why": "Days like this remind us that markets are not one big machine moving together, some areas lead while others lag.",
-      "but": "But a quiet, mixed day is actually pretty normal, and normal days are what long-term investing is built on.",
-      "story": "Picture a garden with different plants growing at different speeds. Some days one section looks better than another, but you do not rip out the whole garden over one afternoon.",
+      "hearing": "You may hear that long-term borrowing costs are climbing around the world, and the rate on U.S. government bonds has reached its highest level in more than two decades.",
+      "why": "That matters because long-term rates can affect the cost of mortgages and other loans, which may shape a household\u2019s budget.",
+      "but": "But a change in rates is one part of the financial picture, not a reason to abandon a long-term plan.",
+      "story": "Imagine planning a long road trip and finding one stretch of traffic. You adjust your pace, but you don\u2019t forget where you\u2019re headed.",
       "say": [
-        "Nothing alarming here, just markets doing their normal thing.",
-        "This is the kind of day that does not change your plan at all."
+        "Rates are worth watching, but we\u2019ll keep your long-term plan in view.",
+        "We can take this week as it comes without letting one headline steer the whole journey."
       ]
     }
   ]
