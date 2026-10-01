@@ -1,45 +1,47 @@
 {
-  "generated_at": "2026-10-01T06:19:08-04:00",
-  "source": "openai/gpt-6-luna",
-  "origin": "openrouter:openai/gpt-6-luna",
+  "generated_at": "2026-10-01T08:59:55-04:00",
+  "source": "anthropic/claude-sonnet-5",
+  "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "10-year Treasury yield hits highest level since 2002 as global bond rout gathers pace",
+    "SEC proposes investor exam to expand private-market access \u2014 here's how it could work",
     "Oil prices rise as Chinese refiners reportedly ban October fuel exports; Brent crude back above $100",
-    "US Futures Mixed as Micron Outlook and Nike Results Take Focus: Dow Jones, S&P, Nasdaq, Wall Street",
-    "Calls for gas tax suspensions grow as Americans struggle with high prices",
-    "Supreme Court Weighs Shield for Oil Companies as New Term Opens",
-    "Teen's tragic killing by illegal immigrant becomes flashpoint in battle for control of Congress"
+    "Dow Jones Futures Rise, S&P 500 Finds Key Support As Micron Earnings Crush Views; Oil Prices, Treasury Yields In Focus",
+    "USTR Greer on Trade With Canada and EU, Diesel Prices",
+    "Teen's tragic killing by illegal immigrant becomes flashpoint in battle for control of Congress",
+    "Live updates: Senate heads out for midterm recess; Trump off to Texas, Oklahoma"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing about oil prices and calls to pause gas taxes, as households feel pressure at the pump.",
-      "why": "Fuel matters beyond the cost of filling a car: trucks use it to move groceries and other everyday goods.",
-      "but": "But a fuel headline is one piece of the picture, not a reason to abandon a long-term investment plan.",
-      "story": "Picture planning a long drive and running into a detour. You adjust the route, but you don't cancel the trip; a good plan can stay on course through a noisy stretch.",
+      "hearing": "You may hear that oil and diesel prices are back in the news, with talk that fuel supplies overseas are getting tighter.",
+      "why": "Diesel moves the trucks that haul groceries, packages, and everything else to the store, so when fuel costs more to move things, prices at the register can feel it too.",
+      "but": "But a rough patch for oil is not new, and it is not something a long-term plan reacts to day by day.",
+      "story": "Picture a moving company that raises its rate for one week because gas spiked. You do not redo your whole budget over one invoice. You wait and see if it is a trend or a blip.",
       "say": [
-        "We can notice the fuel story without letting it rewrite your long-term plan."
+        "We watch fuel costs, but we do not rebuild your plan around one week of headlines.",
+        "Fuel can bounce. Your plan is built to ride through bounces like that."
       ]
     },
     {
       "topic": "model",
-      "hearing": "Stocks slipped a little yesterday, while interest rates ticked higher. The facts point to a quieter market week, not a major event today.",
-      "why": "Higher interest rates can make borrowing more expensive for households and businesses, including when they finance a home or a project.",
-      "but": "But a small move in stocks and a shift in rates are reasons to stay informed, not to lose sight of the long-term plan.",
-      "story": "Imagine a garden with several kinds of plants. One may have a rough week while another is doing fine; variety helps keep one patch from defining the whole garden.",
+      "hearing": "You may hear that interest rates ticked a little higher again, including the rate tied to mortgages.",
+      "why": "Higher interest rates can mean a bigger monthly payment for anyone borrowing for a home, a car, or a business loan.",
+      "but": "But rates moving up a little does not undo a plan built for years, not weeks.",
+      "story": "Picture a homeowner who refinances every time the rate wiggles. They would spend more on fees than they ever saved. The smarter move is deciding on a rate you can live with and sticking to it.",
       "say": [
-        "We built your plan for a mix of conditions, not just one market day."
+        "A small move in rates is just noise against a long-term plan.",
+        "We do not chase every wiggle in interest rates. We stay the course."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that long-term borrowing costs are climbing around the world, and the rate on U.S. government bonds has reached its highest level in more than two decades.",
-      "why": "That matters because long-term rates can affect the cost of mortgages and other loans, which may shape a household\u2019s budget.",
-      "but": "But a change in rates is one part of the financial picture, not a reason to abandon a long-term plan.",
-      "story": "Imagine planning a long road trip and finding one stretch of traffic. You adjust your pace, but you don\u2019t forget where you\u2019re headed.",
+      "hearing": "You may hear that stocks slipped a little yesterday, Wednesday, while futures this morning look a touch firmer.",
+      "why": "A quiet down day like that is normal, and it is not the kind of move that changes anything about your long-term plan.",
+      "but": "But a small daily dip, followed by a small daily bounce, is just stocks breathing. It is not a signal to do anything different.",
+      "story": "Picture a hiker checking their altitude every ten feet on a long trail. The small ups and downs would drive anyone crazy. What matters is the mountain they are climbing, not every step.",
       "say": [
-        "Rates are worth watching, but we\u2019ll keep your long-term plan in view.",
-        "We can take this week as it comes without letting one headline steer the whole journey."
+        "Small daily moves like this are just stocks breathing.",
+        "We stay focused on the mountain, not the step-by-step readout."
       ]
     }
   ]
