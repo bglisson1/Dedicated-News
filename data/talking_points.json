@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-10-01T08:59:55-04:00",
+  "generated_at": "2026-10-01T12:13:42-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "SEC proposes investor exam to expand private-market access \u2014 here's how it could work",
-    "Oil prices rise as Chinese refiners reportedly ban October fuel exports; Brent crude back above $100",
-    "Dow Jones Futures Rise, S&P 500 Finds Key Support As Micron Earnings Crush Views; Oil Prices, Treasury Yields In Focus",
-    "USTR Greer on Trade With Canada and EU, Diesel Prices",
-    "Teen's tragic killing by illegal immigrant becomes flashpoint in battle for control of Congress",
-    "Live updates: Senate heads out for midterm recess; Trump off to Texas, Oklahoma"
+    "Fed's Kashkari says inflation 'still too high' despite lower PCE data than expected",
+    "Wall Street dips as surging Treasury yields outweigh software gains",
+    "Trump Accounts have auto-enrolled more than 60 million children, Treasury says",
+    "Judge dismisses Reflecting Pool case permanently, cites risk Trump will force new charges",
+    "Can you measure a Congress's success?",
+    "Can a wealth tax actually solve our political and fiscal problems? The math says no."
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that oil and diesel prices are back in the news, with talk that fuel supplies overseas are getting tighter.",
-      "why": "Diesel moves the trucks that haul groceries, packages, and everything else to the store, so when fuel costs more to move things, prices at the register can feel it too.",
-      "but": "But a rough patch for oil is not new, and it is not something a long-term plan reacts to day by day.",
-      "story": "Picture a moving company that raises its rate for one week because gas spiked. You do not redo your whole budget over one invoice. You wait and see if it is a trend or a blip.",
+      "hearing": "You may hear that a top Federal Reserve official came out and said inflation is still too high, even though the newest reading came in a little better than expected.",
+      "why": "That matters because the Fed, which sets short-term interest rates, uses comments like this to signal how patient it plans to be before easing up on borrowing costs for things like credit cards and loans.",
+      "but": "But one official's comment on one day does not set policy, and it does not reset your long-term plan.",
+      "story": "Picture a coach saying after a decent practice that the team still has work to do. It is not the final score. It is one comment in a long season.",
       "say": [
-        "We watch fuel costs, but we do not rebuild your plan around one week of headlines.",
-        "Fuel can bounce. Your plan is built to ride through bounces like that."
+        "We hear the Fed talk every week. We do not rebuild the plan around one quote.",
+        "One comment is not a policy change, and it is not a reason to move."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that interest rates ticked a little higher again, including the rate tied to mortgages.",
-      "why": "Higher interest rates can mean a bigger monthly payment for anyone borrowing for a home, a car, or a business loan.",
-      "but": "But rates moving up a little does not undo a plan built for years, not weeks.",
-      "story": "Picture a homeowner who refinances every time the rate wiggles. They would spend more on fees than they ever saved. The smarter move is deciding on a rate you can live with and sticking to it.",
+      "hearing": "You may hear that interest rates ticked higher this week, and that mortgage rates moved up along with them.",
+      "why": "That matters in daily life because higher rates can mean a bigger monthly payment on a new mortgage, a car loan, or a credit card balance.",
+      "but": "But rates move in both directions over time, and a plan built for the long run is not built around one week of movement.",
+      "story": "Picture a homeowner who refinanced years ago and still watches the rate ticker every morning out of habit. The ticker moves. Their payment does not, because they already locked in their plan.",
       "say": [
-        "A small move in rates is just noise against a long-term plan.",
-        "We do not chase every wiggle in interest rates. We stay the course."
+        "We build plans that can live with rates moving either way.",
+        "A week of higher rates does not undo years of planning."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that stocks slipped a little yesterday, Wednesday, while futures this morning look a touch firmer.",
-      "why": "A quiet down day like that is normal, and it is not the kind of move that changes anything about your long-term plan.",
-      "but": "But a small daily dip, followed by a small daily bounce, is just stocks breathing. It is not a signal to do anything different.",
-      "story": "Picture a hiker checking their altitude every ten feet on a long trail. The small ups and downs would drive anyone crazy. What matters is the mountain they are climbing, not every step.",
+      "hearing": "You may hear that stocks slipped a little this week, without any single big headline driving it.",
+      "why": "That matters because people naturally want to know why their account moved, even when the honest answer is that it was just a quiet, ordinary week.",
+      "but": "But quiet weeks are normal, and they are not a signal to change course.",
+      "story": "Picture a long road trip where the car drifts a little in the lane on a windy stretch. You do not pull over and call it the end of the trip. You keep both hands on the wheel and keep driving.",
       "say": [
-        "Small daily moves like this are just stocks breathing.",
-        "We stay focused on the mountain, not the step-by-step readout."
+        "A quiet dip is just part of the drive, not a reason to pull over.",
+        "We stay the course through the ordinary weeks so we are still invested for the ones that matter."
       ]
     }
   ]
