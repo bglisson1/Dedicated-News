@@ -1,47 +1,36 @@
 {
-  "generated_at": "2026-10-02T06:16:59-04:00",
+  "generated_at": "2026-10-02T07:44:23-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Dow Jones Futures Rise, Oil Prices Tumble With Tesla, Jobs Report Due; Micron In Buy Area",
-    "Oil prices fall over 3% on report of potential diesel, crude stock release; Brent back below $100",
-    "How AI is redefining Wall Street jobs \u2014 and boosting demand for this new 'hottest skill' by 1,721%",
-    "A must-win midterm state is the real loser of Trump's Canada trade war",
-    "Younger candidates are finding it tough to break into Congress",
-    "Brazil votes in high-stakes election as U.S.-China rivalry and debt loom large"
+    "Wall Street futures climb ahead of September jobs report",
+    "'The hottest skill on Wall Street\u2019: Demand for this AI ability jumped 1,721% as banks embrace agents",
+    "Print Edition | Wall Street Journal",
+    "Brazil votes in high-stakes election as U.S.-China rivalry and debt loom large",
+    "U.S. to send third carrier group to Mideast as Trump warns of new Iran strikes",
+    "Virginia should not make students choose between faith and financial aid"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that oil and diesel prices dropped sharply this morning, tied to talk of countries releasing extra fuel reserves.",
-      "why": "Diesel moves the trucks that carry groceries and everyday goods, so cheaper diesel can eventually show up as a smaller bump in prices at the store.",
-      "but": "But one morning's swing in oil is not a forecast for the whole season, and plans are not built around a single tank of gas.",
-      "story": "Picture someone who sees the price at the pump drop one morning and decides to redo the family budget that same day. A lower number at the pump is nice news. It is not a new plan.",
+      "hearing": "Clients are hearing that a big jobs report comes out today, the monthly count of how many people found work.",
+      "why": "That number matters because it hints at how strong hiring is, and a strong job market usually means steadier paychecks and spending for everyday families.",
+      "but": "But one month's count is a snapshot, not the whole economic story.",
+      "story": "Picture checking a single report card and deciding a student's whole school year. One grade tells you something, but it is not the full transcript. The jobs number works the same way for the economy.",
       "say": [
-        "We notice the headline, and we keep the plan as it is.",
-        "One good fuel morning does not rewrite the whole year."
+        "We watch the number, but we do not rewrite the plan over one month.",
+        "A single report card does not decide the whole year, and it does not decide your plan either."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that a big jobs report is coming out today, and that stocks look like they could open higher before it lands.",
-      "why": "That report is like a monthly check-up on how many people are working and getting paychecks, and it can move the Fed, which sets short-term interest rates, as well as borrowing costs on things like car loans and credit cards.",
-      "but": "But one morning's data point, even a closely watched one, isn't a reason to rewrite a plan built for years, not days.",
-      "story": "Think of it like getting your blood pressure checked once a month. One reading can bounce around, but your doctor cares about the trend over years, not that single visit.",
+      "hearing": "You may be hearing that the U.S. is sending another aircraft carrier toward the Middle East, with talk of more strikes on Iran.",
+      "why": "When tensions rise in that part of the world, oil prices can swing, and that can ripple into what we pay at the pump and for shipping goods.",
+      "but": "But this morning, oil actually eased back and stocks are pointing higher before the bell, a reminder that headlines and the market do not always move in the same direction.",
+      "story": "Think of a farmer who hears thunder far off but keeps watering the fields anyway. The storm might pass to the side, or it might not, but the work still has to get done either way.",
       "say": [
-        "We watch the report, we don't trade our plan on it.",
-        "One number this morning doesn't change the years ahead."
-      ]
-    },
-    {
-      "topic": "model",
-      "hearing": "You may hear that tariffs tied to a trade dispute with Canada could push up the price of cars, since parts cross the border more than once before a vehicle is finished.",
-      "why": "That kind of cost can show up later at the dealership, adding to what families already budget for a car payment.",
-      "but": "But trade policy swings back and forth over time, and a long-term plan isn't built around any one tariff headline.",
-      "story": "It's a bit like a toll going up on one bridge you cross sometimes. It changes the cost of that one trip, not the whole road trip you've planned for years.",
-      "say": [
-        "Tariffs come and go, your plan is built to outlast any one of them.",
-        "We don't steer the car based on one toll booth."
+        "We watch the headlines, but we don't trade on them.",
+        "Oil news comes and goes. Your plan is built for all kinds of weather."
       ]
     }
   ]
