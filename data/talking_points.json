@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-10-02T08:58:09-04:00",
+  "generated_at": "2026-10-02T12:13:25-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Jobs Report: Soft Hiring Sends Treasury Yields Sliding; S&P 500 Futures Rally (Live Coverage)",
-    "Treasury yields retreat after the softer September payrolls report",
-    "Stock Market Today: Dow Rallies 500 Points On Surprise Jobs Report; Nike Plunges On Earnings (Live Coverage)",
-    "US economy added 29,000 jobs in September: BLS",
-    "Live updates: Trump brings red state campaign blitz to Alabama; jobs report comes in low",
-    "Brazil votes in high-stakes election as U.S.-China rivalry and debt loom large"
+    "Stocks rise after soft jobs data; Nasdaq hits record led by Nvidia: Live updates",
+    "Traders now see little chance of a Fed rate hike in October after weak jobs report",
+    "10-year Treasury yield ticks higher despite weaker-than-expected jobs report",
+    "NEC's Hassett on Jobs Report, Powell's Future, Bonds, Paying Down US Debt",
+    "Burnham Could Give UK Mayors 20% of Any Business Tax Growth",
+    "Big Oil and Gavin Newsom\u2019s perilous, winding road"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing that the brand new jobs report came in soft. Hiring slowed down a lot more than people expected.",
-      "why": "Jobs numbers matter because they are a snapshot of paychecks and household budgets across the country. When hiring slows, people naturally wonder if the economy is losing steam.",
-      "but": "But one month of hiring data is a single data point, not a verdict on where things are headed.",
-      "story": "Picture checking the thermometer once and deciding winter is here for good. One reading tells you about one moment, not the whole season. The economy works the same way, month to month.",
+      "hearing": "You may be hearing that the government's monthly count of people working came in weaker than expected.",
+      "why": "That jobs report touches real life because hiring and paychecks shape how confident people feel about spending on things like a car, a vacation, or a new couch.",
+      "but": "But one month's hiring number is a single data point, not a verdict on the whole economy or your whole plan.",
+      "story": "Think of a big company that gets a monthly report card on how its teams are doing. One slow month doesn't mean the season is lost, it just means you keep watching and keep working the plan.",
       "say": [
-        "One report is a data point, not a forecast.",
-        "We watch trends over time, not single headlines."
+        "One jobs report doesn't rewrite your long-term plan.",
+        "We watch it, we don't react to it."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that interest rates eased a little this morning, right after that jobs report came out.",
-      "why": "Interest rates touch things like mortgages, car loans, and credit cards, so when they ease, borrowing can feel a little lighter for folks who need it.",
-      "but": "But rates moving a little in either direction is normal, and your plan was already built knowing they would shift from time to time.",
-      "story": "Picture a thermostat getting bumped a degree or two in a house. The rooms are the same rooms. It is an adjustment, not a renovation.",
+      "hearing": "You may be hearing that traders now think the Fed, which sets short-term interest rates, is unlikely to raise rates this month.",
+      "why": "That matters for everyday life because interest rates affect things like credit card bills, car loans, and the rate on a new mortgage.",
+      "but": "But guesses about what the Fed will do next change by the week, and your plan was not built around any single meeting.",
+      "story": "Think of it like weather forecasters changing their mind about rain three days out. You still bring the umbrella you already packed, you do not repack your whole suitcase.",
       "say": [
-        "The Fed, which sets short-term interest rates, didn't do anything today. The market is just reacting.",
-        "Rates moving a little doesn't mean we move your plan."
+        "We don't rebuild your plan around one Fed guess.",
+        "Rate odds shift. Your plan is built to hold through the shifting."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that stocks jumped this morning, right out of the gate before the market even opened.",
-      "why": "A quick pop like this can feel exciting, but it is tied to the same jobs headline everyone is reacting to this morning.",
-      "but": "But a strong morning, just like a rough one, is one page in a much longer book.",
-      "story": "Picture someone judging a whole road trip by the first mile out of the driveway. That first mile tells you almost nothing about the destination. Mornings like this are the same.",
+      "hearing": "You may be hearing that stocks have been climbing, with some parts of the market touching new highs.",
+      "why": "When headlines say stocks are hitting records, it can feel like good news or like a sign the good news is almost over.",
+      "but": "But a record high is just a number passing a prior number. It is not a verdict on what happens next.",
+      "story": "Picture a runner hitting a personal best mile time. It does not mean the next mile is doomed to be slower. It just means they are capable of more than people thought.",
       "say": [
-        "We don't chase a good morning any more than we panic over a rough one.",
-        "Your plan is built for the whole trip, not the first mile."
+        "New highs happen along the way in a plan built for decades, not days.",
+        "We stay invested through the highs and the dips alike."
       ]
     }
   ]
