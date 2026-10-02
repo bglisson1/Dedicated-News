@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-10-02T12:13:25-04:00",
+  "generated_at": "2026-10-02T16:37:18-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Stocks rise after soft jobs data; Nasdaq hits record led by Nvidia: Live updates",
-    "Traders now see little chance of a Fed rate hike in October after weak jobs report",
-    "10-year Treasury yield ticks higher despite weaker-than-expected jobs report",
-    "NEC's Hassett on Jobs Report, Powell's Future, Bonds, Paying Down US Debt",
-    "Burnham Could Give UK Mayors 20% of Any Business Tax Growth",
-    "Big Oil and Gavin Newsom\u2019s perilous, winding road"
+    "Traders Waver on Fed Hike Bets After Jobs Report",
+    "Oil prices lower as G7 nations to release diesel stocks, Saudis reportedly plan attack on Houthis",
+    "Stocks rise Friday after soft jobs data, Nvidia leads Nasdaq to intraday record",
+    "Kennedy Center Awards to take place offsite amid broader shutdown fight",
+    "Brazil votes in high-stakes election as U.S.-China rivalry and debt loom large",
+    "Kansas Democratic Senate nominee says 'please, no' to Harris campaigning for him"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing that the government's monthly count of people working came in weaker than expected.",
-      "why": "That jobs report touches real life because hiring and paychecks shape how confident people feel about spending on things like a car, a vacation, or a new couch.",
-      "but": "But one month's hiring number is a single data point, not a verdict on the whole economy or your whole plan.",
-      "story": "Think of a big company that gets a monthly report card on how its teams are doing. One slow month doesn't mean the season is lost, it just means you keep watching and keep working the plan.",
+      "hearing": "You may hear that the September jobs report came in soft, and that stocks jumped on hopes the Fed, which sets short-term interest rates, won't need to push rates higher anytime soon.",
+      "why": "Jobs numbers matter because they shape whether borrowing costs for things like cars, homes, and credit cards stay where they are or climb further.",
+      "but": "But one month of hiring data is not a forecast, and the Fed's path can shift again with the next report.",
+      "story": "Picture checking the weather app every morning and deciding whether to replant the whole garden. One cloudy forecast is not a reason to dig everything up. You water, you wait, and you let the season play out.",
       "say": [
-        "One jobs report doesn't rewrite your long-term plan.",
-        "We watch it, we don't react to it."
+        "We saw the number, and we are not replanting the garden over one report.",
+        "The Fed watches these reports too, and so do we, but your plan is built for more than one month."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may be hearing that traders now think the Fed, which sets short-term interest rates, is unlikely to raise rates this month.",
-      "why": "That matters for everyday life because interest rates affect things like credit card bills, car loans, and the rate on a new mortgage.",
-      "but": "But guesses about what the Fed will do next change by the week, and your plan was not built around any single meeting.",
-      "story": "Think of it like weather forecasters changing their mind about rain three days out. You still bring the umbrella you already packed, you do not repack your whole suitcase.",
+      "hearing": "You may hear that oil and diesel prices moved lower today after G7 countries said they will release stockpiles over the next few months.",
+      "why": "Diesel fuel moves trucks, and trucks move nearly everything on store shelves, so swings in fuel costs can nudge prices at the pump and in the grocery aisle.",
+      "but": "But energy prices have always moved up and down with supply news, and a policy announcement today does not set the price for the whole year.",
+      "story": "Think of filling a water tank from a well that sometimes runs faster and sometimes slower. You do not redesign the house every time the flow changes. You just keep living in it.",
       "say": [
-        "We don't rebuild your plan around one Fed guess.",
-        "Rate odds shift. Your plan is built to hold through the shifting."
+        "Fuel headlines come and go, and your plan was built to handle that.",
+        "We watch it, but we don't rebuild around one supply announcement."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may be hearing that stocks have been climbing, with some parts of the market touching new highs.",
-      "why": "When headlines say stocks are hitting records, it can feel like good news or like a sign the good news is almost over.",
-      "but": "But a record high is just a number passing a prior number. It is not a verdict on what happens next.",
-      "story": "Picture a runner hitting a personal best mile time. It does not mean the next mile is doomed to be slower. It just means they are capable of more than people thought.",
+      "hearing": "You may hear that stocks had a strong day today, with the Nasdaq touching a fresh high during the session.",
+      "why": "A good day for stocks can feel reassuring, but it is also just one day in a much longer story your plan is already telling.",
+      "but": "But we don't chase a good day any more than we panic over a bad one. The plan was built for both kinds of days.",
+      "story": "Picture a runner who speeds up every time the crowd cheers louder. That runner burns out before the finish line. Steady pace wins long races, not reacting to every loud moment on the sidelines.",
       "say": [
-        "New highs happen along the way in a plan built for decades, not days.",
-        "We stay invested through the highs and the dips alike."
+        "A strong day is nice to see, and we still run the same steady pace.",
+        "We don't change the plan because the crowd got louder today."
       ]
     }
   ]
