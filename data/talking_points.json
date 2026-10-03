@@ -1,47 +1,25 @@
 {
-  "generated_at": "2026-10-02T16:37:18-04:00",
+  "generated_at": "2026-10-03T10:55:17-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Traders Waver on Fed Hike Bets After Jobs Report",
-    "Oil prices lower as G7 nations to release diesel stocks, Saudis reportedly plan attack on Houthis",
-    "Stocks rise Friday after soft jobs data, Nvidia leads Nasdaq to intraday record",
-    "Kennedy Center Awards to take place offsite amid broader shutdown fight",
-    "Brazil votes in high-stakes election as U.S.-China rivalry and debt loom large",
-    "Kansas Democratic Senate nominee says 'please, no' to Harris campaigning for him"
+    "US stocks rise near their record after the latest jobs report eases worries about inflation",
+    "Labor market faltered in September as jobs increased by just 29,000, unemployment rate rose to 4.2%",
+    "Wall Street Expects S&P 500 Profit Growth to Collapse From 35% to 15% in 2027",
+    "Madrid Housing Protests Fuel Speculation Over Spanish Election",
+    "Trump announces US will send $90 checks to 20 million seniors enrolled in Medicare",
+    "\u2018Activist judge\u2019 rules Congress cannot bar noncitizens from voting in federal elections"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that the September jobs report came in soft, and that stocks jumped on hopes the Fed, which sets short-term interest rates, won't need to push rates higher anytime soon.",
-      "why": "Jobs numbers matter because they shape whether borrowing costs for things like cars, homes, and credit cards stay where they are or climb further.",
-      "but": "But one month of hiring data is not a forecast, and the Fed's path can shift again with the next report.",
-      "story": "Picture checking the weather app every morning and deciding whether to replant the whole garden. One cloudy forecast is not a reason to dig everything up. You water, you wait, and you let the season play out.",
+      "hearing": "You may be hearing that the jobs report out yesterday was weak, that far fewer jobs were added last month than people expected, and that the unemployment rate ticked up.",
+      "why": "That matters in daily life because the jobs report is really just a measure of how many people are working and earning a paycheck, which feeds everything from grocery budgets to big purchases.",
+      "but": "But stocks actually rose on Friday after that news, because a cooler job market can also mean the Fed, which sets short-term interest rates, has more room to ease up later.",
+      "story": "Picture a thermostat. A cooler reading isn't bad news by itself, it just changes what the furnace does next. Markets were reading the thermostat, not panicking about the temperature.",
       "say": [
-        "We saw the number, and we are not replanting the garden over one report.",
-        "The Fed watches these reports too, and so do we, but your plan is built for more than one month."
-      ]
-    },
-    {
-      "topic": "model",
-      "hearing": "You may hear that oil and diesel prices moved lower today after G7 countries said they will release stockpiles over the next few months.",
-      "why": "Diesel fuel moves trucks, and trucks move nearly everything on store shelves, so swings in fuel costs can nudge prices at the pump and in the grocery aisle.",
-      "but": "But energy prices have always moved up and down with supply news, and a policy announcement today does not set the price for the whole year.",
-      "story": "Think of filling a water tank from a well that sometimes runs faster and sometimes slower. You do not redesign the house every time the flow changes. You just keep living in it.",
-      "say": [
-        "Fuel headlines come and go, and your plan was built to handle that.",
-        "We watch it, but we don't rebuild around one supply announcement."
-      ]
-    },
-    {
-      "topic": "model",
-      "hearing": "You may hear that stocks had a strong day today, with the Nasdaq touching a fresh high during the session.",
-      "why": "A good day for stocks can feel reassuring, but it is also just one day in a much longer story your plan is already telling.",
-      "but": "But we don't chase a good day any more than we panic over a bad one. The plan was built for both kinds of days.",
-      "story": "Picture a runner who speeds up every time the crowd cheers louder. That runner burns out before the finish line. Steady pace wins long races, not reacting to every loud moment on the sidelines.",
-      "say": [
-        "A strong day is nice to see, and we still run the same steady pace.",
-        "We don't change the plan because the crowd got louder today."
+        "One soft report doesn't change the plan you already have.",
+        "We watch the number, we don't redecorate the house over it."
       ]
     }
   ]
