@@ -1,25 +1,47 @@
 {
-  "generated_at": "2026-10-03T10:55:17-04:00",
+  "generated_at": "2026-10-04T14:12:30-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "US stocks rise near their record after the latest jobs report eases worries about inflation",
-    "Labor market faltered in September as jobs increased by just 29,000, unemployment rate rose to 4.2%",
-    "Wall Street Expects S&P 500 Profit Growth to Collapse From 35% to 15% in 2027",
-    "Madrid Housing Protests Fuel Speculation Over Spanish Election",
-    "Trump announces US will send $90 checks to 20 million seniors enrolled in Medicare",
-    "\u2018Activist judge\u2019 rules Congress cannot bar noncitizens from voting in federal elections"
+    "Fed Chair Kevin Warsh Just Used 5 Words to Describe the Fed's First Rate Hike Since 2023, Saying The Fed \"Removed A Dose of Accommodation.\" Should Investors Brace for More Hikes This Year?",
+    "Supreme Court Opens Term With Climate Fight",
+    "Trump adviser Hassett calls on Powell to leave Fed board after renovation report",
+    "Trump funnels millions from massive war chest into key House, Senate races: Here's where",
+    "Supreme Court Justice Alito said he's 'thought about' retirement as Senate control hangs in balance",
+    "Justice Department Expands Election Fraud Cases"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing that the jobs report out yesterday was weak, that far fewer jobs were added last month than people expected, and that the unemployment rate ticked up.",
-      "why": "That matters in daily life because the jobs report is really just a measure of how many people are working and earning a paycheck, which feeds everything from grocery budgets to big purchases.",
-      "but": "But stocks actually rose on Friday after that news, because a cooler job market can also mean the Fed, which sets short-term interest rates, has more room to ease up later.",
-      "story": "Picture a thermostat. A cooler reading isn't bad news by itself, it just changes what the furnace does next. Markets were reading the thermostat, not panicking about the temperature.",
+      "hearing": "You may hear that the Fed just raised interest rates again, the first hike like this in a while, and that more could follow.",
+      "why": "The Fed sets short-term interest rates, and those rates ripple into things like credit cards, car loans, and mortgages, so when they move, borrowing can cost a little more.",
+      "but": "But the Fed has raised and lowered rates many times over the years, and long-term plans are built to ride through all of it.",
+      "story": "Picture a thermostat in a big house. Sometimes it gets nudged up, sometimes down, and the house still runs fine because it was built for all kinds of weather. Your plan is built the same way, for warmer rates and cooler ones.",
       "say": [
-        "One soft report doesn't change the plan you already have.",
-        "We watch the number, we don't redecorate the house over it."
+        "We built your plan expecting rate moves like this one.",
+        "One rate decision does not rewrite a long-term plan."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may hear that stocks had a solid day on Friday, closing the week on a firmer note.",
+      "why": "A green day feels good, but no single day tells us much about where your retirement will be years from now.",
+      "but": "But the real win is staying in the game long enough to let good days and bad days average out over time.",
+      "story": "Picture a farmer checking the weather every single morning and deciding whether to keep the whole farm based on one sunny day. The smart farmer plants, waters, and lets the season play out.",
+      "say": [
+        "A good Friday is nice, but it is one day out of thousands in your plan.",
+        "We stay focused on the season, not the forecast."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may hear a lot of noise about the midterm elections, big campaign spending, and even talk of court fights over voting rules.",
+      "why": "Election season can feel loud because it touches taxes, regulations, and who controls Congress, and that uncertainty can make the news feel urgent.",
+      "but": "But stocks have moved through election after election, red, blue, and everything in between, and your plan was built to do the same.",
+      "story": "Think of election season like a long stretch of changing weather forecasts. You might see rain predicted, then sun, then rain again, but you still plan your week around the season, not the five-day guess. The plan holds even when the forecast keeps flipping.",
+      "say": [
+        "Elections come and go, and your plan is built for all of them.",
+        "We don't trade on predictions. We stick with the plan we made together."
       ]
     }
   ]
