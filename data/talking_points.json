@@ -1,36 +1,47 @@
 {
-  "generated_at": "2026-10-05T09:02:19-04:00",
-  "source": "openai/gpt-6-luna",
-  "origin": "openrouter:openai/gpt-6-luna",
+  "generated_at": "2026-10-05T12:14:56-04:00",
+  "source": "anthropic/claude-sonnet-5",
+  "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Lula or Bolsonaro: Wall Street braces for two wildly different results in Brazil election",
-    "Traders now see little chance of a Fed rate hike in October after weak jobs report",
-    "BMO's Davis Says 30-Year Treasury Yields Will Hit 6%",
-    "Strong data. Bad vibes. Voters are judging Trump's economy by prices.",
-    "FlyDubai Incident Turns Into Battleground in Israeli Election",
-    "India Top Court Questions Election Body Over Voter Roll Changes"
+    "Nasdaq rises to fresh record high led by tech; traders eye oil and yields: Live updates",
+    "Ukraine claims to have taken out more than half of Russia's oil refining capacity",
+    "Is the economy awful? S&P 500 and job market say otherwise",
+    "Dennis Hastert, disgraced ex-House speaker, dies at 84",
+    "Latino voters favor Democratic control of Congress by 24-point margin: Survey",
+    "Trump Plans to Ease Limits on Tax-Exempt Diesel Variety"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that Brazil\u2019s presidential election has investors watching closely. The first round took place Sunday, and the candidates represent sharply different possible outcomes.",
-      "why": "Elections matter to markets because a government\u2019s choices can shape the business environment. Uncertainty about those choices can make investors pay closer attention.",
-      "but": "But one election headline is only one piece of a long-term investing picture, not a reason to abandon a plan.",
-      "story": "Imagine choosing a route for a long road trip, then changing the whole trip every time you pass a new sign. The sign deserves a look, but it does not have to replace the destination.",
+      "hearing": "You may hear that Ukraine says it has knocked out a big chunk of Russia's oil refining capacity with long-range strikes.",
+      "why": "Energy flows and conflicts overseas can ripple into oil prices here, and oil is part of what goes into filling up the car and running a truck.",
+      "but": "But a war-and-oil headline, even a dramatic one, is a single data point. It is not a reason to rewrite a long-term plan.",
+      "story": "Think of a family that hears storm warnings two states away and cancels a vacation planned for next year. The storm may never reach them, and even if it does, it passes. Markets watch these headlines closely, but a long-term plan is built to ride through storms, not to be rerouted by every one.",
       "say": [
-        "We can pay attention to the election without letting one headline rewrite your plan.",
-        "A headline is worth understanding; your long-term plan still sets the direction."
+        "We watch headlines like this closely, and we still stay with your plan.",
+        "One overseas headline does not rewrite a plan built for years."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that a weak jobs report has traders less likely to expect the Fed to raise interest rates this month. The Fed, which sets short-term interest rates, has not made a change in this headline.",
-      "why": "Interest rates matter because they can affect borrowing costs, from a car loan to a mortgage. A softer jobs report can shape what people expect the Fed to do, but it does not decide the outcome.",
-      "but": "But traders\u2019 expectations are not a Fed decision, and one jobs report is only one piece of the picture.",
-      "story": "Imagine a family hears a forecast of rain and changes every plan for the season. A forecast is worth noticing, but it is not the whole season.",
+      "hearing": "You may hear that the job market looked weaker than expected last week, even though stocks finished Friday near record highs.",
+      "why": "A softer jobs report matters because it can shape what the Fed, which sets short-term interest rates, decides to do next, and that ripples into things like credit card rates and loan costs.",
+      "but": "But one jobs report is a snapshot, not the whole movie, and markets have a way of looking past a single data point.",
+      "story": "Think of it like checking your home's value once a month. One number dipping a little doesn't mean the house isn't still worth owning for the long haul.",
       "say": [
-        "We can follow the jobs news without changing your long-term plan.",
-        "Expectations can shift; our plan stays grounded in your goals."
+        "We don't trade off one report. We stay with your plan.",
+        "Stocks closed near highs on Friday even with that softer number. That's the market doing its job."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may hear that the Trump administration wants to ease limits on a tax-exempt type of diesel fuel.",
+      "why": "Diesel runs the trucks that move groceries and goods to stores, so rules around diesel costs can eventually touch what you pay at the register.",
+      "but": "But policy tweaks on fuel categories take time to play out, and they are not something your long-term plan needs to react to today.",
+      "story": "It's like a shortcut being opened on a delivery route. It might help a little down the road, but you don't rebuild your whole week around it.",
+      "say": [
+        "We watch policy changes, but we don't rewrite your plan around them.",
+        "Fuel rules shift. Your plan stays steady."
       ]
     }
   ]
