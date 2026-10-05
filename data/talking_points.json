@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-10-04T14:12:30-04:00",
+  "generated_at": "2026-10-05T06:19:42-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Fed Chair Kevin Warsh Just Used 5 Words to Describe the Fed's First Rate Hike Since 2023, Saying The Fed \"Removed A Dose of Accommodation.\" Should Investors Brace for More Hikes This Year?",
-    "Supreme Court Opens Term With Climate Fight",
-    "Trump adviser Hassett calls on Powell to leave Fed board after renovation report",
-    "Trump funnels millions from massive war chest into key House, Senate races: Here's where",
-    "Supreme Court Justice Alito said he's 'thought about' retirement as Senate control hangs in balance",
-    "Justice Department Expands Election Fraud Cases"
+    "Lula or Bolsonaro: Wall Street braces for two wildly different results in Brazil election",
+    "Cerebras stock climbs 6% after Sam Altman calls the chipmaker a 'close partner'",
+    "US Stock Futures Edge Lower as Investors Assess Rates, Middle East Developments and Oil Prices: Dow Jones, S&P, Nasdaq, Wall Street",
+    "Spain's PM Sanchez calls snap election after housing crisis protests",
+    "Supreme Court to hear case Monday on if localities can sue oil companies for climate damages",
+    "Trump funnels millions from massive war chest into key House, Senate races: Here's where"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that the Fed just raised interest rates again, the first hike like this in a while, and that more could follow.",
-      "why": "The Fed sets short-term interest rates, and those rates ripple into things like credit cards, car loans, and mortgages, so when they move, borrowing can cost a little more.",
-      "but": "But the Fed has raised and lowered rates many times over the years, and long-term plans are built to ride through all of it.",
-      "story": "Picture a thermostat in a big house. Sometimes it gets nudged up, sometimes down, and the house still runs fine because it was built for all kinds of weather. Your plan is built the same way, for warmer rates and cooler ones.",
+      "hearing": "You may be hearing that interest rates ticked higher again, and that mortgage rates moved up too.",
+      "why": "That matters for daily life because it touches what people pay to borrow, whether that is a car loan, a credit card, or a home loan.",
+      "but": "But rates moving a little in one direction for one week is not the same as a new trend that changes your plan.",
+      "story": "Picture someone watching the thermostat and deciding the whole season has changed because of one chilly morning. One reading is weather, not climate. Your plan was built to handle both warm stretches and cold ones.",
       "say": [
-        "We built your plan expecting rate moves like this one.",
-        "One rate decision does not rewrite a long-term plan."
+        "We watch rates, and we do not rebuild the plan over one move.",
+        "Rates tick up and down. Your plan already expected that."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that stocks had a solid day on Friday, closing the week on a firmer note.",
-      "why": "A green day feels good, but no single day tells us much about where your retirement will be years from now.",
-      "but": "But the real win is staying in the game long enough to let good days and bad days average out over time.",
-      "story": "Picture a farmer checking the weather every single morning and deciding whether to keep the whole farm based on one sunny day. The smart farmer plants, waters, and lets the season play out.",
+      "hearing": "You may be hearing about developments in the Middle East and some movement in oil prices.",
+      "why": "Oil touches the price of gas and diesel, and that can ripple into what trucks charge to move groceries and goods.",
+      "but": "But a headline about oil moving is not the same as knowing where your household budget ends up months from now.",
+      "story": "Picture a driver who changes their route every time traffic news comes on the radio. They spend the whole trip reacting and never actually get anywhere faster. Reacting to every headline works the same way with a long-term plan.",
       "say": [
-        "A good Friday is nice, but it is one day out of thousands in your plan.",
-        "We stay focused on the season, not the forecast."
+        "We notice the headline, and we stay on the route we already planned.",
+        "Oil news is loud some weeks. We do not steer the plan by it."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear a lot of noise about the midterm elections, big campaign spending, and even talk of court fights over voting rules.",
-      "why": "Election season can feel loud because it touches taxes, regulations, and who controls Congress, and that uncertainty can make the news feel urgent.",
-      "but": "But stocks have moved through election after election, red, blue, and everything in between, and your plan was built to do the same.",
-      "story": "Think of election season like a long stretch of changing weather forecasts. You might see rain predicted, then sun, then rain again, but you still plan your week around the season, not the five-day guess. The plan holds even when the forecast keeps flipping.",
+      "hearing": "You may be hearing that stocks had a solid week, closing higher on Friday, with futures just a touch softer this morning.",
+      "why": "It is natural to want to know whether a good week means do more, or a quiet morning means do less.",
+      "but": "But this was not a big move in either direction, and that is actually the normal rhythm of a long-term plan.",
+      "story": "Picture someone who checks the mailbox every hour waiting for one specific letter. Most days there is nothing new, and that is fine, because the important stuff still gets delivered on its own schedule. Markets have plenty of ordinary mornings like that.",
       "say": [
-        "Elections come and go, and your plan is built for all of them.",
-        "We don't trade on predictions. We stick with the plan we made together."
+        "A quiet morning is a normal morning. We stay with your plan.",
+        "Good week, soft morning, same plan either way."
       ]
     }
   ]
