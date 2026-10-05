@@ -1,47 +1,36 @@
 {
-  "generated_at": "2026-10-05T06:19:42-04:00",
-  "source": "anthropic/claude-sonnet-5",
-  "origin": "openrouter:anthropic/claude-sonnet-5",
+  "generated_at": "2026-10-05T09:02:19-04:00",
+  "source": "openai/gpt-6-luna",
+  "origin": "openrouter:openai/gpt-6-luna",
   "headlines": [
     "Lula or Bolsonaro: Wall Street braces for two wildly different results in Brazil election",
-    "Cerebras stock climbs 6% after Sam Altman calls the chipmaker a 'close partner'",
-    "US Stock Futures Edge Lower as Investors Assess Rates, Middle East Developments and Oil Prices: Dow Jones, S&P, Nasdaq, Wall Street",
-    "Spain's PM Sanchez calls snap election after housing crisis protests",
-    "Supreme Court to hear case Monday on if localities can sue oil companies for climate damages",
-    "Trump funnels millions from massive war chest into key House, Senate races: Here's where"
+    "Traders now see little chance of a Fed rate hike in October after weak jobs report",
+    "BMO's Davis Says 30-Year Treasury Yields Will Hit 6%",
+    "Strong data. Bad vibes. Voters are judging Trump's economy by prices.",
+    "FlyDubai Incident Turns Into Battleground in Israeli Election",
+    "India Top Court Questions Election Body Over Voter Roll Changes"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing that interest rates ticked higher again, and that mortgage rates moved up too.",
-      "why": "That matters for daily life because it touches what people pay to borrow, whether that is a car loan, a credit card, or a home loan.",
-      "but": "But rates moving a little in one direction for one week is not the same as a new trend that changes your plan.",
-      "story": "Picture someone watching the thermostat and deciding the whole season has changed because of one chilly morning. One reading is weather, not climate. Your plan was built to handle both warm stretches and cold ones.",
+      "hearing": "You may hear that Brazil\u2019s presidential election has investors watching closely. The first round took place Sunday, and the candidates represent sharply different possible outcomes.",
+      "why": "Elections matter to markets because a government\u2019s choices can shape the business environment. Uncertainty about those choices can make investors pay closer attention.",
+      "but": "But one election headline is only one piece of a long-term investing picture, not a reason to abandon a plan.",
+      "story": "Imagine choosing a route for a long road trip, then changing the whole trip every time you pass a new sign. The sign deserves a look, but it does not have to replace the destination.",
       "say": [
-        "We watch rates, and we do not rebuild the plan over one move.",
-        "Rates tick up and down. Your plan already expected that."
+        "We can pay attention to the election without letting one headline rewrite your plan.",
+        "A headline is worth understanding; your long-term plan still sets the direction."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may be hearing about developments in the Middle East and some movement in oil prices.",
-      "why": "Oil touches the price of gas and diesel, and that can ripple into what trucks charge to move groceries and goods.",
-      "but": "But a headline about oil moving is not the same as knowing where your household budget ends up months from now.",
-      "story": "Picture a driver who changes their route every time traffic news comes on the radio. They spend the whole trip reacting and never actually get anywhere faster. Reacting to every headline works the same way with a long-term plan.",
+      "hearing": "You may hear that a weak jobs report has traders less likely to expect the Fed to raise interest rates this month. The Fed, which sets short-term interest rates, has not made a change in this headline.",
+      "why": "Interest rates matter because they can affect borrowing costs, from a car loan to a mortgage. A softer jobs report can shape what people expect the Fed to do, but it does not decide the outcome.",
+      "but": "But traders\u2019 expectations are not a Fed decision, and one jobs report is only one piece of the picture.",
+      "story": "Imagine a family hears a forecast of rain and changes every plan for the season. A forecast is worth noticing, but it is not the whole season.",
       "say": [
-        "We notice the headline, and we stay on the route we already planned.",
-        "Oil news is loud some weeks. We do not steer the plan by it."
-      ]
-    },
-    {
-      "topic": "model",
-      "hearing": "You may be hearing that stocks had a solid week, closing higher on Friday, with futures just a touch softer this morning.",
-      "why": "It is natural to want to know whether a good week means do more, or a quiet morning means do less.",
-      "but": "But this was not a big move in either direction, and that is actually the normal rhythm of a long-term plan.",
-      "story": "Picture someone who checks the mailbox every hour waiting for one specific letter. Most days there is nothing new, and that is fine, because the important stuff still gets delivered on its own schedule. Markets have plenty of ordinary mornings like that.",
-      "say": [
-        "A quiet morning is a normal morning. We stay with your plan.",
-        "Good week, soft morning, same plan either way."
+        "We can follow the jobs news without changing your long-term plan.",
+        "Expectations can shift; our plan stays grounded in your goals."
       ]
     }
   ]
