@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-10-05T12:14:56-04:00",
+  "generated_at": "2026-10-06T06:17:23-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Nasdaq rises to fresh record high led by tech; traders eye oil and yields: Live updates",
-    "Ukraine claims to have taken out more than half of Russia's oil refining capacity",
-    "Is the economy awful? S&P 500 and job market say otherwise",
-    "Dennis Hastert, disgraced ex-House speaker, dies at 84",
-    "Latino voters favor Democratic control of Congress by 24-point margin: Survey",
-    "Trump Plans to Ease Limits on Tax-Exempt Diesel Variety"
+    "U.S. Stock Futures Rise as Investors Assess Gulf Oil Flows and Await Constellation Brands Results: Dow Jones, S&P, Nasdaq, Wall Street",
+    "BOE\u2019s Mann Says Labor Market Isn\u2019t Weak Enough to Tame Inflation",
+    "Yemeni forces say they secured Red Sea waterway; Houthis target Saudi airports",
+    "Student Protests Add to France\u2019s Sense of Upheaval Over Budget, Debt",
+    "Why deep-red Kansas has become an unexpected Senate battleground",
+    "Trump\u2019s feud with Cotton snaps heads in the Senate"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that Ukraine says it has knocked out a big chunk of Russia's oil refining capacity with long-range strikes.",
-      "why": "Energy flows and conflicts overseas can ripple into oil prices here, and oil is part of what goes into filling up the car and running a truck.",
-      "but": "But a war-and-oil headline, even a dramatic one, is a single data point. It is not a reason to rewrite a long-term plan.",
-      "story": "Think of a family that hears storm warnings two states away and cancels a vacation planned for next year. The storm may never reach them, and even if it does, it passes. Markets watch these headlines closely, but a long-term plan is built to ride through storms, not to be rerouted by every one.",
+      "hearing": "You may be hearing about tension near the Middle East, with talk of oil tankers and shipping lanes in the Gulf and Red Sea.",
+      "why": "Oil moves through those waters on its way to becoming gasoline and diesel, so when there's tension there, people worry it could push gas prices higher.",
+      "but": "But right now, oil prices actually eased a bit, and markets are taking this calmly rather than reacting with alarm.",
+      "story": "Picture a delivery truck taking a slightly longer route because of road construction. It is an inconvenience, not a reason to cancel the whole shipment. Markets are watching the route, not panicking about it.",
       "say": [
-        "We watch headlines like this closely, and we still stay with your plan.",
-        "One overseas headline does not rewrite a plan built for years."
+        "We see the headline, and we are not changing your plan because of it.",
+        "Oil can wobble without the plan wobbling."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that the job market looked weaker than expected last week, even though stocks finished Friday near record highs.",
-      "why": "A softer jobs report matters because it can shape what the Fed, which sets short-term interest rates, decides to do next, and that ripples into things like credit card rates and loan costs.",
-      "but": "But one jobs report is a snapshot, not the whole movie, and markets have a way of looking past a single data point.",
-      "story": "Think of it like checking your home's value once a month. One number dipping a little doesn't mean the house isn't still worth owning for the long haul.",
+      "hearing": "You may hear that interest rates ticked a little higher this week.",
+      "why": "That touches things like mortgage rates and the cost of borrowing for a car or a home improvement project.",
+      "but": "But a small move in rates this week does not rewrite your long-term plan.",
+      "story": "Picture a homeowner checking mortgage rates every single morning and deciding whether to be happy or upset based on that one number. It would be exhausting, and it would not change the home they already bought. Your plan was built to handle rates moving up and down over time.",
       "say": [
-        "We don't trade off one report. We stay with your plan.",
-        "Stocks closed near highs on Friday even with that softer number. That's the market doing its job."
+        "Rates move around. Your plan was built with that in mind.",
+        "We do not re-plan the house every time the rate ticks."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that the Trump administration wants to ease limits on a tax-exempt type of diesel fuel.",
-      "why": "Diesel runs the trucks that move groceries and goods to stores, so rules around diesel costs can eventually touch what you pay at the register.",
-      "but": "But policy tweaks on fuel categories take time to play out, and they are not something your long-term plan needs to react to today.",
-      "story": "It's like a shortcut being opened on a delivery route. It might help a little down the road, but you don't rebuild your whole week around it.",
+      "hearing": "If a client asks what's going on with the market this week, the honest answer is: not much. Stocks drifted a little higher yesterday, and this morning looks calm too.",
+      "why": "Quiet weeks like this do not make headlines, but they are actually the normal rhythm of investing.",
+      "but": "But normal and boring is often exactly what a long-term plan needs.",
+      "story": "Picture a gardener who expects something dramatic every single day and feels let down when nothing happens. Most days in a garden are quiet. The growth is happening anyway, underneath, where you cannot see it yet.",
       "say": [
-        "We watch policy changes, but we don't rewrite your plan around them.",
-        "Fuel rules shift. Your plan stays steady."
+        "Quiet weeks are not wasted weeks. The plan keeps working underneath.",
+        "Nothing big happened, and that is perfectly fine for your plan."
       ]
     }
   ]
