@@ -1,47 +1,36 @@
 {
-  "generated_at": "2026-10-06T06:17:23-04:00",
+  "generated_at": "2026-10-06T07:44:34-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "U.S. Stock Futures Rise as Investors Assess Gulf Oil Flows and Await Constellation Brands Results: Dow Jones, S&P, Nasdaq, Wall Street",
-    "BOE\u2019s Mann Says Labor Market Isn\u2019t Weak Enough to Tame Inflation",
-    "Yemeni forces say they secured Red Sea waterway; Houthis target Saudi airports",
-    "Student Protests Add to France\u2019s Sense of Upheaval Over Budget, Debt",
-    "Why deep-red Kansas has become an unexpected Senate battleground",
-    "Trump\u2019s feud with Cotton snaps heads in the Senate"
+    "FBI arrests California woman accused of spying on Taiwan leader's family for China",
+    "Stock futures climb as 10-year Treasury yield retreats",
+    "Vanguard vs. Schwab Short-Term Treasury ETFs: Which One Delivers the Better Safe-Haven Return?",
+    "S\u00e1nchez Seeks to Pass Housing Bills Ahead of Spanish Election",
+    "These States Could Derail Democrats\u2019 Hopes in the Senate",
+    "Battle over daylight saving time erupts as push to stop changing clocks hits Senate wall"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing about tension near the Middle East, with talk of oil tankers and shipping lanes in the Gulf and Red Sea.",
-      "why": "Oil moves through those waters on its way to becoming gasoline and diesel, so when there's tension there, people worry it could push gas prices higher.",
-      "but": "But right now, oil prices actually eased a bit, and markets are taking this calmly rather than reacting with alarm.",
-      "story": "Picture a delivery truck taking a slightly longer route because of road construction. It is an inconvenience, not a reason to cancel the whole shipment. Markets are watching the route, not panicking about it.",
+      "hearing": "You may hear that interest rates ticked higher again, and mortgage rates crept up with them.",
+      "why": "Higher interest rates can mean a bigger monthly payment on a new house, a car loan, or a credit card balance, so people notice it when they are borrowing money.",
+      "but": "But rates moving a little in one week is not the same as a change to your long-term plan.",
+      "story": "Picture someone shopping for a new car and the sticker price goes up a touch the same week they walk into the lot. Frustrating, sure. It does not mean they cancel the whole plan to get a car someday.",
       "say": [
-        "We see the headline, and we are not changing your plan because of it.",
-        "Oil can wobble without the plan wobbling."
+        "We watch rates, we do not chase them.",
+        "A small move in rates is weather. Your plan is the season."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that interest rates ticked a little higher this week.",
-      "why": "That touches things like mortgage rates and the cost of borrowing for a car or a home improvement project.",
-      "but": "But a small move in rates this week does not rewrite your long-term plan.",
-      "story": "Picture a homeowner checking mortgage rates every single morning and deciding whether to be happy or upset based on that one number. It would be exhausting, and it would not change the home they already bought. Your plan was built to handle rates moving up and down over time.",
+      "hearing": "You may hear that oil prices pulled back a bit this week.",
+      "why": "Oil feeds into what it costs to fill up the car and to ship the stuff that ends up on store shelves, so when it moves, people feel it at the pump.",
+      "but": "But a dip or a rise in oil for a few days is not something we build a retirement plan around.",
+      "story": "Picture a gardener checking the forecast every morning and deciding whether to rip out the tomatoes based on one cloudy day. The garden never gets a chance that way. Oil prices are weather. The plan is the soil underneath.",
       "say": [
-        "Rates move around. Your plan was built with that in mind.",
-        "We do not re-plan the house every time the rate ticks."
-      ]
-    },
-    {
-      "topic": "model",
-      "hearing": "If a client asks what's going on with the market this week, the honest answer is: not much. Stocks drifted a little higher yesterday, and this morning looks calm too.",
-      "why": "Quiet weeks like this do not make headlines, but they are actually the normal rhythm of investing.",
-      "but": "But normal and boring is often exactly what a long-term plan needs.",
-      "story": "Picture a gardener who expects something dramatic every single day and feels let down when nothing happens. Most days in a garden are quiet. The growth is happening anyway, underneath, where you cannot see it yet.",
-      "say": [
-        "Quiet weeks are not wasted weeks. The plan keeps working underneath.",
-        "Nothing big happened, and that is perfectly fine for your plan."
+        "Oil can move around. Your plan stays put.",
+        "We notice the headline. We do not rebuild around it."
       ]
     }
   ]
