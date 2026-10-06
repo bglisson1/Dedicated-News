@@ -1,36 +1,47 @@
 {
-  "generated_at": "2026-10-06T07:44:34-04:00",
+  "generated_at": "2026-10-06T08:58:19-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "FBI arrests California woman accused of spying on Taiwan leader's family for China",
-    "Stock futures climb as 10-year Treasury yield retreats",
-    "Vanguard vs. Schwab Short-Term Treasury ETFs: Which One Delivers the Better Safe-Haven Return?",
-    "S\u00e1nchez Seeks to Pass Housing Bills Ahead of Spanish Election",
-    "These States Could Derail Democrats\u2019 Hopes in the Senate",
-    "Battle over daylight saving time erupts as push to stop changing clocks hits Senate wall"
+    "Man Group Disputes View That High Inflation Is Bad for US Bonds",
+    "JPMorgan says a 2026 blue wave could slam AI data center stocks that now make up 45% of the S&P 500",
+    "Treasury Auction Outcomes Being Closely Watched",
+    "Ireland Unveils \u20ac50,000 Tax Threshold For New Savings Accounts",
+    "The midterms are an energy election \u2014 and here are five places to look",
+    "Jack Smith did not deserve the Senate trashing"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that interest rates ticked higher again, and mortgage rates crept up with them.",
-      "why": "Higher interest rates can mean a bigger monthly payment on a new house, a car loan, or a credit card balance, so people notice it when they are borrowing money.",
-      "but": "But rates moving a little in one week is not the same as a change to your long-term plan.",
-      "story": "Picture someone shopping for a new car and the sticker price goes up a touch the same week they walk into the lot. Frustrating, sure. It does not mean they cancel the whole plan to get a car someday.",
+      "hearing": "You may be hearing that gas and diesel prices are still high, and that it's even becoming a big topic in this year's elections.",
+      "why": "That matters at home because diesel moves the trucks that deliver groceries and goods, so higher fuel costs can show up later in the prices we pay at the store.",
+      "but": "But election years always bring a lot of noise about energy costs, and markets have lived through plenty of election cycles before.",
+      "story": "Think of a family road trip where gas prices spike for one stretch of highway. You don't cancel the whole vacation over one pricey fill-up, you just keep driving toward where you're headed.",
       "say": [
-        "We watch rates, we do not chase them.",
-        "A small move in rates is weather. Your plan is the season."
+        "We don't rewrite your plan because of one election-year headline.",
+        "Fuel costs come and go, but your long-term plan is built to handle that."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that oil prices pulled back a bit this week.",
-      "why": "Oil feeds into what it costs to fill up the car and to ship the stuff that ends up on store shelves, so when it moves, people feel it at the pump.",
-      "but": "But a dip or a rise in oil for a few days is not something we build a retirement plan around.",
-      "story": "Picture a gardener checking the forecast every morning and deciding whether to rip out the tomatoes based on one cloudy day. The garden never gets a chance that way. Oil prices are weather. The plan is the soil underneath.",
+      "hearing": "You may be hearing that borrowing costs, like mortgage rates, ticked a little higher recently.",
+      "why": "That matters because when interest rates move up even slightly, it can mean a bit more cost to borrow for a house, a car, or a business loan.",
+      "but": "But small moves in interest rates happen often, and they don't change the shape of a long-term plan built for years, not weeks.",
+      "story": "Picture adjusting the thermostat by one degree. You'll notice it if you're paying close attention, but it's not a reason to redesign the whole house.",
       "say": [
-        "Oil can move around. Your plan stays put.",
-        "We notice the headline. We do not rebuild around it."
+        "A small tick in rates doesn't mean we rethink your whole plan.",
+        "We watch rates, but we don't let one small move drive big decisions."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may be hearing that stocks have been fairly calm, drifting a little higher this week without any major news driving it.",
+      "why": "That matters because quiet weeks like this are often when long-term plans quietly do their job, without any drama to report.",
+      "but": "But calm weeks don't mean nothing is happening \u2014 they're actually part of how long-term growth is built, one steady stretch at a time.",
+      "story": "Think of a long hike where some days are just flat, easy trail. Nothing exciting happens, but you're still covering ground toward where you're going.",
+      "say": [
+        "Quiet weeks are still progress, even when there's nothing to report.",
+        "We like boring weeks. They're usually the plan working as intended."
       ]
     }
   ]
