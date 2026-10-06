@@ -1,36 +1,47 @@
 {
-  "generated_at": "2026-10-06T12:15:26-04:00",
-  "source": "openai/gpt-6-luna",
-  "origin": "openrouter:openai/gpt-6-luna",
+  "generated_at": "2026-10-06T16:39:18-04:00",
+  "source": "anthropic/claude-sonnet-5",
+  "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Treasury yields fall as oil prices slide",
-    "S&P 500, Nasdaq touch new peaks as Treasury yields cool, oil slips",
-    "S&P 500 rises to record high as oil and yields move lower: Live updates",
-    "UK Tories Pledge Employer Tax Cut to Tackle Youth Unemployment",
-    "Red-dyed diesel: What is it, and can you use the tax-free fuel?",
-    "UK Windfall Tax on Domestic Banks Is Unfair, Dimon Says"
+    "S&P 500 and Nasdaq surge to record highs after AI chipmaker rally",
+    "Bessent Axing 20-Year Treasury May Send Yields Higher, BNP Warns",
+    "Is Now the Time to Cash Out of the S&P 500's Top 3 Stocks of 2026?",
+    "US Senate Map Moves in Democrats\u2019 Favor as Kansas Rated \u2018Tossup\u2019",
+    "Trump Says He\u2019s Considering Gas Tax Suspension to Ease Costs",
+    "Young voters struggle to afford housing. But they don't expect help from political candidates"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that stocks finished a little higher on Monday. That\u2019s a modestly positive note in an otherwise ordinary stretch, not a reason to treat this week as a turning point.",
-      "why": "Stocks are one way people invest for goals years away, so a small daily move can feel louder than it is when it\u2019s on the news.",
-      "but": "But one session is only a snapshot. We keep the focus on this week and the long-term plan, not on trying to read too much into a single day.",
-      "story": "Picture a traveler checking the road after every block and changing the destination each time. The trip works better when the route was chosen with the whole journey in mind.",
+      "hearing": "You may be hearing that stocks just hit a fresh record high today, with a lot of excitement around AI-related chip companies.",
+      "why": "Record highs often come with a wave of good feeling, and that can make everyday life feel a little more comfortable, from spending to planning ahead.",
+      "but": "But one great day is still just one day, and it does not rewrite a long-term plan.",
+      "story": "Picture a runner who hits a personal best on a Tuesday morning jog. It is a great morning, but the training plan does not change because of one fast mile.",
       "say": [
-        "Stocks had a decent day on Monday, and we\u2019re still focused on your longer-term plan.",
-        "We don\u2019t need to make a big decision from a small move."
+        "We celebrate the good day and keep the plan exactly as it is.",
+        "One record session is a nice moment, not a new strategy."
       ]
     },
     {
       "topic": "model",
-      "hearing": "Interest rates have been shifting this week. They ticked higher on Monday, while Tuesday morning reports said Treasury rates had eased after reaching fresh highs the day before.",
-      "why": "Interest rates can affect the cost of borrowing, including loans and home payments, so people pay attention when they move.",
-      "but": "But a few days of changing rates don\u2019t tell us what comes next. We keep your long-term plan grounded in your goals, not every turn in the headlines.",
-      "story": "Imagine steering a boat by one small wave instead of looking toward shore. The wave matters, but it is not the whole route. A steady hand helps keep the journey on course.",
+      "hearing": "You may be hearing that the President is considering pausing the federal gas tax to help with costs at the pump.",
+      "why": "Lower fuel costs can mean cheaper trucking, which can nudge down the price of groceries and everyday goods.",
+      "but": "But this is just talk of a possible policy right now, not something that changes your long-term plan today.",
+      "story": "Think of it like hearing a store might run a sale next month. You don't rearrange your whole budget around a maybe. You wait and see what actually happens.",
       "say": [
-        "Rates have been moving around, so let\u2019s keep our attention on the plan we built.",
-        "We can notice the waves without changing course over every one."
+        "We don't plan around maybes. We plan around what's actually happened.",
+        "If it happens, we'll talk about what it means. For now, nothing changes."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may be hearing that the political map for the Senate is shifting, with a once-safe state now considered up for grabs.",
+      "why": "Election season brings a lot of noise, and people naturally wonder if a different Congress means different rules for their money.",
+      "but": "But markets have moved through every kind of political mix before, and your plan isn't built around one election outcome.",
+      "story": "Picture choosing a sturdy car for a long road trip, not because you know every turn in the road ahead, but because you trust the car to handle whatever comes. Elections are just more turns in the road.",
+      "say": [
+        "Your plan isn't betting on one party or one race.",
+        "We built this for the long road, not for one election night."
       ]
     }
   ]
