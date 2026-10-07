@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-10-06T16:39:18-04:00",
+  "generated_at": "2026-10-07T06:18:21-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "S&P 500 and Nasdaq surge to record highs after AI chipmaker rally",
-    "Bessent Axing 20-Year Treasury May Send Yields Higher, BNP Warns",
-    "Is Now the Time to Cash Out of the S&P 500's Top 3 Stocks of 2026?",
-    "US Senate Map Moves in Democrats\u2019 Favor as Kansas Rated \u2018Tossup\u2019",
-    "Trump Says He\u2019s Considering Gas Tax Suspension to Ease Costs",
-    "Young voters struggle to afford housing. But they don't expect help from political candidates"
+    "US Futures Edge Lower Ahead of FOMC Minutes as Constellation Brands Reports Results: Dow Jones, S&P, Nasdaq, Wall Street",
+    "Vietnam Central Bank Warns of Rising Inflation, Rates Pressure",
+    "IMF Chief Warns Governments to Act Now on Record Debt",
+    "How rising mortgage rates are hitting the housing market hard \u2014 at a terrible time for GOP",
+    "Trump\u2019s Tariffs Allow Carney to Fast-Track Canada Oil Pipeline, Investment Push",
+    "Congress killed the penny \u2014 now it's coming for the 13-cent nickel"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing that stocks just hit a fresh record high today, with a lot of excitement around AI-related chip companies.",
-      "why": "Record highs often come with a wave of good feeling, and that can make everyday life feel a little more comfortable, from spending to planning ahead.",
-      "but": "But one great day is still just one day, and it does not rewrite a long-term plan.",
-      "story": "Picture a runner who hits a personal best on a Tuesday morning jog. It is a great morning, but the training plan does not change because of one fast mile.",
+      "hearing": "You may hear that everyone is waiting on notes from the Fed's last meeting, the group that sets short-term interest rates.",
+      "why": "Those notes can hint at where borrowing costs for cars, credit cards, and homes might head next, so people watch them closely.",
+      "but": "But a single set of meeting notes does not rewrite a household's long-term plan.",
+      "story": "Picture waiting for a weather report before a trip you already packed for. You still check it, but you do not cancel the trip over one forecast.",
       "say": [
-        "We celebrate the good day and keep the plan exactly as it is.",
-        "One record session is a nice moment, not a new strategy."
+        "We watch the notes, we do not rebuild the plan around them.",
+        "One Fed update is weather, not a new map."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may be hearing that the President is considering pausing the federal gas tax to help with costs at the pump.",
-      "why": "Lower fuel costs can mean cheaper trucking, which can nudge down the price of groceries and everyday goods.",
-      "but": "But this is just talk of a possible policy right now, not something that changes your long-term plan today.",
-      "story": "Think of it like hearing a store might run a sale next month. You don't rearrange your whole budget around a maybe. You wait and see what actually happens.",
+      "hearing": "You may hear that mortgage rates have crept up to their highest point in a couple of years.",
+      "why": "That matters because it can make buying or refinancing a home more expensive, which can also cool demand in the housing market.",
+      "but": "But rate moves like this tend to ebb and flow, and a long-term plan is built to ride through more than one of these cycles.",
+      "story": "Think of a toll on a bridge going up for a season. Fewer cars cross that week, but the bridge still gets you where you are going.",
       "say": [
-        "We don't plan around maybes. We plan around what's actually happened.",
-        "If it happens, we'll talk about what it means. For now, nothing changes."
+        "Higher tolls do not close the bridge, they just change the traffic for a while.",
+        "We built your plan to handle rate cycles like this one."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may be hearing that the political map for the Senate is shifting, with a once-safe state now considered up for grabs.",
-      "why": "Election season brings a lot of noise, and people naturally wonder if a different Congress means different rules for their money.",
-      "but": "But markets have moved through every kind of political mix before, and your plan isn't built around one election outcome.",
-      "story": "Picture choosing a sturdy car for a long road trip, not because you know every turn in the road ahead, but because you trust the car to handle whatever comes. Elections are just more turns in the road.",
+      "hearing": "You may hear that stocks had a solid day yesterday, even though this morning looks a touch quieter before the bell.",
+      "why": "Day-to-day wiggles like this are normal, and they are part of how stocks have always moved on the way to long-term growth.",
+      "but": "But a quiet morning after a good day is not a signal to change course.",
+      "story": "Picture a hiker who climbs a hill, then pauses to catch their breath before the next stretch. The pause is not the hike turning around.",
       "say": [
-        "Your plan isn't betting on one party or one race.",
-        "We built this for the long road, not for one election night."
+        "A pause after a good day is just a breath, not a reversal.",
+        "We stay focused on the trail, not every step on it."
       ]
     }
   ]
