@@ -1,36 +1,25 @@
 {
-  "generated_at": "2026-10-07T07:45:03-04:00",
+  "generated_at": "2026-10-07T09:02:58-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Stock index futures drop, as yields climb; eyes on FOMC minutes",
-    "India\u2019s central bank hikes rates for the first time since 2023 as inflation risks build",
-    "Dow futures fall 201 points as Treasury yields rise",
-    "How rising mortgage rates are hitting the housing market hard \u2014 at a terrible time for GOP",
-    "3 years later, Netanyahu faces reckoning over Oct. 7 in Israeli election",
-    "Congress is trading on your dime"
+    "10-year Treasury note yield hits highest level since 2002 as traders brace for key bond sale",
+    "Refinance demand is now half what it was a year ago, as mortgage rates rise again",
+    "AST SpaceMobile Cratered in 2026: Wall Street Pro Says 70% Returns Await Buyers Today",
+    "Midterms 2026: Pennsylvania House Race Could Help Decide Control of Congress",
+    "Exclusive: Paxton privately blames campaign woes on Iran war, gas prices",
+    "Billionaires are fleeing California. The tax agency is preparing to chase them."
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that investors are watching notes from the Fed's last meeting today, and that borrowing costs ticked around overnight.",
-      "why": "The Fed, which sets short-term interest rates, has a big say in what you pay on credit cards, car loans, and other borrowing. When people study its notes closely, markets can get a little jumpy for a day or two.",
-      "but": "But one set of meeting notes does not reset the plan you built for years, not days.",
-      "story": "Picture waiting for a weather report before a weekend trip you already packed for. The forecast can shift the mood, but you still have your bags ready and your route planned.",
+      "hearing": "You may be hearing that borrowing costs are back in the news, with long-term interest rates climbing to one of their highest levels in a long while, and mortgage rates following them up.",
+      "why": "That matters because it touches real household decisions, like financing a car, carrying a credit card balance, or buying a home.",
+      "but": "But a move in interest rates this week does not rewrite a plan built for years, not days.",
+      "story": "Picture someone who refuses to sign a lease the week rent goes up a little, so they just keep paying more somewhere else instead. Waiting for the perfect rate often costs more than just moving forward with the plan you already have.",
       "say": [
-        "We read the notes, but we do not rewrite the trip because of them.",
-        "Short-term noise around the Fed does not change your long-term map."
-      ]
-    },
-    {
-      "topic": "model",
-      "hearing": "You may hear that mortgage rates just hit their highest level in a while, making it tougher for people to buy a home right now.",
-      "why": "When mortgage rates climb, the monthly payment on a new house gets bigger, so fewer families feel ready to buy.",
-      "but": "But rates have climbed and eased before, and a long-term plan is built to handle both directions.",
-      "story": "Think of a toll road that raises its price for a season. Drivers grumble, some wait it out, but the road still gets you where you're going.",
-      "say": [
-        "We build your plan to handle rate swings, not to depend on one direction.",
-        "A tougher housing market for buyers doesn't have to change the plan we built for you."
+        "We built your plan to handle moves like this.",
+        "Rates shift. We do not redo the plan every time they do."
       ]
     }
   ]
