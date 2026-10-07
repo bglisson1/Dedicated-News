@@ -1,25 +1,47 @@
 {
-  "generated_at": "2026-10-07T09:02:58-04:00",
+  "generated_at": "2026-10-07T12:16:49-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "10-year Treasury note yield hits highest level since 2002 as traders brace for key bond sale",
-    "Refinance demand is now half what it was a year ago, as mortgage rates rise again",
-    "AST SpaceMobile Cratered in 2026: Wall Street Pro Says 70% Returns Await Buyers Today",
-    "Midterms 2026: Pennsylvania House Race Could Help Decide Control of Congress",
-    "Exclusive: Paxton privately blames campaign woes on Iran war, gas prices",
-    "Billionaires are fleeing California. The tax agency is preparing to chase them."
+    "Inflation fears on the rise as one-year outlook in Fed survey hits highest level since May 2023",
+    "These 7 major S&P 500 stocks need to rally at least 200% to reclaim their peaks",
+    "Print Edition | Wall Street Journal",
+    "Michigan\u2019s Mike Rogers says trade war with Canada needs to end",
+    "Senate Democrats probe former Trump official\u2019s connections to oil company",
+    "Most say Trump, Congress not taking AI risk seriously: Survey"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing that borrowing costs are back in the news, with long-term interest rates climbing to one of their highest levels in a long while, and mortgage rates following them up.",
-      "why": "That matters because it touches real household decisions, like financing a car, carrying a credit card balance, or buying a home.",
-      "but": "But a move in interest rates this week does not rewrite a plan built for years, not days.",
-      "story": "Picture someone who refuses to sign a lease the week rent goes up a little, so they just keep paying more somewhere else instead. Waiting for the perfect rate often costs more than just moving forward with the plan you already have.",
+      "hearing": "You may hear that people are expecting prices to run hotter over the next year, based on a survey the Fed, which sets short-term interest rates, keeps an eye on.",
+      "why": "When folks expect higher prices, it can shape real life, like how much people ask for raises or how businesses price things like groceries and rent.",
+      "but": "But a survey is a mood check, not a forecast carved in stone, and moods shift.",
+      "story": "Picture checking tomorrow's weather app and packing an umbrella just in case. Sometimes it rains, sometimes it does not, but you still go about your day. One survey reading is that umbrella, not the whole season.",
       "say": [
-        "We built your plan to handle moves like this.",
-        "Rates shift. We do not redo the plan every time they do."
+        "We watch the mood, but we build your plan for the whole season, not one forecast.",
+        "A survey can shift next month. Your plan is built to handle either way."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may hear talk about the trade fight with Canada and whether it needs to end.",
+      "why": "Tariffs between two close trading partners can show up in costs here at home, things like lumber, cars, and even groceries that cross the border.",
+      "but": "But trade disputes have a long history of rising and falling, and policies shift more than once before anything is final.",
+      "story": "Think of two neighbors arguing over a fence line. They might argue for months, but eventually they work it out, and life on the street goes on. Meanwhile, the smart neighbor keeps tending their own garden instead of staring at the fence.",
+      "say": [
+        "We keep tending your plan while the two sides sort out the fence.",
+        "Headlines like this move slowly. Your plan doesn't have to react to every update."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may hear that stocks drifted a little lower this morning after a calm rise yesterday.",
+      "why": "Small morning wiggles usually mean investors are digesting news, not making a big new decision about the economy.",
+      "but": "But a quiet dip after a quiet gain is normal, and it's not something that should change a long-term plan.",
+      "story": "Picture the tide at the beach. It goes out a little, then comes back in, over and over, all day long. Nobody redraws the map of the coastline because of one wave.",
+      "say": [
+        "This is one wave, not a new tide.",
+        "We watch the plan, not the minute-by-minute wiggle."
       ]
     }
   ]
