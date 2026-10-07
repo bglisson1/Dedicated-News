@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-10-07T12:16:49-04:00",
+  "generated_at": "2026-10-07T16:38:29-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Inflation fears on the rise as one-year outlook in Fed survey hits highest level since May 2023",
-    "These 7 major S&P 500 stocks need to rally at least 200% to reclaim their peaks",
-    "Print Edition | Wall Street Journal",
-    "Michigan\u2019s Mike Rogers says trade war with Canada needs to end",
-    "Senate Democrats probe former Trump official\u2019s connections to oil company",
-    "Most say Trump, Congress not taking AI risk seriously: Survey"
+    "Bond Yields Kept Climbing And Fed Minutes Showed Another Rate Hike This Year. Stocks Dropped.",
+    "Wall Street ends lower, off record highs, as Treasury yields climb",
+    "Levi Strauss hikes profit guidance after tariff refunds, but its sales outlook is less optimistic",
+    "Half of Democratic voters say the party will win Congress because of Trump's actions: Poll",
+    "Unearthed clip exposes how far Talarico was willing to go on raising taxes during COVID era",
+    "Trump to propose relaxing methane rules for oil and gas industry"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that people are expecting prices to run hotter over the next year, based on a survey the Fed, which sets short-term interest rates, keeps an eye on.",
-      "why": "When folks expect higher prices, it can shape real life, like how much people ask for raises or how businesses price things like groceries and rent.",
-      "but": "But a survey is a mood check, not a forecast carved in stone, and moods shift.",
-      "story": "Picture checking tomorrow's weather app and packing an umbrella just in case. Sometimes it rains, sometimes it does not, but you still go about your day. One survey reading is that umbrella, not the whole season.",
+      "hearing": "You may hear that the Fed, which sets short-term interest rates, signaled it could raise rates again before the end of the year, and stocks slipped a little today, Wednesday.",
+      "why": "When borrowing costs rise, it can nudge what people pay on credit cards, car loans, and other borrowing, so it hits daily life, not just Wall Street.",
+      "but": "But a single signal about future rate moves is not the same as knowing where the economy lands months from now.",
+      "story": "Picture a coach announcing at halftime that the team might run a different play later in the game. Fans groan, but the game is not decided yet. The plan still has three quarters left to play out.",
       "say": [
-        "We watch the mood, but we build your plan for the whole season, not one forecast.",
-        "A survey can shift next month. Your plan is built to handle either way."
+        "We saw the Fed's signal, and we are not rewriting your plan off one headline.",
+        "One signal about future moves does not decide the whole season."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear talk about the trade fight with Canada and whether it needs to end.",
-      "why": "Tariffs between two close trading partners can show up in costs here at home, things like lumber, cars, and even groceries that cross the border.",
-      "but": "But trade disputes have a long history of rising and falling, and policies shift more than once before anything is final.",
-      "story": "Think of two neighbors arguing over a fence line. They might argue for months, but eventually they work it out, and life on the street goes on. Meanwhile, the smart neighbor keeps tending their own garden instead of staring at the fence.",
+      "hearing": "You may also hear that the rate on a 30-year mortgage ticked a little higher than last week.",
+      "why": "That matters because it can change what a monthly house payment looks like for anyone buying or refinancing soon.",
+      "but": "But rates move up and down over time, and your long-term plan was built to handle that kind of back-and-forth.",
+      "story": "Picture shopping for a house and the listed price changes a little while you are still saving. Frustrating, sure, but it does not mean you stop saving or give up on buying a home someday.",
       "say": [
-        "We keep tending your plan while the two sides sort out the fence.",
-        "Headlines like this move slowly. Your plan doesn't have to react to every update."
+        "Mortgage rates wiggle. Your plan was built to ride those wiggles.",
+        "We don't chase every weekly rate change. We stick with the plan."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that stocks drifted a little lower this morning after a calm rise yesterday.",
-      "why": "Small morning wiggles usually mean investors are digesting news, not making a big new decision about the economy.",
-      "but": "But a quiet dip after a quiet gain is normal, and it's not something that should change a long-term plan.",
-      "story": "Picture the tide at the beach. It goes out a little, then comes back in, over and over, all day long. Nobody redraws the map of the coastline because of one wave.",
+      "hearing": "You may hear that stocks had a rough day, pulling back from their recent record highs, with smaller companies falling more than the big ones.",
+      "why": "When borrowing costs rise, it can cost more for businesses to expand or hire, and that can spook investors in the short run.",
+      "but": "But pullbacks after record highs are part of how markets normally breathe, not a sign the plan is broken.",
+      "story": "Think of a hiker who reaches a high ridge, then takes a few steps back down to catch their breath before continuing the climb. The pause does not erase the progress already made.",
       "say": [
-        "This is one wave, not a new tide.",
-        "We watch the plan, not the minute-by-minute wiggle."
+        "A dip after new highs is normal, not a reason to change course.",
+        "We built your plan expecting days like this."
       ]
     }
   ]
