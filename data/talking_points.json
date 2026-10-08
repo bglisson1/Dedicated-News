@@ -1,25 +1,47 @@
 {
-  "generated_at": "2026-10-08T09:02:46-04:00",
+  "generated_at": "2026-10-08T12:17:01-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Stock Market Today: Dow Slides 350 Points After Trump Remarks; Treasury Yields, Oil Prices Surge (Live Coverage)",
-    "Rising yields are quietly crashing the stock market\u2019s earlier winners of 2026",
-    "Wall Street's Most Bearish S&P 500 Call Hinges on One Chart Signal",
-    "Congress can reclaim its spending and war powers by revising two policies",
+    "10-year Treasury yield rises as Fed's Waller says more hikes needed, investors await 30-year auction",
+    "S&P 500 slides as Treasury yields continue climb; oil gains 5%: Live updates",
+    "Sports gambling seeps even deeper into Wall Street's world as hundreds of pro team ETFs emerge",
+    "Oil prices rise after reports White House weighing Iran strikes",
     "Trump's former defense secretary sees no end in sight for Iran war \u2014 to the benefit of America's 'greatest adversary'",
-    "Majority of states urge Supreme Court to consider prediction market regulation"
+    "Booms and flight disruptions in Riyadh as Saudi-Houthi war escalates"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing that tensions overseas, especially around Iran, got louder again this morning, and that oil prices jumped because of it.",
-      "why": "Oil feeds gas and diesel prices, and diesel is what moves trucks, so a jump there can eventually touch what things cost at the store or the pump.",
-      "but": "But a headline about a single tense morning is not the same as a reason to rework a long-term plan.",
-      "story": "Picture checking the weather and seeing a storm warning two states over. You might grab an umbrella, but you don't cancel the whole month's plans. Markets react to the forecast the same way, quickly and often temporarily.",
+      "hearing": "You may be hearing about tension in the Middle East, with reports that the U.S. is weighing new action on Iran and fighting flaring up between Saudi Arabia and the Houthis in Yemen. Oil prices moved up on that news.",
+      "why": "Oil is the raw material behind gas and diesel, so headlines like this can nudge what it costs to fill up the car or move goods on a truck.",
+      "but": "But a single week of oil news is not the same as a shift in your long-term plan.",
+      "story": "Picture a family road trip where gas costs more at one stop. You don't cancel the whole trip over one pump price, you just keep driving toward where you're headed.",
       "say": [
-        "We see the headline, and we're not rewriting your plan because of one tense morning.",
-        "Oil can jump without knocking your long-term plan off course."
+        "We see the oil headline, and we keep driving toward your goals.",
+        "One pricier fill-up doesn't rewrite the whole trip."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may be hearing that a Fed official said more interest rate hikes could be needed, and that borrowing costs, like the rate on a 30-year mortgage, ticked up a little this week.",
+      "why": "When voices at the Fed, which sets short-term interest rates, talk about raising rates, it can show up in things like mortgage payments or loan costs for a car or business.",
+      "but": "But your plan was built knowing interest rates would move around over time, not stay frozen.",
+      "story": "Picture a thermostat that gets bumped up or down in a house. The family doesn't call a meeting to sell the house every time the temperature shifts, they just adjust and keep living there.",
+      "say": [
+        "Interest rate talk is normal noise, not a reason to redo the plan.",
+        "We built your plan expecting the thermostat to move."
+      ]
+    },
+    {
+      "topic": "model",
+      "hearing": "You may be hearing that stocks slipped a little this week, including yesterday, Wednesday, and that futures were a touch softer heading into today.",
+      "why": "Weeks like this can feel unsettling, but small wobbles in stocks are a normal part of investing, not a sign something is broken.",
+      "but": "But there's no major event behind this move, just ordinary day-to-day drift that markets do all the time.",
+      "story": "Picture someone who cancels their gym membership every time a week feels off, then restarts it a month later. They pay the signup fee again and again, but barely get any of the benefit. Staying invested is the market version of keeping the membership.",
+      "say": [
+        "A quiet dip like this isn't a reason to step out.",
+        "We stay in through the dull weeks, not just the exciting ones."
       ]
     }
   ]
