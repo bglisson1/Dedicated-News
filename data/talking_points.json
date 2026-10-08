@@ -1,47 +1,25 @@
 {
-  "generated_at": "2026-10-08T06:19:27-04:00",
+  "generated_at": "2026-10-08T07:46:05-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "US Stock Futures Fall as AI Debt Financing, Rising Bond Yields and Oil Prices Weigh on Markets: Dow Jones, S&P, Nasdaq, Wall Street",
-    "Print Edition | Wall Street Journal",
-    "Oil prices are jumping again. How the S&P 500 has performed on days crude has seen big gains may be surprising.",
+    "Dow Jones Futures Fall As Oil Prices, Treasury Yields Jump; Samsung, Micron, Taiwan Semi, Sandisk In Focus",
+    "Inside Bessent\u2019s Treasury: Tension, Turnover and Unmet Economic Goals",
+    "3 Stocks That Have More Than Doubled the S&P 500\u2019s Return This Year",
+    "Oil Climbs as Trump Reportedly Weighs Iran Strikes Ahead of Midterms",
     "Trump trade chief Greer reports higher cash holdings as law firm pay topped $650K",
-    "Daylight saving time fight isn't over as House GOP presses Senate to end clock-turning forever",
-    "Minnesota Senate hopeful warns threat level rising amid rash of Somali gang crime, terror plot"
+    "Why Pennsylvania Will Serve as an Early Election Day Bellwether"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that oil prices jumped overnight, tied to worries about energy supplies in the Middle East.",
-      "why": "Oil feeds into what it costs to fill up the car and to ship almost everything, so a jump like this can nudge gas and grocery prices.",
-      "but": "But oil has had loud days before, and a single morning move is not the same as a new direction for your plan.",
-      "story": "Picture a grocery delivery that costs a little more one week because the driver's gas was pricier. You don't cancel your meal plan over one delivery fee. You just notice it and move on.",
+      "hearing": "You may hear that oil prices jumped overnight on reports that the White House is weighing possible strikes on Iran, with the news landing right before the midterm elections.",
+      "why": "Oil is the raw material behind gas and diesel, so when it jumps, truckers and shippers can feel it first, and that cost has a way of showing up later in what things cost at the store.",
+      "but": "But a single overnight headline about a possible strike is not the same as a policy that has actually happened, and markets often react before anything is confirmed.",
+      "story": "Picture a driver who hears a siren three blocks away and immediately detours the whole trip. Most of the time the siren has nothing to do with their route. We wait to see what is actually happening before we change direction.",
       "say": [
-        "We see it, we're not changing your plan over one morning in oil.",
-        "One jump in oil is a headline, not a new strategy."
-      ]
-    },
-    {
-      "topic": "model",
-      "hearing": "You may also hear that interest rates ticked up again, and mortgage rates are a bit higher than last week.",
-      "why": "Higher rates can mean a pricier monthly payment for anyone borrowing for a house, a car, or a business loan.",
-      "but": "But your long-term plan was built knowing rates would move around over time, in both directions.",
-      "story": "Picture a thermostat that gets bumped up half a degree. The house still works the same way. You don't call a family meeting to move.",
-      "say": [
-        "Rates moving a little is normal, your plan already expected that.",
-        "We built this plan knowing borrowing costs would shift."
-      ]
-    },
-    {
-      "topic": "model",
-      "hearing": "Overall, stocks slipped a little yesterday, Wednesday, and the early read this morning is a touch softer too.",
-      "why": "Nothing in the news today is big enough to explain it, it is really investors digesting a mix of smaller worries at once.",
-      "but": "But a quiet pullback like this is part of normal market weather, not a reason to rethink a long-term plan.",
-      "story": "Picture canceling a gym membership every time a week feels off, then restarting a month later. You pay the signup fee again and again and barely move forward. Staying invested means keeping the membership through the dull weeks and the loud ones.",
-      "say": [
-        "A soft morning is not a reason to step out of the market.",
-        "We stay invested through weeks like this one."
+        "We see the headline, and we are not reacting to a maybe.",
+        "One overnight story on oil does not rewrite a long-term plan."
       ]
     }
   ]
