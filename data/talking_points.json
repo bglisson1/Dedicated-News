@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-10-08T12:17:01-04:00",
+  "generated_at": "2026-10-08T16:40:21-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "10-year Treasury yield rises as Fed's Waller says more hikes needed, investors await 30-year auction",
-    "S&P 500 slides as Treasury yields continue climb; oil gains 5%: Live updates",
-    "Sports gambling seeps even deeper into Wall Street's world as hundreds of pro team ETFs emerge",
-    "Oil prices rise after reports White House weighing Iran strikes",
-    "Trump's former defense secretary sees no end in sight for Iran war \u2014 to the benefit of America's 'greatest adversary'",
-    "Booms and flight disruptions in Riyadh as Saudi-Houthi war escalates"
+    "Treasury sanctions 17 tankers linked to Iran's 'shadow fleet' in economic pressure campaign",
+    "Trump: U.S. won't attack Iran before midterms",
+    "Rising oil prices, falling technology stocks and reversing bond yields keep Wall Street unsettled",
+    "Judge Sides With Importers to Expand Trump Tariff Refund Fight",
+    "Trump says U.S. will not attack Iran before midterm election",
+    "Oil prices rise after reports White House weighing Iran strikes"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may be hearing about tension in the Middle East, with reports that the U.S. is weighing new action on Iran and fighting flaring up between Saudi Arabia and the Houthis in Yemen. Oil prices moved up on that news.",
-      "why": "Oil is the raw material behind gas and diesel, so headlines like this can nudge what it costs to fill up the car or move goods on a truck.",
-      "but": "But a single week of oil news is not the same as a shift in your long-term plan.",
-      "story": "Picture a family road trip where gas costs more at one stop. You don't cancel the whole trip over one pump price, you just keep driving toward where you're headed.",
+      "hearing": "You may be hearing about Iran, tanker sanctions, and oil prices moving this week.",
+      "why": "Oil is the stuff that becomes gas and diesel, so when it moves, that can nudge what it costs to fill up the car or get a truck of groceries to the store.",
+      "but": "But oil swinging around a geopolitical headline is not new, and it is not a reason to redo a long-term plan.",
+      "story": "Picture a family road trip where the price at one gas station jumps for a week. You still take the trip. You just notice the sign a little more at that one stop.",
       "say": [
-        "We see the oil headline, and we keep driving toward your goals.",
-        "One pricier fill-up doesn't rewrite the whole trip."
+        "We see the headline on oil, and we are not changing the plan over it.",
+        "Gas prices can bounce around news like this without bouncing your long-term plan."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may be hearing that a Fed official said more interest rate hikes could be needed, and that borrowing costs, like the rate on a 30-year mortgage, ticked up a little this week.",
-      "why": "When voices at the Fed, which sets short-term interest rates, talk about raising rates, it can show up in things like mortgage payments or loan costs for a car or business.",
-      "but": "But your plan was built knowing interest rates would move around over time, not stay frozen.",
-      "story": "Picture a thermostat that gets bumped up or down in a house. The family doesn't call a meeting to sell the house every time the temperature shifts, they just adjust and keep living there.",
+      "hearing": "You may hear that stocks, especially technology stocks, slipped a bit this week.",
+      "why": "Weeks like this can feel unsettling because the moves show up fast in a headline, even when nothing in your actual plan has changed.",
+      "but": "But a softer week is a normal part of investing, not a signal to make a big move.",
+      "story": "Picture a long hiking trail with a few rocky patches. You slow down, you watch your step, but you do not turn around and drive home. The trail still gets you where you are going.",
       "say": [
-        "Interest rate talk is normal noise, not a reason to redo the plan.",
-        "We built your plan expecting the thermostat to move."
+        "This week was a little rocky. That is part of the trail, not the end of it.",
+        "We stay on the path. A soft week does not change where we are headed."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may be hearing that stocks slipped a little this week, including yesterday, Wednesday, and that futures were a touch softer heading into today.",
-      "why": "Weeks like this can feel unsettling, but small wobbles in stocks are a normal part of investing, not a sign something is broken.",
-      "but": "But there's no major event behind this move, just ordinary day-to-day drift that markets do all the time.",
-      "story": "Picture someone who cancels their gym membership every time a week feels off, then restarts it a month later. They pay the signup fee again and again, but barely get any of the benefit. Staying invested is the market version of keeping the membership.",
+      "hearing": "You may hear that interest rates eased a little this week.",
+      "why": "Rates touch things like borrowing costs, so small moves there can show up in everyday money decisions, even small ones.",
+      "but": "But small moves in rates happen often, and your plan was built to handle that back-and-forth.",
+      "story": "Picture a thermostat that gets nudged down a notch. You feel a small difference in the room, but nobody moves out of the house over it.",
       "say": [
-        "A quiet dip like this isn't a reason to step out.",
-        "We stay in through the dull weeks, not just the exciting ones."
+        "Interest rates eased a touch this week. The house, meaning your plan, stays the same.",
+        "Small rate moves are normal. We built your plan expecting them."
       ]
     }
   ]
