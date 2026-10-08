@@ -1,25 +1,25 @@
 {
-  "generated_at": "2026-10-08T07:46:05-04:00",
+  "generated_at": "2026-10-08T09:02:46-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Dow Jones Futures Fall As Oil Prices, Treasury Yields Jump; Samsung, Micron, Taiwan Semi, Sandisk In Focus",
-    "Inside Bessent\u2019s Treasury: Tension, Turnover and Unmet Economic Goals",
-    "3 Stocks That Have More Than Doubled the S&P 500\u2019s Return This Year",
-    "Oil Climbs as Trump Reportedly Weighs Iran Strikes Ahead of Midterms",
-    "Trump trade chief Greer reports higher cash holdings as law firm pay topped $650K",
-    "Why Pennsylvania Will Serve as an Early Election Day Bellwether"
+    "Stock Market Today: Dow Slides 350 Points After Trump Remarks; Treasury Yields, Oil Prices Surge (Live Coverage)",
+    "Rising yields are quietly crashing the stock market\u2019s earlier winners of 2026",
+    "Wall Street's Most Bearish S&P 500 Call Hinges on One Chart Signal",
+    "Congress can reclaim its spending and war powers by revising two policies",
+    "Trump's former defense secretary sees no end in sight for Iran war \u2014 to the benefit of America's 'greatest adversary'",
+    "Majority of states urge Supreme Court to consider prediction market regulation"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that oil prices jumped overnight on reports that the White House is weighing possible strikes on Iran, with the news landing right before the midterm elections.",
-      "why": "Oil is the raw material behind gas and diesel, so when it jumps, truckers and shippers can feel it first, and that cost has a way of showing up later in what things cost at the store.",
-      "but": "But a single overnight headline about a possible strike is not the same as a policy that has actually happened, and markets often react before anything is confirmed.",
-      "story": "Picture a driver who hears a siren three blocks away and immediately detours the whole trip. Most of the time the siren has nothing to do with their route. We wait to see what is actually happening before we change direction.",
+      "hearing": "You may be hearing that tensions overseas, especially around Iran, got louder again this morning, and that oil prices jumped because of it.",
+      "why": "Oil feeds gas and diesel prices, and diesel is what moves trucks, so a jump there can eventually touch what things cost at the store or the pump.",
+      "but": "But a headline about a single tense morning is not the same as a reason to rework a long-term plan.",
+      "story": "Picture checking the weather and seeing a storm warning two states over. You might grab an umbrella, but you don't cancel the whole month's plans. Markets react to the forecast the same way, quickly and often temporarily.",
       "say": [
-        "We see the headline, and we are not reacting to a maybe.",
-        "One overnight story on oil does not rewrite a long-term plan."
+        "We see the headline, and we're not rewriting your plan because of one tense morning.",
+        "Oil can jump without knocking your long-term plan off course."
       ]
     }
   ]
