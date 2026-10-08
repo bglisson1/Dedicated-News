@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-10-07T16:38:29-04:00",
+  "generated_at": "2026-10-08T06:19:27-04:00",
   "source": "anthropic/claude-sonnet-5",
   "origin": "openrouter:anthropic/claude-sonnet-5",
   "headlines": [
-    "Bond Yields Kept Climbing And Fed Minutes Showed Another Rate Hike This Year. Stocks Dropped.",
-    "Wall Street ends lower, off record highs, as Treasury yields climb",
-    "Levi Strauss hikes profit guidance after tariff refunds, but its sales outlook is less optimistic",
-    "Half of Democratic voters say the party will win Congress because of Trump's actions: Poll",
-    "Unearthed clip exposes how far Talarico was willing to go on raising taxes during COVID era",
-    "Trump to propose relaxing methane rules for oil and gas industry"
+    "US Stock Futures Fall as AI Debt Financing, Rising Bond Yields and Oil Prices Weigh on Markets: Dow Jones, S&P, Nasdaq, Wall Street",
+    "Print Edition | Wall Street Journal",
+    "Oil prices are jumping again. How the S&P 500 has performed on days crude has seen big gains may be surprising.",
+    "Trump trade chief Greer reports higher cash holdings as law firm pay topped $650K",
+    "Daylight saving time fight isn't over as House GOP presses Senate to end clock-turning forever",
+    "Minnesota Senate hopeful warns threat level rising amid rash of Somali gang crime, terror plot"
   ],
   "cards": [
     {
       "topic": "model",
-      "hearing": "You may hear that the Fed, which sets short-term interest rates, signaled it could raise rates again before the end of the year, and stocks slipped a little today, Wednesday.",
-      "why": "When borrowing costs rise, it can nudge what people pay on credit cards, car loans, and other borrowing, so it hits daily life, not just Wall Street.",
-      "but": "But a single signal about future rate moves is not the same as knowing where the economy lands months from now.",
-      "story": "Picture a coach announcing at halftime that the team might run a different play later in the game. Fans groan, but the game is not decided yet. The plan still has three quarters left to play out.",
+      "hearing": "You may hear that oil prices jumped overnight, tied to worries about energy supplies in the Middle East.",
+      "why": "Oil feeds into what it costs to fill up the car and to ship almost everything, so a jump like this can nudge gas and grocery prices.",
+      "but": "But oil has had loud days before, and a single morning move is not the same as a new direction for your plan.",
+      "story": "Picture a grocery delivery that costs a little more one week because the driver's gas was pricier. You don't cancel your meal plan over one delivery fee. You just notice it and move on.",
       "say": [
-        "We saw the Fed's signal, and we are not rewriting your plan off one headline.",
-        "One signal about future moves does not decide the whole season."
+        "We see it, we're not changing your plan over one morning in oil.",
+        "One jump in oil is a headline, not a new strategy."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may also hear that the rate on a 30-year mortgage ticked a little higher than last week.",
-      "why": "That matters because it can change what a monthly house payment looks like for anyone buying or refinancing soon.",
-      "but": "But rates move up and down over time, and your long-term plan was built to handle that kind of back-and-forth.",
-      "story": "Picture shopping for a house and the listed price changes a little while you are still saving. Frustrating, sure, but it does not mean you stop saving or give up on buying a home someday.",
+      "hearing": "You may also hear that interest rates ticked up again, and mortgage rates are a bit higher than last week.",
+      "why": "Higher rates can mean a pricier monthly payment for anyone borrowing for a house, a car, or a business loan.",
+      "but": "But your long-term plan was built knowing rates would move around over time, in both directions.",
+      "story": "Picture a thermostat that gets bumped up half a degree. The house still works the same way. You don't call a family meeting to move.",
       "say": [
-        "Mortgage rates wiggle. Your plan was built to ride those wiggles.",
-        "We don't chase every weekly rate change. We stick with the plan."
+        "Rates moving a little is normal, your plan already expected that.",
+        "We built this plan knowing borrowing costs would shift."
       ]
     },
     {
       "topic": "model",
-      "hearing": "You may hear that stocks had a rough day, pulling back from their recent record highs, with smaller companies falling more than the big ones.",
-      "why": "When borrowing costs rise, it can cost more for businesses to expand or hire, and that can spook investors in the short run.",
-      "but": "But pullbacks after record highs are part of how markets normally breathe, not a sign the plan is broken.",
-      "story": "Think of a hiker who reaches a high ridge, then takes a few steps back down to catch their breath before continuing the climb. The pause does not erase the progress already made.",
+      "hearing": "Overall, stocks slipped a little yesterday, Wednesday, and the early read this morning is a touch softer too.",
+      "why": "Nothing in the news today is big enough to explain it, it is really investors digesting a mix of smaller worries at once.",
+      "but": "But a quiet pullback like this is part of normal market weather, not a reason to rethink a long-term plan.",
+      "story": "Picture canceling a gym membership every time a week feels off, then restarting a month later. You pay the signup fee again and again and barely move forward. Staying invested means keeping the membership through the dull weeks and the loud ones.",
       "say": [
-        "A dip after new highs is normal, not a reason to change course.",
-        "We built your plan expecting days like this."
+        "A soft morning is not a reason to step out of the market.",
+        "We stay invested through weeks like this one."
       ]
     }
   ]
