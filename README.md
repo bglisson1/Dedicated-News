@@ -1,5 +1,41 @@
 # Dedicated News
 
+## Retired
+
+Dedicated News was retired on Oct 8, 2026. The address https://bglisson1.github.io/Dedicated-News/ serves a short notice marked `noindex`. Market figures now live on Blake's Daily News: https://bglisson1.github.io/Daily-News/
+
+Automatic builds are off. `.github/workflows/build-dedicated-news.yml` has no `schedule` and no `push` trigger. The only way it runs is **Run workflow**. That run publishes `index.html` and stops. It does not run `build.py`, call OpenRouter or any other model, save talking points, or turn a schedule on. The keepalive job that used to re-enable the workflow is gone.
+
+The full working site is still in git:
+
+- Tag: `archive/2026-10-08`
+- Branch: `archive-2026-10-08`
+
+Both point at commit `1ff857424bf6f1e0b0ae176aee87142d8ddd0334`, the last main commit before this retirement.
+
+### Bring it back
+
+1. Check out the archive tag or the archive branch. That tree is the working site, including the old workflow.
+   ```
+   git fetch origin tag archive/2026-10-08
+   git checkout archive/2026-10-08
+   ```
+   or
+   ```
+   git fetch origin archive-2026-10-08
+   git checkout archive-2026-10-08
+   ```
+2. Put that snapshot back on `main`, which restores the `schedule` and `push` triggers along with the page builder. From `main`:
+   ```
+   git checkout main
+   git reset --hard archive/2026-10-08
+   git push --force-with-lease origin main
+   ```
+   To restore with a normal commit instead of a reset, copy `.github/workflows/build-dedicated-news.yml` from the archive onto `main` and commit it. The blocks to put back are `schedule:` and `push:`. Leave `workflow_dispatch` there too.
+3. Run the workflow by hand once so the market page publishes again. On GitHub, open **Actions**, open **Build dedicated news**, click **Run workflow**, leave the branch on **main**, and click the green **Run workflow** button. After that run succeeds, the schedule publishes on its own.
+
+The rest of this file describes the archived site.
+
 A morning briefing for a team of financial advisors in Tampa Bay. It is a single page: market figures, a client talking-points script, and the headlines that matter before the open. No ads. No accounts. Each headline opens the original story in a new tab.
 
 The page is rebuilt from free public sources. You change sources, keywords, and market symbols in `feeds.yml`. You change the headline cards in `prompts/topics.yml`, the story samples in `prompts/stories.yml`, and the voice of an optional model in `prompts/talking_points.md`. You do not need to write code.

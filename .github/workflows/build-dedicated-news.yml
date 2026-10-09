@@ -1,42 +1,14 @@
-# Rebuilds Dedicated News and publishes it to GitHub Pages.
-# One broken quote or news feed does not fail this workflow. build.py
-# skips that source and keeps going. A broken feeds.yml fails the run
-# on purpose, so a typo is visible in the Actions log.
+# Dedicated News was retired on Oct 8, 2026.
+# This workflow only publishes the static retired page in index.html.
+# It has no schedule and it does not run on push. A manual run does not
+# build market figures, call OpenRouter or any other model, commit a
+# talking-points cache, or turn a schedule back on.
+# The last working site is tag archive/2026-10-08 and branch archive-2026-10-08.
 
 name: Build dedicated news
 
 on:
-  schedule:
-    # GitHub runs these clocks in UTC and does not shift for daylight saving.
-    # The job "Decide if this clock should build" keeps only the set that
-    # matches the current Eastern offset, so a weekday slot runs once.
-    #
-    # Eastern Daylight Time (EDT, March–November) is UTC-4.
-    - cron: "0 10 * * 1-5"   # 6:00 AM EDT
-    - cron: "30 11 * * 1-5"  # 7:30 AM EDT
-    - cron: "45 12 * * 1-5"  # 8:45 AM EDT
-    - cron: "0 16 * * 1-5"   # 12:00 PM EDT
-    - cron: "30 20 * * 1-5"  # 4:30 PM EDT
-    - cron: "0 12 * * 0,6"   # 8:00 AM EDT Saturday and Sunday
-    #
-    # Eastern Standard Time (EST, November–March) is UTC-5.
-    - cron: "0 11 * * 1-5"   # 6:00 AM EST
-    - cron: "30 12 * * 1-5"  # 7:30 AM EST
-    - cron: "45 13 * * 1-5"  # 8:45 AM EST
-    - cron: "0 17 * * 1-5"   # 12:00 PM EST
-    - cron: "30 21 * * 1-5"  # 4:30 PM EST
-    - cron: "0 13 * * 0,6"   # 8:00 AM EST Saturday and Sunday
-
   workflow_dispatch:
-    inputs:
-      refresh_talking_points:
-        description: Regenerate talking points with the model
-        type: boolean
-        default: true
-
-  push:
-    branches:
-      - main
 
 permissions:
   contents: read
@@ -48,131 +20,25 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  gate:
-    name: Decide if this clock should build
+  publish:
+    name: Publish the retired page
     runs-on: ubuntu-latest
-    outputs:
-      proceed: ${{ steps.check.outputs.proceed }}
-    steps:
-      - name: Skip the duplicate daylight-saving clock
-        id: check
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          EVENT_SCHEDULE: ${{ github.event.schedule }}
-          HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-        run: |
-          python3 - << 'PY'
-          import os
-          from datetime import datetime
-          from zoneinfo import ZoneInfo
-
-          event = os.environ.get("EVENT_NAME", "")
-          schedule = " ".join(os.environ.get("EVENT_SCHEDULE", "").split())
-          message = (os.environ.get("HEAD_COMMIT_MESSAGE") or "").splitlines()
-          message = message[0].strip() if message else ""
-          # The build commits the talking-points cache. That push does not
-          # need a second page build; the page was already published.
-          if event == "push" and message == "Update cached client talking points.":
-              proceed = False
-              reason = "talking-points cache commit; the page was already built"
-          # Push and the manual Run workflow button always build.
-          elif event != "schedule":
-              proceed = True
-              reason = f"{event} always builds"
-          else:
-              offset = datetime.now(ZoneInfo("America/New_York")).strftime("%z")
-              edt = {
-                  "0 10 * * 1-5",
-                  "30 11 * * 1-5",
-                  "45 12 * * 1-5",
-                  "0 16 * * 1-5",
-                  "30 20 * * 1-5",
-                  "0 12 * * 0,6",
-              }
-              est = {
-                  "0 11 * * 1-5",
-                  "30 12 * * 1-5",
-                  "45 13 * * 1-5",
-                  "0 17 * * 1-5",
-                  "30 21 * * 1-5",
-                  "0 13 * * 0,6",
-              }
-              if not schedule:
-                  proceed = True
-                  reason = "schedule event did not name a cron; building anyway"
-              elif offset == "-0400":
-                  proceed = schedule in edt
-                  reason = f"EDT ({offset}); cron {schedule}"
-              elif offset == "-0500":
-                  proceed = schedule in est
-                  reason = f"EST ({offset}); cron {schedule}"
-              else:
-                  proceed = True
-                  reason = f"unexpected offset {offset}; building anyway"
-          print(reason)
-          print(f"proceed={proceed}")
-          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
-              handle.write(f"proceed={'true' if proceed else 'false'}\n")
-          PY
-
-  build:
-    needs: gate
-    if: needs.gate.outputs.proceed == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Build the page
-        env:
-          # Optional. OpenRouter is used first when its secret is set.
-          # The other keys are backups. With no key, the page uses prompts/topics.yml.
-          # The model runs on the 6:00 AM, 8:45 AM, and 12:00 PM weekday
-          # clocks and the weekend clock. Other runs reuse a model cache.
-          # A template cache, or one with no source, is called again.
-          # A manual run refreshes unless that box is turned off.
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
-          EVENT_NAME: ${{ github.event_name }}
-          EVENT_SCHEDULE: ${{ github.event.schedule }}
-          REFRESH_TALKING_POINTS: ${{ github.event.inputs.refresh_talking_points }}
-        run: python build.py
-
-      - name: Save talking points for the next run
-        if: github.ref == 'refs/heads/main'
-        run: |
-          if [ ! -f data/talking_points.json ]; then
-            echo "No talking-points cache to save."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/talking_points.json
-          if git diff --cached --quiet; then
-            echo "Talking points cache unchanged."
-          else
-            git commit -m "Update cached client talking points."
-            git push
-          fi
-
-      - name: Stage the page for GitHub Pages
+      - name: Stage the retired page
         run: |
           mkdir -p _site
           cp index.html _site/index.html
-          if [ -f data/talking_points.json ]; then
-            cp data/talking_points.json _site/talking_points.json
+          test -s _site/index.html
+          if grep -E -q 'q-price|talking_points\.json' _site/index.html; then
+            echo "Refusing to publish a page that still looks like the market briefing."
+            exit 1
+          fi
+          if ! grep -q 'noindex' _site/index.html; then
+            echo "Refusing to publish without noindex."
+            exit 1
           fi
 
       - name: Upload GitHub Pages artifact
@@ -181,7 +47,7 @@ jobs:
           path: _site
 
   deploy:
-    needs: build
+    needs: publish
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -190,59 +56,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  # GitHub turns off scheduled workflows on a public repository after 60 days
-  # with no commit. This job keeps the schedule switched on. It uses the
-  # built-in GITHUB_TOKEN only. A news feed being down does not affect it,
-  # and a problem here does not block the page deploy above.
-  keepalive:
-    name: Keep the schedule turned on
-    needs: build
-    if: always() && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-      contents: write
-    steps:
-      - name: Check out main
-        uses: actions/checkout@v4
-        with:
-          ref: main
-
-      - name: Keep scheduled updates enabled
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-
-          # Ask GitHub to mark this workflow active. Safe to call when it
-          # already is. This is the same switch as Actions → Enable workflow.
-          gh api -X PUT \
-            -H "Accept: application/vnd.github+json" \
-            "/repos/${GITHUB_REPOSITORY}/actions/workflows/build-dedicated-news.yml/enable"
-          echo "Schedule switch is on."
-
-          # A commit is what GitHub counts as activity. Skip it while the
-          # repository is fresh, so ordinary news updates stay out of the
-          # history. 45 days is inside the 60-day cutoff.
-          last="$(git log -1 --format=%ct)"
-          now="$(date +%s)"
-          age_days="$(( (now - last) / 86400 ))"
-          echo "Last commit was ${age_days} days ago."
-          if [ "${age_days}" -lt 45 ]; then
-            echo "No keepalive commit needed."
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -B main
-          cat > .keepalive << EOF
-          # Touched automatically so GitHub does not turn off the scheduled update.
-          # You can ignore this file.
-          $(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          EOF
-          git add .keepalive
-          git commit -m "Keep scheduled updates enabled"
-          git push origin HEAD:main
-          echo "Saved .keepalive so the schedule stays on."
